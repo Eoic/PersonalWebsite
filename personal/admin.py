@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Technology, Entry, EntryTechnology, ExtendedUser
+from .models import Technology, Entry, EntryTechnology, ExtendedUser, ExtendedUserSocialLinks
 
 
 @admin.register(Entry)
@@ -20,3 +20,8 @@ class EntryTechnologyAdmin(admin.ModelAdmin):
 @admin.register(ExtendedUser)
 class ExtendedUserAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(ExtendedUserSocialLinks)
+class ExtendedUserSocialLinksAdmin(admin.ModelAdmin):
+    list_display = ('title', 'url', 'icon')

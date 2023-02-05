@@ -78,7 +78,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'staticfiles/'
-STATICFILES_DIRS = [path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [path.join(BASE_DIR, 'personal', 'static')]
 STATIC_ROOT = path.join(path.dirname(BASE_DIR), 'personal', 'staticfiles_root')
 
 MEDIA_URL = 'mediafiles/'
@@ -86,6 +86,3 @@ MEDIA_ROOT = path.join(path.dirname(BASE_DIR), 'personal', 'mediafiles_root')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'personal.ExtendedUser'
-
-print(STATIC_ROOT)
-print(MEDIA_ROOT)

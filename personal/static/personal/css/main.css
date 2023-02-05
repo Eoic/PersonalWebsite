@@ -1,3 +1,13 @@
+/* General */
+:root {
+    /* --background-color-dark: #030706; */
+    --background-color-dark: #261e38;
+    --background-color-light: #d0d0d0;
+    /* --text-color-dark: #E5A131; */
+    --text-color-dark: #c9cdb9;
+    --text-color-light: #1a241e;
+}
+
 html,
 body {
     margin: 0;
@@ -5,10 +15,218 @@ body {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    width: 38vw;
+    min-width: 580px;
+    padding: 64px;
+    box-sizing: border-box;
+    margin: 0 auto;
+    max-width: 700px;
+}
+
+@media (max-width: 768px) {
+    html,
+    body {
+        width: 100%;
+        min-width: 0;
+        padding: 16px;
+    }
 }
 
 * {
     box-sizing: border-box;
 }
 
+a {
+    text-decoration: none;
+}
 
+h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin: 0;
+    line-height: 2rem;
+}
+
+/* Layout */
+header h1 {
+    font-size: 2.3rem;
+    font-weight: 100;
+}
+
+header h2 {
+    font-size: 1rem;
+    font-weight: 100;
+    margin: 0;
+}
+
+header h3 {
+    font-size: 0.75rem;
+    font-weight: 100;
+    margin: 0;
+}
+
+.profile {
+    display: flex;
+    row-gap: 1.5rem;
+    column-gap: 1.5rem;
+}
+
+/* Icons */
+.icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+}
+
+.icon.github {
+    background: url(../images/icons/github.svg) no-repeat;
+}
+
+.icon.linkedin {
+    background: url(../images/icons/linkedin.svg) no-repeat;
+}
+
+.icon.location {
+    background: url(../images/icons/location.svg) no-repeat;
+}
+
+.icon.interactive {
+    transition: filter 0.3s;
+}
+
+.icon.interactive:hover {
+    filter: brightness(2);
+}
+
+/* Themes */
+.theme.dark {
+    background-color: var(--background-color-dark);
+    color: var(--text-color-dark);
+}
+
+/* Tabs */
+.tab-navigator {
+	overflow-x: hidden;
+}
+
+.tab-navigator [type="radio"] {
+	display: none;
+}
+
+.tabs {
+    padding: 0;
+	display: flex;
+    overflow: auto;
+	list-style: none;
+    border-radius: 6px;
+	align-items: stretch;
+    border: 1px solid var(--text-color-dark);
+}
+
+.tab {
+    flex: 1;
+    border: 0;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.tab:hover {
+    background-color: #3b2f56;
+}
+
+.tab > label {
+	display: block;
+	cursor: pointer;
+	padding: 4px 20px;
+}
+
+.tab:not(:first-child) {
+    border-left: 2px solid var(--text-color-dark);
+}
+
+.tab:first-child > label {
+    border-radius: 6px 0 0 6px;
+}
+
+.tab:last-child  > label{
+    border-radius: 0 6px 6px 0;
+}
+
+.tab-content {
+	display: none;
+    border: 1px solid var(--text-color-dark);
+    border-radius: 6px;
+    padding: 12px;
+}
+
+.tab-navigator [type="radio"]:nth-of-type(1):checked ~ .tabs .tab:nth-of-type(1) label,
+.tab-navigator [type="radio"]:nth-of-type(2):checked ~ .tabs .tab:nth-of-type(2) label,
+.tab-navigator [type="radio"]:nth-of-type(3):checked ~ .tabs .tab:nth-of-type(3) label,
+.tab-navigator [type="radio"]:nth-of-type(4):checked ~ .tabs .tab:nth-of-type(4) label,
+.tab-navigator [type="radio"]:nth-of-type(5):checked ~ .tabs .tab:nth-of-type(5) label {
+	background: var(--text-color-dark);
+	color: var(--background-color-dark);
+}
+
+.tab-navigator [type="radio"]:nth-of-type(1):checked ~ .tab-content:nth-of-type(1),
+.tab-navigator [type="radio"]:nth-of-type(2):checked ~ .tab-content:nth-of-type(2),
+.tab-navigator [type="radio"]:nth-of-type(3):checked ~ .tab-content:nth-of-type(3),
+.tab-navigator [type="radio"]:nth-of-type(4):checked ~ .tab-content:nth-of-type(4) {
+	display: block;
+}
+
+/* Formatting */
+.flex {
+    display: flex;
+}
+
+.flex.col-gap-1 {
+    column-gap: 0.25rem;
+}
+
+.flex.col-gap-2 {
+    column-gap: 1.5rem;
+}
+
+.flex.column {
+    flex-direction: column;
+}
+
+.flex.row-gap-1 {
+    row-gap: 0.25rem;
+}
+
+.avatar {
+    border-radius: 50%;
+    width: 86px;
+    height: 86px;
+}
+
+
+@media screen and (max-width: 768px) {
+    .profile {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile .profile-location {
+        align-self: center;
+    }
+
+    .tabs {
+        flex-direction: column;
+    }
+
+    .tab:first-child > label {
+        border-radius: 0;
+    }
+
+    .tab:not(:first-child) {
+        border-left: 0;
+    }
+    
+    .tab:last-child  > label{
+        border-radius: 0;
+    }
+}

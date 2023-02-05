@@ -47,8 +47,8 @@ class Technology(models.Model):
 
 
 class EntryTechnology(models.Model):
-    entry = models.ForeignKey(Entry, on_delete=models.CASCADE)
-    technology = models.ForeignKey(Technology, on_delete=models.CASCADE)
+    entry = models.ForeignKey(Entry, on_delete=models.CASCADE, related_name='entry_technologies')
+    technology = models.ForeignKey(Technology, on_delete=models.CASCADE, related_name='entry_technologies')
 
     class Meta:
         verbose_name = 'Entry technology'
@@ -72,14 +72,15 @@ class ExtendedUser(AbstractUser):
     avatar = models.ImageField(upload_to='avatars', null=True, blank=True)
 
 
-class ExtendedUserSocialLinks():
-    link = models.URLField()
+class ExtendedUserSocialLinks(models.Model):
+    url = models.URLField()
+    title = models.CharField(max_length=200)
     icon = models.CharField(max_length=200)
-    user = models.ForeignKey(ExtendedUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(ExtendedUser, on_delete=models.CASCADE, related_name='social_links')
 
     class Meta:
         verbose_name = 'Social link'
         verbose_name_plural = 'Social links'
 
     def __str__(self):
-        return f'{self.link}'
+        return f'{self.title} - {self.url}'

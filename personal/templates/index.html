@@ -15,13 +15,14 @@
     <link rel="mask-icon" href="{% static 'personal/images/favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" type="text/css" href="{% static 'personal/css/main.css' %}">
     <title> Karolis Strazdas </title>
 </head>
-<body>
-    
+<body class="theme dark">
+    {% include 'profile.html' %}
+    {% include 'entries.html' %}      
 </body>
 </html>
