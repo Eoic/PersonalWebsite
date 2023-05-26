@@ -1,14 +1,13 @@
 /* General */
 :root {
     --background-color-dark: #121524;
-    --background-color-light: #d0d0d0;
+    --background-color-light: #ebeef2;
     --text-color-dark: #e4ae00;
-    --text-color-light: #c9cdb9;
+    --text-color-light: #494b49;
 }
 
 html,
 body {
-    margin: 0;
     font-family: 'Roboto', sans-serif;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -21,7 +20,9 @@ body {
 }
 
 body {
-    padding: 84px 64px;
+    display: flex;
+    padding: 0 64px;
+    flex-direction: column;
 }
 
 @media (max-width: 768px) {
@@ -29,7 +30,7 @@ body {
     body {
         width: 100%;
         min-width: 0;
-        padding: 16px;
+        padding: 0 16px;
     }
 }
 
@@ -43,8 +44,6 @@ a {
 
 h1 {
     margin: 0;
-    font-size: 3.5rem;
-    font-weight: 500;
 }
 
 /* Layout */
@@ -70,11 +69,12 @@ header h3 {
     display: flex;
     row-gap: 1.5rem;
     column-gap: 1.5rem;
+    align-items: center;
+    margin-top: 84px;
 }
 
 /* Icons */
 .icon {
-    width: 34px;
     height: 100%;
     display: inline-block;
     background-size: contain;
@@ -97,14 +97,36 @@ header h3 {
     transition: filter 0.3s;
 }
 
-.icon.interactive:hover {
+.theme.dark .icon.interactive:hover {
     filter: brightness(2);
+}
+
+.theme.light .icon.interactive:hover {
+    filter: brightness(0.5);
+}
+
+.icon.medium {
+    min-width: 24px;
+    min-height: 24px;
 }
 
 /* Themes */
 .theme.dark {
-    background-color: var(--background-color-dark);
     color: var(--text-color-dark);
+    background-color: var(--background-color-dark);
+}
+
+.theme.light {
+    color: var(--text-color-light);
+    background-color: var(--background-color-light);
+}
+
+.theme.light .tabs {
+    border: 1px solid var(--text-color-light);
+}
+
+.theme.dark .tabs {
+    border: 1px solid var(--text-color-dark);
 }
 
 /* Tabs */
@@ -123,7 +145,6 @@ header h3 {
 	list-style: none;
     border-radius: 6px;
 	align-items: stretch;
-    border: 1px solid var(--text-color-dark);
 }
 
 .tab {
@@ -134,8 +155,12 @@ header h3 {
     transition: background-color 0.3s;
 }
 
-.tab:hover {
+.theme.dark .tab:hover {
     background-color: #e4af001c;
+}
+
+.theme.light .tab:hover {
+    background-color: #494b491c;
 }
 
 .tab > label {
@@ -145,7 +170,23 @@ header h3 {
 }
 
 .tab:not(:first-child) {
-    border-left: 2px solid var(--text-color-dark);
+    border-left-width: 2px;
+    border-left-style: solid;
+}
+
+.tab:not(:last-child) {
+    border-bottom-width: 0;
+    border-bottom-style: solid;
+}
+
+.theme.dark .tab:not(:first-child) {
+    border-left-color: var(--text-color-dark);
+    border-bottom-color: var(--text-color-dark);
+}
+
+.theme.light .tab:not(:first-child) {
+    border-left-color: var(--text-color-light);
+    border-bottom-color: var(--text-color-light);
 }
 
 .tab:first-child > label {
@@ -160,16 +201,32 @@ header h3 {
     padding: 12px;
 	display: none;
     border-radius: 6px;
+}
+
+.theme.dark .tab-content {
     border: 1px solid var(--text-color-dark);
 }
 
-.tab-navigator [type="radio"]:nth-of-type(1):checked ~ .tabs .tab:nth-of-type(1) label,
-.tab-navigator [type="radio"]:nth-of-type(2):checked ~ .tabs .tab:nth-of-type(2) label,
-.tab-navigator [type="radio"]:nth-of-type(3):checked ~ .tabs .tab:nth-of-type(3) label,
-.tab-navigator [type="radio"]:nth-of-type(4):checked ~ .tabs .tab:nth-of-type(4) label,
-.tab-navigator [type="radio"]:nth-of-type(5):checked ~ .tabs .tab:nth-of-type(5) label {
+.theme.light .tab-content {
+    border: 1px solid var(--text-color-light);
+}
+
+.theme.dark .tab-navigator [type="radio"]:nth-of-type(1):checked ~ .tabs .tab:nth-of-type(1) label,
+.theme.dark .tab-navigator [type="radio"]:nth-of-type(2):checked ~ .tabs .tab:nth-of-type(2) label,
+.theme.dark .tab-navigator [type="radio"]:nth-of-type(3):checked ~ .tabs .tab:nth-of-type(3) label,
+.theme.dark .tab-navigator [type="radio"]:nth-of-type(4):checked ~ .tabs .tab:nth-of-type(4) label,
+.theme.dark .tab-navigator [type="radio"]:nth-of-type(5):checked ~ .tabs .tab:nth-of-type(5) label {
 	background: var(--text-color-dark);
 	color: var(--background-color-dark);
+}
+
+.theme.light .tab-navigator [type="radio"]:nth-of-type(1):checked ~ .tabs .tab:nth-of-type(1) label,
+.theme.light .tab-navigator [type="radio"]:nth-of-type(2):checked ~ .tabs .tab:nth-of-type(2) label,
+.theme.light .tab-navigator [type="radio"]:nth-of-type(3):checked ~ .tabs .tab:nth-of-type(3) label,
+.theme.light .tab-navigator [type="radio"]:nth-of-type(4):checked ~ .tabs .tab:nth-of-type(4) label,
+.theme.light .tab-navigator [type="radio"]:nth-of-type(5):checked ~ .tabs .tab:nth-of-type(5) label {
+	background: var(--text-color-light);
+	color: var(--background-color-light);
 }
 
 .tab-navigator [type="radio"]:nth-of-type(1):checked ~ .tab-content:nth-of-type(1),
@@ -203,20 +260,20 @@ header h3 {
 
 .avatar {
     border-radius: 50%;
-    width: 150px;
-    height: 150px;
+    width: 125px;
+    height: 125px;
 }
-
 
 @media screen and (max-width: 768px) {
     .profile {
         flex-direction: column;
-        align-items: center;
         text-align: center;
     }
 
     .profile .profile-location {
         align-self: center;
+        align-items: center;
+        flex-direction: column;
     }
 
     .tabs {
@@ -230,8 +287,57 @@ header h3 {
     .tab:not(:first-child) {
         border-left: 0;
     }
+
+    .tab:not(:last-child) {
+        border-bottom-width: 1px;
+    }
     
-    .tab:last-child  > label{
+    .tab:last-child > label{
         border-radius: 0;
+    }
+}
+
+footer {
+    padding: 16px 0;
+    text-align: center;
+}
+
+/* Theme switcher */
+.theme-switcher {
+    right: 0;
+    margin: 32px;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    cursor: pointer;
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+.theme-switcher:hover {
+    animation: sway 2s infinite alternate ease-in-out;
+}
+
+.theme.dark .theme-switcher {
+    background-image: url(../images/icons/theme-dark.svg);
+}
+
+.theme.light .theme-switcher {
+    background-image: url('../images/icons/theme-light.svg');
+}
+
+@keyframes sway {
+    from {
+        transform: rotate(0deg)
+    }
+
+    50% {
+        transform: rotate(15deg);
+    }
+
+    to {
+        transform: rotate(0deg)
     }
 }

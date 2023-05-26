@@ -18,10 +18,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
+    <script src="{% static 'personal/js/main.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'personal/css/main.css' %}">
     <title> Karolis Strazdas </title>
 </head>
-<body class="theme dark">
+<body class="theme dark" data-theme="dark">
     {% include 'profile.html' %}
     {% include 'entries.html' %}
     {% include 'footer.html' %}

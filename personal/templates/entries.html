@@ -16,21 +16,74 @@
     </div>
 </nav>
 
-<section class="tab-content">
-    {% for entry in entries %}
-        <section>
-            {{ entry.title }}
-            {{ entry.description }}
-            {{ entry.start_date }}
-            {{ entry.end_date }}
-            
-            {% for t in entry.entry_technologies.all %}
-                {{ t.technology.title }}
-            {% endfor %}
-            {% comment %} {% for technology in entry.technologies %}
-                {{ technology }}
-            {% endfor %} {% endcomment %}
-        </section>
-    {% endfor %}
-    <p> One. </p>
-</section>
+<main style="flex: 1;">
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article> Some content here. </article>
+    <article>
+        This is some section
+        {% for entry in entries %}
+            <section>
+                {{ entry.title }}
+                {{ entry.description }}
+                {{ entry.start_date }}
+                {{ entry.end_date }}
+                
+                {% for t in entry.entry_technologies.all %}
+                    {{ t.technology.title }}
+                {% endfor %}
+                {% comment %} {% for technology in entry.technologies %}
+                    {{ technology }}
+                {% endfor %} {% endcomment %}
+            </section>
+        {% endfor %}
+        <p> One. </p>
+    </article>
+</main>

@@ -1,5 +1,7 @@
 {% load static %}
 
+<button id="theme-switcher" class="icon interactive theme-switcher" data-next-theme="light"></button>
+
 <header class="profile col-gap-2">
     <img src={% static 'personal/images/avatar.jpg' %} alt="{{ user.first_name }} {{ user.last_name }}" class="avatar" />
     <hgroup class="flex column row-gap-1">
@@ -7,14 +9,18 @@
         <h2> {{ user.position }} at {{ user.company }} </h2>
 
         <div class="profile-location flex col-gap-1">
-            <span class="icon location"></span>
-            <h3> {{ user.location }} </h3>
+            <div class="flex">
+                <span class="icon location medium"></span>
+                <h3> {{ user.location }} </h3>
+            </div>
 
-            {% for link in user.social_links.all %}
-                <a href="{{ link.url }}" title="{{ link.title }}" target="_blank">
-                    <span class="icon interactive {{ link.icon }}"></span>
-                </a>
-            {% endfor %}
+            <div class="flex">
+                {% for link in user.social_links.all %}
+                    <a href="{{ link.url }}" title="{{ link.title }}" target="_blank">
+                        <span class="icon medium interactive {{ link.icon }}"></span>
+                    </a>
+                {% endfor %}
+            </div>
         </div>
     </hgroup>
 </header>
