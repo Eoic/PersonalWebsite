@@ -4,32 +4,33 @@
         <input type="radio" id="positions-tab" name="tabs">
         <input type="radio" id="projects-tab" name="tabs">
         <input type="radio" id="education-tab" name="tabs">
+        <input type="radio" id="notes-tab" name="tabs">
         
         <ul class="tabs">
-            <li class="tab"><label for="everything-tab"> Everything </label></li>
+            <li class="tab"><label for="everything-tab"> About </label></li>
             <li class="tab"><label for="positions-tab"> Positions </label></li>
             <li class="tab"><label for="projects-tab"> Projects </label></li>
-            <li class="tab"><label for="education-tab"> Education </label></li>
+            <li class="tab"><label for="education-tab"> Quotes </label></li>
+            <li class="tab"><label for="notes-tab"> Notes </label></li>
         </ul>
-        
-        <section class="tab-content">
-            {% for entry in entries %}
-                <section>
-                    {{ entry.title }}
-                    {{ entry.description }}
-                    {{ entry.start_date }}
-                    {{ entry.end_date }}
-                    
-                    
-                    {% for t in entry.entry_technologies.all %}
-                        {{ t.technology.title }}
-                    {% endfor %}
-                    {% comment %} {% for technology in entry.technologies %}
-                        {{ technology }}
-                    {% endfor %} {% endcomment %}
-                </section>
-            {% endfor %}
-            <p> One. </p>
-        </section>
     </div>
 </nav>
+
+<section class="tab-content">
+    {% for entry in entries %}
+        <section>
+            {{ entry.title }}
+            {{ entry.description }}
+            {{ entry.start_date }}
+            {{ entry.end_date }}
+            
+            {% for t in entry.entry_technologies.all %}
+                {{ t.technology.title }}
+            {% endfor %}
+            {% comment %} {% for technology in entry.technologies %}
+                {{ technology }}
+            {% endfor %} {% endcomment %}
+        </section>
+    {% endfor %}
+    <p> One. </p>
+</section>

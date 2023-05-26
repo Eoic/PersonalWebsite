@@ -1,11 +1,9 @@
 /* General */
 :root {
-    /* --background-color-dark: #030706; */
-    --background-color-dark: #261e38;
+    --background-color-dark: #121524;
     --background-color-light: #d0d0d0;
-    /* --text-color-dark: #E5A131; */
-    --text-color-dark: #c9cdb9;
-    --text-color-light: #1a241e;
+    --text-color-dark: #e4ae00;
+    --text-color-light: #c9cdb9;
 }
 
 html,
@@ -15,12 +13,15 @@ body {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    width: 38vw;
-    min-width: 580px;
-    padding: 64px;
     box-sizing: border-box;
     margin: 0 auto;
-    max-width: 700px;
+    min-width: 750px;
+    max-width: 850px;
+    height: 100%;
+}
+
+body {
+    padding: 84px 64px;
 }
 
 @media (max-width: 768px) {
@@ -41,27 +42,27 @@ a {
 }
 
 h1 {
-    font-size: 2.5rem;
-    font-weight: 300;
     margin: 0;
-    line-height: 2rem;
+    font-size: 3.5rem;
+    font-weight: 500;
 }
 
 /* Layout */
 header h1 {
-    font-size: 2.3rem;
-    font-weight: 100;
+    font-size: 3.3rem;
+    font-weight: 300;
+    line-height: 1em;
 }
 
 header h2 {
-    font-size: 1rem;
-    font-weight: 100;
+    font-size: 1.5rem;
+    font-weight: 300;
     margin: 0;
 }
 
 header h3 {
-    font-size: 0.75rem;
-    font-weight: 100;
+    font-size: 1.25rem;
+    font-weight: 300;
     margin: 0;
 }
 
@@ -73,21 +74,23 @@ header h3 {
 
 /* Icons */
 .icon {
-    width: 16px;
-    height: 16px;
+    width: 34px;
+    height: 100%;
     display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .icon.github {
-    background: url(../images/icons/github.svg) no-repeat;
+    background-image: url(../images/icons/github.svg);
 }
 
 .icon.linkedin {
-    background: url(../images/icons/linkedin.svg) no-repeat;
+    background-image: url(../images/icons/linkedin.svg);
 }
 
 .icon.location {
-    background: url(../images/icons/location.svg) no-repeat;
+    background-image: url(../images/icons/location.svg);
 }
 
 .icon.interactive {
@@ -126,12 +129,13 @@ header h3 {
 .tab {
     flex: 1;
     border: 0;
+    font-size: 1.5em;
     text-align: center;
     transition: background-color 0.3s;
 }
 
 .tab:hover {
-    background-color: #3b2f56;
+    background-color: #e4af001c;
 }
 
 .tab > label {
@@ -153,10 +157,10 @@ header h3 {
 }
 
 .tab-content {
-	display: none;
-    border: 1px solid var(--text-color-dark);
-    border-radius: 6px;
     padding: 12px;
+	display: none;
+    border-radius: 6px;
+    border: 1px solid var(--text-color-dark);
 }
 
 .tab-navigator [type="radio"]:nth-of-type(1):checked ~ .tabs .tab:nth-of-type(1) label,
@@ -171,7 +175,8 @@ header h3 {
 .tab-navigator [type="radio"]:nth-of-type(1):checked ~ .tab-content:nth-of-type(1),
 .tab-navigator [type="radio"]:nth-of-type(2):checked ~ .tab-content:nth-of-type(2),
 .tab-navigator [type="radio"]:nth-of-type(3):checked ~ .tab-content:nth-of-type(3),
-.tab-navigator [type="radio"]:nth-of-type(4):checked ~ .tab-content:nth-of-type(4) {
+.tab-navigator [type="radio"]:nth-of-type(4):checked ~ .tab-content:nth-of-type(4),
+.tab-navigator [type="radio"]:nth-of-type(5):checked ~ .tab-content:nth-of-type(5) {
 	display: block;
 }
 
@@ -193,13 +198,13 @@ header h3 {
 }
 
 .flex.row-gap-1 {
-    row-gap: 0.25rem;
+    row-gap: 0.8rem;
 }
 
 .avatar {
     border-radius: 50%;
-    width: 86px;
-    height: 86px;
+    width: 150px;
+    height: 150px;
 }
 
 
