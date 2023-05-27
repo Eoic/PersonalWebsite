@@ -1,9 +1,12 @@
 from django.contrib import admin
+from django.db.models import TextField
+from martor.widgets import AdminMartorWidget
 from .models import Technology, Entry, EntryTechnology, ExtendedUser, ExtendedUserSocialLinks
 
 
 @admin.register(Entry)
 class EntryAdmin(admin.ModelAdmin):
+    formfield_overrides = { TextField: {'widget': AdminMartorWidget} }
     list_display = ('title', 'description', 'category', 'started_at', 'ended_at')
 
 

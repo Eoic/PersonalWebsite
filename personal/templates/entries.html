@@ -1,89 +1,48 @@
+{% load martortags %}
+
 <nav>
     <div class="tab-navigator">
-        <input type="radio" id="everything-tab" name="tabs" checked>
-        <input type="radio" id="positions-tab" name="tabs">
-        <input type="radio" id="projects-tab" name="tabs">
-        <input type="radio" id="education-tab" name="tabs">
-        <input type="radio" id="notes-tab" name="tabs">
-        
-        <ul class="tabs">
-            <li class="tab"><label for="everything-tab"> About </label></li>
-            <li class="tab"><label for="positions-tab"> Positions </label></li>
-            <li class="tab"><label for="projects-tab"> Projects </label></li>
-            <li class="tab"><label for="education-tab"> Quotes </label></li>
-            <li class="tab"><label for="notes-tab"> Notes </label></li>
+        <ul id="tabs" class="tabs">
+            <li class="tab" data-content-target="about" data-active> About </li>
+            <li class="tab" data-content-target="positions"> Positions </li>
+            <li class="tab" data-content-target="education"> Education </li>
+            <li class="tab" data-content-target="projects"> Projects </li>
+            <li class="tab" data-content-target="quotes"> Quotes </li>
         </ul>
     </div>
 </nav>
 
-<main style="flex: 1;">
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article> Some content here. </article>
-    <article>
-        This is some section
-        {% for entry in entries %}
-            <section>
-                {{ entry.title }}
-                {{ entry.description }}
-                {{ entry.start_date }}
-                {{ entry.end_date }}
-                
-                {% for t in entry.entry_technologies.all %}
-                    {{ t.technology.title }}
-                {% endfor %}
-                {% comment %} {% for technology in entry.technologies %}
-                    {{ technology }}
-                {% endfor %} {% endcomment %}
-            </section>
-        {% endfor %}
-        <p> One. </p>
-    </article>
+<main>
+    <section data-content="about" data-active>
+        <article>
+            Category &bull; May, 2023 → Current (0 months) 
+            <hr/>
+            <h3> Personal website development with Django framework. </h3>
+            <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus metus felis, pulvinar in augue eu, tempus laoreet mi. Proin porta finibus urna, sit amet efficitur sem fermentum in. Aenean enim sapien, euismod in ligula quis, condimentum suscipit ipsum. Vestibulum aliquam a urna vitae pretium. Vestibulum accumsan dui nec semper pretium. Mauris gravida sapien vel elit eleifend, sed rutrum ipsum dignissim. Aliquam erat volutpat. Integer ligula sem, pellentesque sed turpis quis, laoreet pretium ligula. </p>
+            <hr/>
+            <div class="technologies">
+                <span> Django </span>
+                <span> Python </span>
+            </div>
+        </article>
+    </section>
+
+    {% for entry in entries %}
+        <article class="entry">
+            {{ entry.title }}
+            {{ entry.description|safe_markdown }}
+            {{ entry.started_at }}
+            {{ entry.ended_at }}
+
+            {% for item in entry.entry_technologies.all %}
+                {{ item.technology.title }}
+            {% endfor %}
+        </article>
+    {% endfor %}
+
+    <section data-content="quotes">
+        <article>
+            Quotes section
+        </article>
+    </section>
 </main>

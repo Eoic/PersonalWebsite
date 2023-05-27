@@ -1,4 +1,5 @@
 from django.db import models
+from martor.models import MartorField
 from django.contrib.auth.models import AbstractUser
 
 
@@ -18,7 +19,7 @@ class Entry(models.Model):
         verbose_name_plural = 'Entries'
 
     title = models.CharField(max_length=200)
-    description = models.TextField()
+    description = MartorField()
     category = models.CharField(max_length=3, choices=ENTRY_CATEGORIES)
     started_at = models.DateField()
     ended_at = models.DateField(null=True, blank=True)

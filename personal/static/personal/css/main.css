@@ -114,11 +114,13 @@ header h3 {
 .theme.dark {
     color: var(--text-color-dark);
     background-color: var(--background-color-dark);
+    /* transition: color 0.3s ease, background-color 0.3s ease; */
 }
 
 .theme.light {
     color: var(--text-color-light);
     background-color: var(--background-color-light);
+    /* transition: color 0.3s ease, background-color 0.3s ease; */
 }
 
 .theme.light .tabs {
@@ -152,7 +154,7 @@ header h3 {
     border: 0;
     font-size: 1.5em;
     text-align: center;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .theme.dark .tab:hover {
@@ -163,7 +165,7 @@ header h3 {
     background-color: #494b491c;
 }
 
-.tab > label {
+.tab {
 	display: block;
 	cursor: pointer;
 	padding: 4px 20px;
@@ -211,30 +213,14 @@ header h3 {
     border: 1px solid var(--text-color-light);
 }
 
-.theme.dark .tab-navigator [type="radio"]:nth-of-type(1):checked ~ .tabs .tab:nth-of-type(1) label,
-.theme.dark .tab-navigator [type="radio"]:nth-of-type(2):checked ~ .tabs .tab:nth-of-type(2) label,
-.theme.dark .tab-navigator [type="radio"]:nth-of-type(3):checked ~ .tabs .tab:nth-of-type(3) label,
-.theme.dark .tab-navigator [type="radio"]:nth-of-type(4):checked ~ .tabs .tab:nth-of-type(4) label,
-.theme.dark .tab-navigator [type="radio"]:nth-of-type(5):checked ~ .tabs .tab:nth-of-type(5) label {
+.theme.dark .tab-navigator .tab[data-active] {
 	background: var(--text-color-dark);
 	color: var(--background-color-dark);
 }
 
-.theme.light .tab-navigator [type="radio"]:nth-of-type(1):checked ~ .tabs .tab:nth-of-type(1) label,
-.theme.light .tab-navigator [type="radio"]:nth-of-type(2):checked ~ .tabs .tab:nth-of-type(2) label,
-.theme.light .tab-navigator [type="radio"]:nth-of-type(3):checked ~ .tabs .tab:nth-of-type(3) label,
-.theme.light .tab-navigator [type="radio"]:nth-of-type(4):checked ~ .tabs .tab:nth-of-type(4) label,
-.theme.light .tab-navigator [type="radio"]:nth-of-type(5):checked ~ .tabs .tab:nth-of-type(5) label {
+.theme.light .tab-navigator .tab[data-active] {
 	background: var(--text-color-light);
 	color: var(--background-color-light);
-}
-
-.tab-navigator [type="radio"]:nth-of-type(1):checked ~ .tab-content:nth-of-type(1),
-.tab-navigator [type="radio"]:nth-of-type(2):checked ~ .tab-content:nth-of-type(2),
-.tab-navigator [type="radio"]:nth-of-type(3):checked ~ .tab-content:nth-of-type(3),
-.tab-navigator [type="radio"]:nth-of-type(4):checked ~ .tab-content:nth-of-type(4),
-.tab-navigator [type="radio"]:nth-of-type(5):checked ~ .tab-content:nth-of-type(5) {
-	display: block;
 }
 
 /* Formatting */
@@ -295,6 +281,56 @@ header h3 {
     .tab:last-child > label{
         border-radius: 0;
     }
+}
+
+main {
+    flex: 1;
+}
+
+main section {
+    display: none;
+}
+
+main section[data-active] {
+    display: initial;
+}
+
+main section article {
+    padding: 16px;
+    border-radius: 6px;
+    border-width: 1px;
+    border-style: solid;
+}
+
+main section article .technologies {
+    display: flex;
+    column-gap: 8px;
+    padding-top: 4px;
+}
+
+main section article .technologies span {
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 6px;
+    padding: 4px 8px;
+}
+
+.theme.light main section article,
+.theme.light main section article .technologies span {
+    border-color: var(--text-color-light);
+}
+
+.theme.light hr {
+    color: var(--text-color-light);
+}
+
+.theme.dark main section article,
+.theme.dark main section article .technologies span {
+    border-color: var(--text-color-dark);
+}
+
+.theme.dark hr {
+    color: var(--text-color-dark);
 }
 
 footer {
