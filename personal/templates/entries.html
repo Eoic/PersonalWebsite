@@ -13,36 +13,77 @@
 </nav>
 
 <main>
-    <section data-content="about" data-active>
+    <section data-content="positions">
         <article>
-            Category &bull; May, 2023 → Current (0 months) 
+            <div data-timespan>
+                <span> Position </span> &bull;
+                <span> June, 2020 </span> →
+                <span> Now </span> 
+                <span data-date-from="2020-07-13" data-duration></span>
+            </div>
+
             <hr/>
-            <h3> Personal website development with Django framework. </h3>
-            <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus metus felis, pulvinar in augue eu, tempus laoreet mi. Proin porta finibus urna, sit amet efficitur sem fermentum in. Aenean enim sapien, euismod in ligula quis, condimentum suscipit ipsum. Vestibulum aliquam a urna vitae pretium. Vestibulum accumsan dui nec semper pretium. Mauris gravida sapien vel elit eleifend, sed rutrum ipsum dignissim. Aliquam erat volutpat. Integer ligula sem, pellentesque sed turpis quis, laoreet pretium ligula. </p>
+            <h3> Programmer at Indeform Ltd. </h3>
+            <div>
+                <p> Developing dynamic web applications utilizing a full stack technology stack. Responsible for designing
+                    and implementing robust solutions, maintaining server configurations, and establishing CI/CD pipelines.
+                </p>
+                <ul>
+                    <li> Developed engaging wall projection games and tools using OpenCV (C++/Python), Godot, and ImGui, resulting in enhanced user experiences and increased user engagement. </li>
+                    <li> Applied expertise in web development and graphics programming to contribute to the advancement of orthopedics software, delivering innovative solutions for visualization and user interface design. </li>
+                    <li> Collaborated on the development of internal software solutions, driving process improvements and enhancing operational efficiency. </li>
+                    <li> Played a crucial role in ensuring software quality by writing, maintaining, and executing both manual and automated tests, minimizing bugs and enhancing overall product stability. </li>
+                </ul>
+            </div>
             <hr/>
             <div class="technologies">
                 <span> Django </span>
                 <span> Python </span>
+                <span> React </span>
+                <span> JavaScript </span>
+                <span> TypeScript </span>
+                <span> PostgreSQL </span>
+                <span> Nginx </span>
+                <span> Docker </span>
             </div>
         </article>
     </section>
 
-    {% for entry in entries %}
-        <article class="entry">
-            {{ entry.title }}
-            {{ entry.description|safe_markdown }}
-            {{ entry.started_at }}
-            {{ entry.ended_at }}
+    <section data-content="quotes" class="quotes">
+        <p>
+            I enjoy collecting various excerpts of thoughts from posts, articles, books, videos, and more.
+            Instead of maintaining disorganized lists on various note-taking and book-reading apps, I
+            compile them all here — interesting, thought-provoking, amusing, silly, offensive, or any permutation of those.
+        </p>
 
-            {% for item in entry.entry_technologies.all %}
-                {{ item.technology.title }}
-            {% endfor %}
-        </article>
-    {% endfor %}
-
-    <section data-content="quotes">
         <article>
-            Quotes section
+            <p class="quote">
+                &ldquo;I hate them (coffee drinkers) for the same reason I hate enlightenment faggots, the spiritual cancer that destroyed humanity.
+                Only an individual cooked out of his mind on poisonous beans from Africa could dream up something so delusional as Kant's moral system or the
+                French Revolution or any of the other horrible strains of thought this slave drug has produced.&ldquo;
+            </p>
+            <span> - Anonymous user, 4chan's /sci/ board. </span>
+        </article>
+
+        <article>
+            <p class="quote">
+                &ldquo;Asked by a French reporter what he regretted about the war, Jünger replied, “That we lost.” When a British newspaper later questioned him about Erich Remarque’s pacifist novel All Quiet on the Western Front—the antithesis of his own Storm of Steel—Jünger praised it as a handy piece of “camouflage”
+                that made Germany seem like a country of peace-loving internationalists, which could now more effectively re-arm.&ldquo;
+            </p>
+            <span> - Meaney, T. (2023). History's Fool. Harpers Magazine. </span>
+        </article>
+
+        <article>
+            <p class="quote">
+                &ldquo;The idea of the afterlife was created when the first protohumans became intelligent and self-aware
+                enough to look around, notice that everyone eventually dies, and realize that you will not be an exception.
+                That triggers the preservation instinct, which developed long before any hint of self-awareness as a way to escape
+                immediate danger, so, naturally, our ancestors created a comforting lie to solve that inner conflict. That lie took many forms
+                and grew into more complex shapes over millennia since, naturally, the biological roots of this problem are still here, but it
+                doesn't matter if we talk about reincarnation, "the world beyond", returning to some spiritual "nature" - it's
+                still the same lie. Always has been, always will be.&ldquo;
+            </p>
+            <span> - Anonymous user, 4chan's /pol/ board. </span>
         </article>
     </section>
 </main>

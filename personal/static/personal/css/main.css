@@ -114,13 +114,11 @@ header h3 {
 .theme.dark {
     color: var(--text-color-dark);
     background-color: var(--background-color-dark);
-    /* transition: color 0.3s ease, background-color 0.3s ease; */
 }
 
 .theme.light {
     color: var(--text-color-light);
     background-color: var(--background-color-light);
-    /* transition: color 0.3s ease, background-color 0.3s ease; */
 }
 
 .theme.light .tabs {
@@ -283,6 +281,12 @@ header h3 {
     }
 }
 
+article p.quote {
+    margin-top: 8px;
+    font-style: italic;
+    font-size: 1.25rem;
+}
+
 main {
     flex: 1;
 }
@@ -292,7 +296,9 @@ main section {
 }
 
 main section[data-active] {
-    display: initial;
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
 }
 
 main section article {
@@ -306,6 +312,8 @@ main section article .technologies {
     display: flex;
     column-gap: 8px;
     padding-top: 4px;
+    flex-wrap: wrap;
+    row-gap: 8px;
 }
 
 main section article .technologies span {
@@ -376,4 +384,9 @@ footer {
     to {
         transform: rotate(0deg)
     }
+}
+
+.quotes > p {
+    margin-top: 0;
+    margin-bottom: 0;
 }

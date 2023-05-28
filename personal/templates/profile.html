@@ -5,21 +5,23 @@
 <header class="profile col-gap-2">
     <img src={% static 'personal/images/avatar.jpg' %} alt="{{ user.first_name }} {{ user.last_name }}" class="avatar" />
     <hgroup class="flex column row-gap-1">
-        <h1> {{ user.first_name }} {{ user.last_name }} </h1>
-        <h2> {{ user.position }} at {{ user.company }} </h2>
+        <h1> Karolis Strazdas </h1>
+        <h2> Programmer at Indeform Ltd. </h2>
 
         <div class="profile-location flex col-gap-1">
             <div class="flex">
                 <span class="icon location medium"></span>
-                <h3> {{ user.location }} </h3>
+                <h3> Kaunas, Lithuania </h3>
             </div>
 
             <div class="flex">
-                {% for link in user.social_links.all %}
-                    <a href="{{ link.url }}" title="{{ link.title }}" target="_blank">
-                        <span class="icon medium interactive {{ link.icon }}"></span>
-                    </a>
-                {% endfor %}
+                <a href="https://www.linkedin.com/in/karolis-strazdas">
+                    <span class="icon medium interactive linkedin"></span>
+                </a>
+
+                <a href="https://www.github.com/Eoic">
+                    <span class="icon medium interactive github"></span>
+                </a>
             </div>
         </div>
     </hgroup>

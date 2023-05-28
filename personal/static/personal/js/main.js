@@ -47,6 +47,40 @@
         });
     }
 
+    const computeEntryTimespans = () => {
+        const timespans = document.querySelectorAll('div[data-timespan]')
+        
+        timespans.forEach((timespan) => {
+            const durationElement = [].find.call(timespan.children, ((item) => item.getAttribute('data-duration') === ''));
+            const dateFrom = new Date(durationElement.getAttribute('data-date-from'));
+            const dateTo = durationElement.getAttribute('data-date-to') || new Date();
+            let months = (dateTo.getFullYear() - dateFrom.getFullYear()) * 12;
+            months -= dateFrom.getMonth();
+            months += dateTo.getMonth();
+            months = months <= 0 ? 0 : months;
+
+            if (months < 1) {
+                durationElement.innerHTML = "(Less than a month)"
+                return;
+            }
+
+            const years = Math.floor(months / 12);
+            months = months % 12;
+
+            durationElement.innerHTML = '(';
+
+            if (years > 0) {
+                durationElement.innerHTML += `${years} year${years > 1 ? 's' : ''}`;
+            }
+
+            if (months > 0) {
+                durationElement.innerHTML += `${years > 0 ? ', ' : ''}${months} month${months > 1 ? 's' : ''}`;
+            }
+
+            durationElement.innerHTML += ')';
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         const themeSwitchBtn = document.getElementById('theme-switcher');
         const tabsNavigator = document.getElementById('tabs');
@@ -59,6 +93,7 @@
             tabsNavigator.addEventListener('click', handleTabSwitch);
         }
 
+        computeEntryTimespans();
         loadPreferredTheme(themeSwitchBtn);
     });
 })();
