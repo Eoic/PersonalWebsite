@@ -1,0 +1,18 @@
+{
+  "name": "personal-site",
+  "version": "1.0.0",
+  "description": "Personal website.",
+  "scripts": {
+    "minify-js": "uglifyjs --compress --mangle -- assets/js/main.js > build/assets/js/main.js",
+    "minify-css": "minify assets/css/main.css > build/assets/css/main.css",
+    "copy-img": "cp -r assets/images/ build/assets/",
+    "copy-html": "cp index.html build/",
+    "build": "mkdir -p build/assets/{js,css,images} && npm run minify-js && npm run minify-css && npm run copy-img && npm run copy-html"
+  },
+  "author": "Karolis Strazdas",
+  "license": "ISC",
+  "devDependencies": {
+    "minify": "^10.2.0",
+    "uglify-js": "^3.17.4"
+  }
+}
