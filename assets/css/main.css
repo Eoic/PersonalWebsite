@@ -28,7 +28,6 @@ body {
 }
 
 @media (max-width: 768px) {
-
     html,
     body {
         width: 100%;
@@ -287,7 +286,13 @@ header h3 {
 article p.quote {
     margin-top: 8px;
     font-style: italic;
-    font-size: 1.45rem;
+    font-size: 1.45em;
+}
+
+@media (max-width: 768px) {
+    article p.quote {
+        font-size: 1.25em;
+    }
 }
 
 main {
