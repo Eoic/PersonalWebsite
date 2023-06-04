@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Personal website.",
   "scripts": {
-    "minify-js": "uglifyjs --compress --mangle -- assets/js/main.js > build/assets/js/main.js",
-    "minify-css": "minify assets/css/main.css > build/assets/css/main.css",
-    "build": "./build.sh"
+    "minify-js": "uglifyjs --compress --mangle -- ./assets/js/main.js > ./build/assets/js/main.js",
+    "minify-css": "minify ./assets/css/main.css > ./build/assets/css/main.css",
+    "build": "mkdir -p ./build/assets/{js,css,images} && ./build.sh"
   },
   "author": "Karolis Strazdas",
   "license": "ISC",
