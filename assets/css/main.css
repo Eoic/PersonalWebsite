@@ -1,5 +1,5 @@
 /* General */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
 
 :root {
     --background-color-dark: #121524;
@@ -10,7 +10,7 @@
 
 html,
 body {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: 'Fira Code', sans-serif;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -108,8 +108,10 @@ header h3 {
 }
 
 .icon.medium {
-    min-width: 24px;
-    min-height: 24px;
+    min-width: 32px;
+    max-width: 32px;
+    min-height: 32px;
+    max-height: 32px;
 }
 
 /* Themes */
@@ -154,6 +156,9 @@ header h3 {
     border: 0;
     font-size: 1.5em;
     text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -228,6 +233,10 @@ header h3 {
     display: flex;
 }
 
+.flex.row-center-y {
+    align-items: center;
+}
+
 .flex.col-gap-1 {
     column-gap: 0.25rem;
 }
@@ -257,9 +266,14 @@ header h3 {
     }
 
     .profile .profile-location {
+        row-gap: 0.25rem;
         align-self: center;
         align-items: center;
         flex-direction: column;
+    }
+
+    .profile .profile-location span {
+        display: block;
     }
 
     .tabs {
@@ -292,6 +306,12 @@ article p.quote {
 @media (max-width: 768px) {
     article p.quote {
         font-size: 1.25em;
+    }
+}
+
+@media (max-width: 300px) {
+    .tab {
+        text-align: left;
     }
 }
 
@@ -440,5 +460,5 @@ a.link.bordered {
 }
 
 p.info {
-    font-size: 1.2em;
+    margin-bottom: 0;
 }
