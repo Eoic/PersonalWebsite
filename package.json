@@ -1,16 +1,19 @@
 {
   "name": "personal-site",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Personal website.",
   "scripts": {
     "minify-js": "uglifyjs --compress --mangle -- ./assets/js/main.js > ./build/assets/js/main.js",
     "minify-css": "minify ./assets/css/main.css > ./build/assets/css/main.css",
-    "build": "mkdir -p ./build/assets/{js,css,images} && ./scripts/build.sh"
+    "build": "mkdir -p ./build/assets/{js,css,images} && ./scripts/build.sh",
+    "dev": "serve ."
   },
   "author": "Karolis Strazdas",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "minify": "^10.2.0",
+    "serve": "^14.2.3",
     "uglify-js": "^3.17.4"
-  }
+  },
+  "dependencies": {}
 }
