@@ -27,6 +27,11 @@ body {
     flex-direction: column;
 }
 
+hr {
+    border-style: solid;
+    border-width: 1px 0 0 0;
+}
+
 @media (max-width: 768px) {
     html,
     body {
@@ -182,7 +187,7 @@ header h3 {
 }
 
 .tab:not(:first-child) {
-    border-left-width: 2px;
+    border-left-width: 1px;
     border-left-style: solid;
 }
 
