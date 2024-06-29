@@ -78,7 +78,7 @@ header h3 {
 /* Icons */
 .icon {
     height: 100%;
-    display: inline-block;
+    display: block;
     background-size: contain;
     background-repeat: no-repeat;
 }
@@ -266,8 +266,8 @@ header h3 {
 
 @media screen and (max-width: 1024px) {
     .profile {
-        flex-direction: column;
         text-align: center;
+        flex-direction: column;
     }
 
     .profile .profile-location {
@@ -309,6 +309,10 @@ article p.quote {
 }
 
 @media (max-width: 768px) {
+    .profile h1 {
+        font-size: 2.5rem;
+    }
+
     article p.quote {
         font-size: 1.25em;
     }
