@@ -14,6 +14,5 @@
     "minify": "^10.2.0",
     "serve": "^14.2.3",
     "uglify-js": "^3.17.4"
-  },
-  "dependencies": {}
+  }
 }

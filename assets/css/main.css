@@ -248,7 +248,7 @@ header h3 {
 }
 
 .flex.col-gap-1 {
-    column-gap: 0.25rem;
+    column-gap: 0.5rem;
 }
 
 .flex.col-gap-2 {
