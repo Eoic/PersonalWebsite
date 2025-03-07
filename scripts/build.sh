@@ -1,7 +1,8 @@
 #!/bin/bash
 
-mkdir -p build/assets/{js,css,images} ;
-cp -r assets/images/ build/assets/ ;
-cp -t build/ index.html sitemap.xml ;
+rm -rf build ;
+mkdir -p build/{js,css,images} ;
+cp -r assets/images/ build/ ;
+cp -t build/ assets/index.html assets/sitemap.xml ;
 npm run minify-js ;
 npm run minify-css ;

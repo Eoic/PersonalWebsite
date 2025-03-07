@@ -1,24 +1,14 @@
 (() => {
-    const loadPreferredTheme = (themeSwitchBtn) => {
-        const nextTheme = localStorage.getItem('theme') || 'dark';
-        const currentTheme = nextTheme === 'dark' ? 'light' : 'dark';
-        switchTheme(currentTheme, nextTheme, themeSwitchBtn);
+    const loadPreferredTheme = () => {
+        const selectedTheme = localStorage.getItem('theme') || 'dark';
+        const defaultTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.body.classList.add(selectedTheme ?? defaultTheme);
     }
 
-    const switchTheme = (currentTheme, nextTheme, themeSwitchBtn) => {
+    const handleThemeSwitch = (_event) => {
         const body = document.body;
-        body.setAttribute('data-theme', nextTheme);
-        body.classList.remove(currentTheme);
-        body.classList.add(nextTheme);
-        themeSwitchBtn.setAttribute('data-next-theme', currentTheme);
-        localStorage.setItem('theme', nextTheme);
-    }
-
-    const handleThemeSwitch = (event) => {
-        const body = document.body;
-        const currentTheme = body.dataset.theme;
-        const nextTheme = event.target.dataset.nextTheme;
-        switchTheme(currentTheme, nextTheme, event.target);
+        body.classList.toggle('light') && localStorage.setItem('theme', 'light');
+        body.classList.toggle('dark') && localStorage.setItem('theme', 'dark');
     }
 
     const handleTabSwitch = (event) => {
@@ -79,7 +69,7 @@
         themeSwitchBtn.addEventListener('click', handleThemeSwitch);
         tabsNavigator.addEventListener('mousedown', handleTabSwitch);
 
+        loadPreferredTheme();
         computeEntryTimespans();
-        loadPreferredTheme(themeSwitchBtn);
     });
 })();
