@@ -7,8 +7,6 @@
 const char *PULL_TOKEN_START = "(\% pull ";
 const char *PULL_TOKEN_END = " %)";
 
-#define MAX_LINE 1024
-
 char *read_template(const char *filename) {
   FILE *file = fopen(filename, "r");
 
@@ -36,11 +34,12 @@ char *read_template(const char *filename) {
   return buffer;
 }
 
-char *link_template(const char *content) {
-  char *result = malloc(strlen(content) + 1);
+char *link_template(const char *content, const char *template_root) {
+  size_t result_size = strlen(content) + 1;
+  char *result = malloc(result_size);
 
   if (!result) {
-    perror("Could not allocate enough memory.");
+    perror("Could not allocate memory.");
     return NULL;
   }
 
@@ -52,7 +51,7 @@ char *link_template(const char *content) {
     const char *pull_start = strstr(position, PULL_TOKEN_START);
 
     if (!pull_start) {
-      strcat(result, position);
+      strncat(result, position, result_size - strlen(result) - 1);
       break;
     }
 
@@ -63,42 +62,52 @@ char *link_template(const char *content) {
       break;
     }
 
+    // Append content before the include tag.
+    strncat(result, position, pull_start - position);
+
+    // Extract template filename.
     size_t length = pull_end - pull_start - strlen(PULL_TOKEN_START);
     char filename[length + 1];
-    memcpy(filename, pull_start + strlen(PULL_TOKEN_START), length);
+    strncpy(filename, pull_start + strlen(PULL_TOKEN_START), length);
     filename[length] = '\0';
 
-    printf("%s", filename);
+    // Construct full template path.
+    size_t template_path_len = strlen(template_root) + length + 6;
+    char *template_path = malloc(template_path_len);
 
-    // printf("%.*s", (int)(pull_end - pull_start - strlen(PULL_TOKEN_END)
-    // -),
-    //        pull_start + strlen(PULL_TOKEN_START));
+    if (!template_path) {
+      perror("Memory allocation failed.");
+      free(result);
+      return NULL;
+    }
 
-    // char filename[MAX_LINE];
-    // const char *filename_start = pull_start + 8;
-    // const char *filename_end = strstr(filename_start, PULL_TOKEN_END);
-    // strncat(filename, filename_start, filename_end - filename_start);
-    // filename[filename_end - filename_start] = '\0';
+    snprintf(template_path, template_path_len, "%s%s%s", template_root,
+             filename, strrchr(filename, '.') ? "" : ".html");
 
-    // printf("%s\n", filename);
+    // Read and append template content.
+    char *template_content = read_template(template_path);
+    free(template_path);
 
-    break;
+    if (!template_content) {
+      perror("Template does not exist.");
+      return NULL;
+    }
 
-    // const char *filename_start = pull_start + strlen(PULL_TOKEN_START);
-    // const char *filename_end = strstr(filename_start, PULL_TOKEN_END);
+    size_t new_size = result_size + strlen(template_content);
+    result = realloc(result, new_size);
 
-    // if (!filename_end) {
-    //   perror("Malformed include directive.");
-    //   break;
-    // }
+    if (!result) {
+      perror("Memory allocation failed");
+      free(template_content);
+      return NULL;
+    }
 
-    // TODO: Read and include the linked file.
-    // char filename[MAX_LINE];
+    strncat(result, template_content, new_size - strlen(result) - 1);
+    free(template_content);
+    result_size = new_size;
 
-    // strncpy(filename, filename_start, filename_end - filename_start);
-    // filename[filename_end - filename_start] = '\n';
-
-    // printf("%s \n", filename);
+    // Move position after the include tag.
+    position = pull_end + strlen(PULL_TOKEN_END);
   }
 
   return result;

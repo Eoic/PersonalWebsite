@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-I.
+CFLAGS=-I. -g -Wall
 DEPS = reader/reader.h
 OBJ = generator.o reader/reader.o 
 
