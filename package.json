@@ -5,9 +5,10 @@
   "scripts": {
     "minify-js": "uglifyjs --compress --mangle -- ./assets/js/main.js > ./build/js/main.js",
     "minify-css": "minify ./assets/css/main.css > ./build/css/main.css",
+    "build-html": ". .venv/bin/activate && cd htmlgen && python main.py ../assets/ && cd ../",
     "build": "./scripts/build.sh",
-    "dev": "serve assets",
-    "serve": "serve build"
+    "dev": "npm run build-html && serve assets",
+    "serve": "npm run build-html && serve build"
   },
   "author": "Karolis Strazdas",
   "license": "MIT",

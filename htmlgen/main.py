@@ -28,6 +28,7 @@ if __name__ == "__main__":
         print(f"Specified output directory does not exist: {os.path.abspath(out_dir)}.")
         sys.exit(1)
 
+    compiled = []
     lookup = TemplateLookup(directories=["templates"], input_encoding="utf-8")
 
     for nav_item in common_context["navigation"]:
@@ -35,8 +36,16 @@ if __name__ == "__main__":
         page = nav_item["id"]
         template = lookup.get_template(f"pages/{page}.html")
         template.render_context(Context(buffer, **common_context, **context_data[page]))
+        
 
         with open(os.path.join(out_dir, f"{page}.html"), "w") as page_html:
             page_html.write(buffer.getvalue())
 
+        compiled.append(os.path.join(out_dir, f"{page}.html"))
         buffer.close()
+    
+    print(f"Successfully compiled {len(compiled)} page{'s' if len(compiled) != 1 else ''}:")
+
+    for page in compiled:
+        print(f"  - {os.path.abspath(page)}")
+
