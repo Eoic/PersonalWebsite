@@ -1,0 +1,30 @@
+<section>
+    % for item in items: 
+        <article>
+            <div data-timespan>
+                <b> ${article_title_prefix} </b>
+
+                %if "from" in item:
+                    &bull; <span>${item["from"].strftime("%B, %Y")}</span> &rarr; <span>${item["until"].strftime("%B, %Y") if item["until"] else "Now"}</span>
+
+                    <span 
+                        data-date-from="${item['from'].strftime('%Y-%m-%d') if item['from'] else ''}"
+                        data-date-until="${item['until'].strftime('%Y-%m-%d') if item['until'] else ''}"
+                        data-duration
+                    ></span>
+                %endif
+            </div>
+
+            <hr>
+            <h3>${item["title"]}</h3>
+            <div>${item["description"]}</div>
+            <hr>
+
+            <div class="technologies">
+                %for tag in item["tags"]:
+                    <span> ${tag} </span>
+                %endfor
+            </div>
+        </article>
+    % endfor
+</section>
