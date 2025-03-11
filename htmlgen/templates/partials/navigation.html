@@ -3,7 +3,7 @@
         <ul id="tabs" class="tabs">
             % for item in navigation:
                 <li class="tab" ${" data-active" if page == item["id"] else ""}>
-                    <a href="${item['id']}.html"> ${item["title"]} </a>
+                    <a href="${item['url']}"> ${item["title"]} </a>
                 </li>
             % endfor
         </ul>

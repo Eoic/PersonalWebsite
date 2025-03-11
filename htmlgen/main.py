@@ -7,10 +7,10 @@ from context import context_data
 
 common_context = {
     "navigation": [
-        {"id": "index", "title": "About"},
-        {"id": "positions", "title": "Positions"},
-        {"id": "education", "title": "Education"},
-        {"id": "projects", "title": "Projects"},
+        {"id": "about", "title": "About", "url": "/"},
+        {"id": "positions", "title": "Positions", "url": "/positions"},
+        {"id": "education", "title": "Education", "url": "/education"},
+        {"id": "projects", "title": "Projects", "url": "/projects"},
     ],
 }
 
@@ -36,16 +36,16 @@ if __name__ == "__main__":
         page = nav_item["id"]
         template = lookup.get_template(f"pages/{page}.html")
         template.render_context(Context(buffer, **common_context, **context_data[page]))
-        
 
         with open(os.path.join(out_dir, f"{page}.html"), "w") as page_html:
             page_html.write(buffer.getvalue())
 
         compiled.append(os.path.join(out_dir, f"{page}.html"))
         buffer.close()
-    
-    print(f"Successfully compiled {len(compiled)} page{'s' if len(compiled) != 1 else ''}:")
+
+    print(
+        f"Successfully compiled {len(compiled)} page{'s' if len(compiled) != 1 else ''}:"
+    )
 
     for page in compiled:
         print(f"  - {os.path.abspath(page)}")
-

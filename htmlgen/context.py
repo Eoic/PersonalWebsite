@@ -1,8 +1,8 @@
 from datetime import datetime
 
 context_data = {
-    "index": {
-        "page": "index",
+    "about": {
+        "page": "about",
         "description": """
                 Hi, I'm a passionate full-stack developer focused on creating innovative web applications. I primarily work
                 with Python, TypeScript, Django, and Flutter, but I'm always eager to explore new concepts and technologies.
