@@ -1,20 +1,14 @@
 (() => {
-    const loadPreferredTheme = () => {
-        const selectedTheme = localStorage.getItem('theme') || 'dark';
-        const defaultTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        document.body.classList.add(selectedTheme ?? defaultTheme);
-    }
-
     const handleThemeSwitch = (_event) => {
-        const body = document.body;
-        body.classList.toggle('light') && localStorage.setItem('theme', 'light');
-        body.classList.toggle('dark') && localStorage.setItem('theme', 'dark');
+        const element = document.documentElement;
+        element.classList.toggle('light') && localStorage.setItem('theme', 'light');
+        element.classList.toggle('dark') && localStorage.setItem('theme', 'dark');
     }
 
     const computeEntryTimespans = () => {
         const timespans = document.querySelectorAll('div[data-timespan]');
 
-        timespans.forEach(timespan => {
+        timespans.forEach((timespan) => {
             const durationElement = timespan.querySelector('[data-duration=""]');
             const dateFrom = new Date(durationElement.getAttribute('data-date-from'));
             const dateUntil = new Date(durationElement.getAttribute('data-date-until') || new Date().toDateString());
@@ -49,8 +43,6 @@
     document.addEventListener('DOMContentLoaded', () => {
         const themeSwitchBtn = document.getElementById('theme-switcher');
         themeSwitchBtn.addEventListener('click', handleThemeSwitch);
-
-        loadPreferredTheme();
         computeEntryTimespans();
     });
 })();

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme">
 
 <head>
     <meta charset="UTF-8">
@@ -36,10 +36,16 @@
     }
     </script>
 
+    <script>
+        const selectedTheme = localStorage.getItem('theme') || 'dark';
+        const defaultTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.classList.add(selectedTheme ?? defaultTheme);
+    </script>
+
     <title> Karolis Strazdas </title>
 </head>
 
-<body class="theme">
+<body>
     <button
         id="theme-switcher"
         class="icon interactive theme-switcher"

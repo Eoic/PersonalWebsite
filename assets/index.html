@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme">
 
 <head>
     <meta charset="UTF-8">
@@ -36,10 +36,16 @@
     }
     </script>
 
+    <script>
+        const selectedTheme = localStorage.getItem('theme') || 'dark';
+        const defaultTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.classList.add(selectedTheme ?? defaultTheme);
+    </script>
+
     <title> Karolis Strazdas </title>
 </head>
 
-<body class="theme">
+<body>
     <button
         id="theme-switcher"
         class="icon interactive theme-switcher"
@@ -102,9 +108,9 @@
         <div><b> Description </b></div>
         <hr>
         <p class="info">Hi, I'm a passionate full-stack developer focused on creating innovative web applications. I primarily work
-                with Python, TypeScript, Django, and Flutter, but I'm always eager to explore new concepts and technologies.
-                My interests extend to functional programming, computer graphics, and literature. Learn more about my
-                projects and professional experience here.</p>
+            with Python, TypeScript, Django, and Flutter, but I'm always eager to explore new concepts and technologies.
+            My interests extend to functional programming, computer graphics, and literature. Learn more about my
+            projects and professional experience here.</p>
     </article>
 </section>
 </main>

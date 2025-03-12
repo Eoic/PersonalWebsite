@@ -1,7 +1,7 @@
 <section>
     % for item in items: 
         <article>
-            <div data-timespan>
+            <div ${"data-timespan" if "from" in item else ""}>
                 <b> ${article_title_prefix} </b>
 
                 %if "from" in item:
