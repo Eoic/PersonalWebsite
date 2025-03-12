@@ -1,6 +1,8 @@
 {
+    "id": "/",
     "name": "Karolis Strazdas's personal website",
     "short_name": "Karolis Strazdas",
+    "display": "standalone",
     "icons": [
         {
             "src": "/images/favicon/android-chrome-192x192.png",
@@ -28,9 +30,24 @@
             "type": "image/png"
         }
     ],
+    "screenshots": [
+        {
+            "src": "/images/pwa/desktop.png",
+            "sizes": "1920x1080",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Karolis Strazdas"
+        },
+        {
+            "src": "/images/pwa/mobile.png",
+            "sizes": "500x849",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Karolis Strazdas"
+        }
+    ],
     "start_url": "/",
     "background_color": "#121524",
     "theme_color": "#ebeef2",
-    "display": "standalone",
     "orientation": "portrait"
 }
