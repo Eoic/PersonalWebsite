@@ -8,7 +8,8 @@
     "chore:compile-html": "node scripts/compile-html.js",
     "dev": "npm run chore:compile-html && serve assets/",
     "build": "npm run chore:compile-html && node scripts/build-prod.js",
-    "serve": "npm run chore:compile-html && serve build"
+    "serve": "npm run chore:compile-html && serve build",
+    "build:prod": "node scripts/build-prod.js"
   },
   "author": "Karolis Strazdas",
   "license": "MIT",
