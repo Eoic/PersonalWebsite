@@ -20,6 +20,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-size: clamp(3rem, 10vw, 4rem) clamp(3rem, 10vw, 4rem);
+    scrollbar-gutter: stable;
 }
 
 body {
