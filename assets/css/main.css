@@ -20,7 +20,6 @@ body {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-size: clamp(3rem, 10vw, 4rem) clamp(3rem, 10vw, 4rem);
 }
 
 body {
@@ -28,6 +27,27 @@ body {
     flex-direction: column;
     padding-inline: clamp(1.5rem, 5vw, 4rem);
     padding-block: 0 clamp(1rem, 5vw, 4rem);
+}
+
+#background {
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    position: fixed;
+}
+
+#background span {
+    aspect-ratio: 1 / 1;
+    display: inherit;
+    justify-content: center;
+    align-items: center;
+    line-height: 10vh;
+    min-width: max(10vw, 1rem);
+    min-height: max(10vh, 1rem);
+    opacity: 0.7;
 }
 
 hr {
@@ -315,11 +335,11 @@ main section article .technologies span {
 }
 
 .theme.light {
-    background-image: radial-gradient(var(--text-color-light) 1px, transparent 0);
+    /* background-image: radial-gradient(var(--text-color-light) 1px, transparent 0); */
 }
 
 .theme.dark {
-    background-image: radial-gradient(var(--text-color-dark) 1px, transparent 0);
+    /* background-image: radial-gradient(var(--text-color-dark) 1px, transparent 0); */
 }
 
 .theme.light .theme-switcher {
