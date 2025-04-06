@@ -7,36 +7,84 @@
     }
 
     const fillBackground = () => {
+        let lastCenterChanged;
+        const cellSize = 64;
+        const flipCircleRadius = 256;
+        const flipCircleRadiusSqr = flipCircleRadius * flipCircleRadius;
+        const cellHalfSize = cellSize / 2;
+        const charFlipChance = 0.2;
         const canvas = document.getElementById('background');
         const ctx = canvas.getContext('2d');
         const charPool = ['~', '#', '$', '%', '!', '?', '@', '^', '&', '*', '(', ')', '-', '+', '{', '}', '<', '>', '\\', '/', '='];
         const charPoolSize = charPool.length;
+        const rootStyles = getComputedStyle(document.documentElement);
 
         function resizeCanvas() {
+            let width, height;
             const dpr = window.devicePixelRatio;
-            const width = Math.ceil(window.innerWidth * dpr);
-            const height = Math.ceil(window.innerHeight * dpr);
+
+            if (dpr >= 1) {
+                width = Math.ceil(window.innerWidth * dpr);
+                height = Math.ceil(window.innerHeight * dpr);
+            } else {
+                width = Math.ceil(window.innerWidth / dpr);
+                height = Math.ceil(window.innerHeight / dpr);
+            }
+
             canvas.width = width;
             canvas.height = height;
             canvas.style.width = `${width / dpr}px`;
             canvas.style.height = `${height / dpr}px`;
-            const ctx = canvas.getContext('2d');
             ctx.scale(dpr, dpr);
             drawGrid();
         }
 
+        function debounce(func, delay) {
+            let isCallable = true;
+
+            return (...args) => {
+                if (isCallable) {
+                    func(...args);
+                    isCallable = false;
+                    setTimeout(() => isCallable = true, delay);
+                }
+            }
+        }
+
+        function flipChars(event) {
+            const cx = Math.floor(event.clientX / cellSize) * cellSize;
+            const cy = Math.floor(event.clientY / cellSize) * cellSize;
+
+            if (lastCenterChanged && lastCenterChanged.x == cx && lastCenterChanged.y == cy)
+                return;
+
+            lastCenterChanged = { x: cx, y: cy };
+
+            for (let sqx = cx - flipCircleRadius; sqx <= cx + flipCircleRadius; sqx += cellSize) {
+                for (let sqy = cy - flipCircleRadius; sqy <= cy + flipCircleRadius; sqy += cellSize) {
+                    const dx = cx - sqx;
+                    const dy = cy - sqy;
+
+                    if (dx * dx + dy * dy <= flipCircleRadiusSqr) {
+                        if (Math.random() > charFlipChance)
+                            continue;
+
+                        ctx.clearRect(sqx, sqy, cellSize, cellSize);
+                        ctx.fillText(charPool[Math.floor(Math.random() * charPoolSize)], sqx + cellHalfSize, sqy + cellHalfSize);
+                    }
+                }
+            }
+        }
+
         function drawGrid() {
-            const cellSize = 60;
-            const cellHalfSize = cellSize / 2;
             const columns = Math.ceil(canvas.width / cellSize);
             const rows = Math.ceil(canvas.height / cellSize);
-            const rootStyles = getComputedStyle(document.documentElement);
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.font = '16px Fira Code';
+            ctx.font = 'bold 20px Fira Code';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.globalAlpha = 0.85;
+            ctx.globalAlpha = 0.4;
             ctx.fillStyle = rootStyles.getPropertyValue('color');
 
             for (let row = 0; row < rows; row++) {
@@ -50,6 +98,7 @@
         }
 
         window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('pointermove', debounce(flipChars, 0));
         resizeCanvas();
     }
 
