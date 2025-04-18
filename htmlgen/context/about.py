@@ -22,7 +22,7 @@ about = {
     ],
     "working_on": [{
         "title": "Canopy (side project)",
-        "subtitle": "a real-time spatial conversation platform.",
+        "subtitle": "a real-time spatial conversation platform",
         "link": "https://github.com/Eoic/Canopy",
     }]
 }

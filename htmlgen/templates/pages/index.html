@@ -11,7 +11,7 @@
         <b> Reading: </b>
         <ul>
             %for item in reading:
-                <li> <a class="link bordered" href="${item['link']}" target="_blank">${item['title']}</a> </li>
+                <li> <a class="link bordered" href="${item['link']}" target="_blank">${item['title']};</a></li>
             %endfor
         </ul>
 
@@ -27,7 +27,7 @@
             %for item in working_on:
                 <li>
                     <a class="link bordered" href="${item['link']}" target="_blank">${item['title']}</a>
-                    - ${item['subtitle']}
+                    - ${item['subtitle']};
                 </li>
             %endfor
         </ul>
