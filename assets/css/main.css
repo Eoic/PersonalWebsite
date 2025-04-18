@@ -3,7 +3,7 @@
 
 :root {
     --text-color-dark: #e4ae00;
-    --text-color-light: #494b49;
+    --text-color-light: #414241;
     --background-color-dark: #121524;
     --background-color-light: #ebeef2;
     --transition-duration: 0ms;
@@ -15,11 +15,11 @@ body {
     min-width: 46.875rem;
     max-width: 56.5625rem;
     box-sizing: border-box;
+    scrollbar-gutter: stable;
     font-family: 'Fira Code', sans-serif;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-size: clamp(3rem, 10vw, 4rem) clamp(3rem, 10vw, 4rem);
 }
 
 body {
@@ -27,6 +27,27 @@ body {
     flex-direction: column;
     padding-inline: clamp(1.5rem, 5vw, 4rem);
     padding-block: 0 clamp(1rem, 5vw, 4rem);
+}
+
+#background {
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    position: fixed;
+}
+
+#background span {
+    aspect-ratio: 1 / 1;
+    display: inherit;
+    justify-content: center;
+    align-items: center;
+    line-height: 10vh;
+    min-width: max(10vw, 1rem);
+    min-height: max(10vh, 1rem);
+    opacity: 0.7;
 }
 
 hr {
@@ -56,9 +77,9 @@ h1 {
 }
 
 header h1 {
-    font-weight: 300;
+    font-weight: 600;
     line-height: 1em;
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-size: clamp(2rem, 5vw, 2.5rem);
 }
 
 header h2 {
@@ -79,6 +100,11 @@ header h3 {
     column-gap: 1.5rem;
     align-items: center;
     margin-top: 5.25rem;
+}
+
+.profile .profile-location span {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 /* Icons */
@@ -138,13 +164,13 @@ header h3 {
 .tab {
     flex: 1;
     border: 0;
-    font-size: clamp(1.125rem, 5vw - 1rem, 1.625rem);
-    text-align: center;
+    cursor: pointer;
     overflow: hidden;
+    text-align: center;
     white-space: nowrap;
     text-overflow: ellipsis;
+    font-size: clamp(1.125rem, 5vw - 1rem, 1.625rem);
     transition: background-color var(--transition-duration) ease-in-out, color var(--transition-duration) ease-in-out;
-    cursor: pointer;
 }
 
 .tab a {
@@ -202,9 +228,11 @@ header h3 {
 }
 
 .avatar {
-    border-radius: 50%;
     width: 7.8125rem;
     height: 7.8125rem;
+    border-width: 1px;
+    border-radius: 0.375rem;
+    border: 1px solid #2f2f2f5f;
 }
 
 @media screen and (max-width: 64em) {
@@ -219,10 +247,6 @@ header h3 {
         align-self: center;
         align-items: center;
         flex-direction: column;
-    }
-
-    .profile .profile-location span {
-        display: block;
     }
 
     .tabs {
@@ -258,13 +282,6 @@ article p.quote {
     }
 }
 
-@media (max-width: 18.75em) {
-
-    .tab {
-        text-align: left;
-    }
-}
-
 main {
     flex: 1;
 }
@@ -291,8 +308,9 @@ main section article .technologies {
 }
 
 main section article .technologies span {
-    border-width: 0.0625rem;
+    cursor: default;
     border-style: solid;
+    border-width: 0.0625rem;
     border-radius: 0.375rem;
     padding: 0.25rem 0.5rem;
     transition: color var(--transition-duration) ease-in-out, background-color var(--transition-duration) ease-in-out;
@@ -317,11 +335,11 @@ main section article .technologies span {
 }
 
 .theme.light {
-    background-image: radial-gradient(var(--text-color-light) 1px, transparent 0);
+    /* background-image: radial-gradient(var(--text-color-light) 1px, transparent 0); */
 }
 
 .theme.dark {
-    background-image: radial-gradient(var(--text-color-dark) 1px, transparent 0);
+    /* background-image: radial-gradient(var(--text-color-dark) 1px, transparent 0); */
 }
 
 .theme.light .theme-switcher {
@@ -330,6 +348,14 @@ main section article .technologies span {
 
 .theme.dark .theme-switcher {
     background-image: url("../images/icons/theme-dark.svg");
+}
+
+.theme.light .avatar {
+    border-color: color-mix(in srgb, var(--text-color-light), transparent 25%);
+}
+
+.theme.dark .avatar {
+    border-color: color-mix(in srgb, var(--text-color-dark), transparent 25%);
 }
 
 .theme.light main section article,
@@ -405,12 +431,14 @@ main section article .technologies span {
     color: var(--background-color-dark);
 }
 
-.theme.light .tab:hover {
-    background-color: #d9dce0;
+.theme.light .tab a:hover,
+.theme.light .tab a:focus {
+    background-color: color-mix(in srgb, var(--text-color-light), transparent 75%);
 }
 
-.theme.dark .tab:hover {
-    background-color: #292620;
+.theme.dark .tab a:hover,
+.theme.dark .tab a:focus {
+    background-color: color-mix(in srgb, var(--text-color-dark), transparent 75%);
 }
 
 .theme.light .icon.interactive:hover {
@@ -433,10 +461,12 @@ main section article .technologies span {
 
 .theme.light .tabs {
     border: 1px solid var(--text-color-light);
+    background-color: var(--background-color-light);
 }
 
 .theme.dark .tabs {
     border: 1px solid var(--text-color-dark);
+    background-color: var(--background-color-dark);
 }
 
 .theme.light a.link {
@@ -448,19 +478,21 @@ main section article .technologies span {
 }
 
 .theme.light a.link.bordered {
-    border-bottom-color: #494b494d;
+    border-bottom-color: var(--text-color-light);
+    border-bottom-color: color-mix(in srgb, var(--text-color-light), transparent 25%);
 }
 
 .theme.dark a.link.bordered {
-    border-bottom-color: #e4af007f;
+    border-bottom-color: var(--text-color-dark);
+    border-bottom-color: color-mix(in srgb, var(--text-color-dark), transparent 25%);
 }
 
 .theme.light a.link:hover {
-    background-color: #494b494d;
+    background-color: color-mix(in srgb, var(--text-color-light), transparent 75%);
 }
 
 .theme.dark a.link:hover {
-    background-color: #e4af007f;
+    background-color: color-mix(in srgb, var(--text-color-dark), transparent 75%);
 }
 
 /* Other. */

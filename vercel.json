@@ -9,5 +9,23 @@
                 }
             ]
         }
+    ],
+    "rewrites": [
+        {
+            "source": "/",
+            "destination": "/index.html"
+        },
+        {
+            "source": "/positions",
+            "destination": "/positions.html"
+        },
+        {
+            "source": "/education",
+            "destination": "/education.html"
+        },
+        {
+            "source": "/projects",
+            "destination": "projects.html"
+        }
     ]
 }

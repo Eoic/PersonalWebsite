@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Full stack web developer at Indeform Ltd. Interested in various programming paradigms, computer graphics, 3D modelling, and always eager to explore and learn new technologies.">
+    <meta name="description" content="Full-stack developer focused on creating innovative web applications, always eager to explore and learn new technologies.">
     <meta name="author" content="Karolis Strazdas">
     <meta name="keywords" content="personal, portfolio, web developer, karolis strazdas">
 
@@ -16,7 +15,7 @@
 
     <!-- OpenGraph -->
     <meta property="og:title" content="Karolis Strazdas">
-    <meta property="og:description" content="A personal website.">
+    <meta property="og:description" content="Karolis Strazdas's website.">
     <meta property="og:image" content="https://karolis-strazdas.lt/assets/images/avatar.jpg">
     <meta property="og:url" content="https://karolis-strazdas.lt">
     <meta property="og:type" content="website">
@@ -36,10 +35,16 @@
     }
     </script>
 
+    <script>
+        const selectedTheme = localStorage.getItem('theme') || 'dark';
+        const defaultTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.classList.add(selectedTheme ?? defaultTheme);
+    </script>
+
     <title> Karolis Strazdas </title>
 </head>
 
-<body class="theme">
+<body>
     <button
         id="theme-switcher"
         class="icon interactive theme-switcher"
@@ -49,7 +54,7 @@
     <%include file="header.html" />
     <%include file="navigation.html" />
     <main>${self.body()}</main>
-
+    <canvas id="background"></canvas>
     <script src="js/main.js"></script>
 </body>
 
