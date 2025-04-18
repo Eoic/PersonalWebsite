@@ -17,9 +17,9 @@ education = {
                 </p>
                 """.strip(),
             "tags": [
-                "Systems design",
+                "Algorithms",
                 "Discrete mathematics",
-                "Analysis of algorithms",
+                "Systems architecture &design",
                 "Web technologies",
                 "Software development",
                 "Databases",

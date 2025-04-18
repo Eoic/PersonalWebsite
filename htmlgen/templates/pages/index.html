@@ -5,5 +5,31 @@
         <div><b> Description </b></div>
         <hr>
         <p class="info">${description}</p>
+
+        <br>
+
+        <b> Reading: </b>
+        <ul>
+            %for item in reading:
+                <li> <a class="link bordered" href="${item['link']}" target="_blank">${item['title']}</a> </li>
+            %endfor
+        </ul>
+
+        <b> Learning about: </b>
+        <ul>
+            %for item in learning_about:
+                <li> ${item}; </li>
+            %endfor
+        </ul>
+
+        <b> Working on: </b>
+        <ul>
+            %for item in working_on:
+                <li>
+                    <a class="link bordered" href="${item['link']}" target="_blank">${item['title']}</a>
+                    - ${item['subtitle']}
+                </li>
+            %endfor
+        </ul>
     </article>
 </section>

@@ -12,8 +12,7 @@
 html,
 body {
     margin: 0 auto;
-    min-width: 46.875rem;
-    max-width: 56.5625rem;
+    max-width: 60rem;
     box-sizing: border-box;
     scrollbar-gutter: stable;
     font-family: 'Fira Code', sans-serif;
@@ -53,6 +52,7 @@ body {
 hr {
     border-style: solid;
     border-width: 0.0625rem 0 0 0;
+    margin-block: 1.25rem;
 }
 
 @media (max-width: 48em) {
@@ -270,6 +270,12 @@ header h3 {
     }
 }
 
+article {
+    text-wrap: pretty;
+    line-height: 1.8;
+    letter-spacing: 0.02em;
+}
+
 article p.quote {
     margin-top: 0.5rem;
     font-style: italic;
@@ -293,10 +299,18 @@ main section {
 }
 
 main section article {
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 0.375rem;
     border-width: 0.0625rem;
     border-style: solid;
+}
+
+main section article ul {
+    margin-block: 0.3rem;
+}
+
+main section article li {
+    margin-bottom: 0.3rem;
 }
 
 main section article .technologies {
@@ -312,7 +326,7 @@ main section article .technologies span {
     border-style: solid;
     border-width: 0.0625rem;
     border-radius: 0.375rem;
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem 0.75rem;
     transition: color var(--transition-duration) ease-in-out, background-color var(--transition-duration) ease-in-out;
 }
 
