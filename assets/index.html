@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Full-stack developer focused on creating innovative web applications, always eager to explore and learn new technologies.">
+    <meta name="description"
+        content="Full-stack developer focused on creating innovative web applications, always eager to explore and learn new technologies.">
     <meta name="author" content="Karolis Strazdas">
     <meta name="keywords" content="personal, portfolio, web developer, karolis strazdas">
 
@@ -41,15 +42,17 @@
         document.documentElement.classList.add(selectedTheme ?? defaultTheme);
     </script>
 
+    <script>
+        window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+    </script>
+
+    <script defer src="/_vercel/speed-insights/script.js"></script>
+
     <title> Karolis Strazdas </title>
 </head>
 
 <body>
-    <button
-        id="theme-switcher"
-        class="icon interactive theme-switcher"
-        aria-label="Theme switcher"
-    ></button>
+    <button id="theme-switcher" class="icon interactive theme-switcher" aria-label="Theme switcher"></button>
 
     <header class="profile col-gap-2">
     <img src="images/avatar.webp" alt="Karolis Strazdas" class="avatar">
