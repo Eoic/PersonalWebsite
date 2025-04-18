@@ -19,7 +19,7 @@ education = {
             "tags": [
                 "Algorithms",
                 "Discrete mathematics",
-                "Systems architecture &design",
+                "Systems architecture & design",
                 "Web technologies",
                 "Software development",
                 "Databases",
