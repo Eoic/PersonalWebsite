@@ -9,11 +9,11 @@ about = {
     "reading": [
         {
             "title": "Designing Data-Intensive Applications",
-            "link": "https://dataintensive.net/",
+            # "link": "https://dataintensive.net/",
         },
         {
             "title": "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow",
-            "link": "https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/",
+            # "link": "https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/",
         }
     ],
     "learning_about": [
