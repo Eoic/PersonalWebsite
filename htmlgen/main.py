@@ -34,7 +34,7 @@ def main():
                     buffer,
                     **{
                         **context_data["common"],
-                        **context_data[page],\
+                        **context_data[page],
                     }
                 )
             )

@@ -31,8 +31,6 @@
                 height = Math.ceil(window.innerHeight / dpr);
             }
 
-            console.log(dpr);
-
             canvas.width = width;
             canvas.height = height;
             canvas.style.width = `${width / dpr}px`;
