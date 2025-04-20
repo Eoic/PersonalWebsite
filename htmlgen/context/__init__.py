@@ -2,6 +2,7 @@ from .about import about
 from .education import education
 from .positions import positions
 from .projects import projects
+from .common import common
 
 context_data = {
     item["page"]: item
@@ -10,5 +11,6 @@ context_data = {
         education,
         positions,
         projects,
+        common
     ]
 }

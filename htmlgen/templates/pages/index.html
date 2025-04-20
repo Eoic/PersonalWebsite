@@ -15,7 +15,7 @@
                     %if "link" in item:
                         <a class="link bordered" href="${item['link']}" target="_blank">${item['title']};</a>
                     %else:
-                        ${item['title']};
+                        <b>${item['title']}</b> &mdash; <em>${item['author']}</em>;
                     %endif
                 </li>
             %endfor

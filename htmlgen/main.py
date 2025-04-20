@@ -5,15 +5,6 @@ from mako.lookup import TemplateLookup
 from mako.runtime import Context
 from .context import context_data
 
-common_context = {
-    "navigation": [
-        {"id": "index", "title": "About", "url": "/"},
-        {"id": "positions", "title": "Positions", "url": "/positions"},
-        {"id": "education", "title": "Education", "url": "/education"},
-        {"id": "projects", "title": "Projects", "url": "/projects"},
-    ],
-}
-
 
 def main():
     try:
@@ -32,7 +23,7 @@ def main():
     compiled = []
     lookup = TemplateLookup(directories=["htmlgen/templates"], input_encoding="utf-8")
 
-    for nav_item in common_context["navigation"]:
+    for nav_item in context_data["common"]["navigation"]:
         buffer = StringIO()
         page = nav_item["id"]
         template = lookup.get_template(f"pages/{page}.html")
@@ -41,8 +32,10 @@ def main():
             template.render_context(
                 Context(
                     buffer,
-                    **common_context,
-                    **context_data[page],
+                    **{
+                        **context_data["common"],
+                        **context_data[page],\
+                    }
                 )
             )
         except KeyError:

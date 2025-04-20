@@ -51,8 +51,8 @@ body {
 
 hr {
     border-style: solid;
-    border-width: 0.0625rem 0 0 0;
-    margin-block: 1.25rem;
+    margin-block: 1.05em;
+    border-width: 1px 0 0 0;
 }
 
 @media (max-width: 48em) {
@@ -290,6 +290,7 @@ article p.quote {
 
 main {
     flex: 1;
+    font-size: clamp(0.85em, 3vw, 1em);
 }
 
 main section {
@@ -299,10 +300,10 @@ main section {
 }
 
 main section article {
-    padding: 1.5rem;
-    border-radius: 0.375rem;
-    border-width: 0.0625rem;
+    padding: 1.5em;
+    border-width: 1px;
     border-style: solid;
+    border-radius: 0.375em;
 }
 
 main section article ul {
@@ -315,18 +316,18 @@ main section article li {
 
 main section article .technologies {
     display: flex;
-    column-gap: 0.5rem;
-    padding-top: 0.25rem;
     flex-wrap: wrap;
-    row-gap: 0.5rem;
+    row-gap: 0.5em;
+    column-gap: 0.5em;
+    padding-top: 0.25em;
 }
 
 main section article .technologies span {
     cursor: default;
     border-style: solid;
-    border-width: 0.0625rem;
-    border-radius: 0.375rem;
-    padding: 0.25rem 0.75rem;
+    border-width: 1px;
+    border-radius: 0.375em;
+    padding: 0.25em 0.75em;
     transition: color var(--transition-duration) ease-in-out, background-color var(--transition-duration) ease-in-out;
 }
 
@@ -531,16 +532,27 @@ section>p {
 
 /* Links */
 a.link {
-    border-radius: 5px;
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding-left: 0.45em;
+    padding-right: 0.45em;
     display: inline-block;
     transition: background-color var(--transition-duration) ease-in-out;
 }
 
 a.link.bordered {
-    border-bottom-width: 5px;
-    border-bottom-style: solid;
+    position: relative;
+
+    &::after {
+        content: '';
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 1px;
+        display: block;
+        position: absolute;
+        background-color: currentColor;
+    }
 }
 
 p.info {

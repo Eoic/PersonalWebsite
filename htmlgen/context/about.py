@@ -9,11 +9,15 @@ about = {
     "reading": [
         {
             "title": "Designing Data-Intensive Applications",
-            # "link": "https://dataintensive.net/",
+            "author": "Martin Kleppmann",
         },
         {
             "title": "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow",
-            # "link": "https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/",
+            "author": "Aurélien Géron",
+        },
+        {
+            "title": "Olympos",
+            "author": "Dan Simmons",
         }
     ],
     "learning_about": [
