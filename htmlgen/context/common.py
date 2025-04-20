@@ -1,5 +1,8 @@
 common = {
     "page": "common",
+    "build": {
+        "version": "1.5",
+    },
     "personal": {
         "location": "Kaunas, Lithuania",
         "name": "Karolis Strazdas",
