@@ -1,24 +1,27 @@
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-    <url>
-        <loc>https://www.karolis-strazdas.lt/</loc>
-        <lastmod>2025-04-12T12:00:04+00:00</lastmod>
-        <priority>1.00</priority>
-    </url>
-    <url>
-        <loc>https://www.karolis-strazdas.lt/positions</loc>
-        <lastmod>2025-04-12T12:00:05+00:00</lastmod>
-        <priority>0.80</priority>
-    </url>
-    <url>
-        <loc>https://www.karolis-strazdas.lt/education</loc>
-        <lastmod>2025-04-12T12:00:05+00:00</lastmod>
-        <priority>0.80</priority>
-    </url>
-    <url>
-        <loc>https://www.karolis-strazdas.lt/projects</loc>
-        <lastmod>2025-04-12T12:00:06+00:00</lastmod>
-        <priority>0.80</priority>
-    </url>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url>
+  <loc>https://www.karolis-strazdas.lt/</loc>
+  <lastmod>2025-04-20T19:40:49+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://www.karolis-strazdas.lt/positions</loc>
+  <lastmod>2025-04-20T19:40:49+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.karolis-strazdas.lt/education</loc>
+  <lastmod>2025-04-20T19:40:50+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.karolis-strazdas.lt/projects</loc>
+  <lastmod>2025-04-20T19:40:50+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
 </urlset>
