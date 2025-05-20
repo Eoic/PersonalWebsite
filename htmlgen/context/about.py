@@ -1,15 +1,16 @@
 about = {
     "page": "index",
     "description": """
-            Hey, I'm a software engineer primarily working with Python, TypeScript, Django, and Flutter.
-            I'm always curious about different technologies, concepts and ideas, and have a particular interest in functional 
-            programming and computer graphics. I also enjoy reading and diving into side projects in my 
-            free time. Feel free to check out my side projects and work experience here.
+            I'm a software engineer passionate about building useful things 
+            for the web. Curious about a broad range of technologies, concepts 
+            and ideas, I have a particular interest in functional programming 
+            and computer graphics. I also enjoy reading and working on side projects
+            in my free time. Feel free to check out my side projects and work experience here.
     """.strip(),
     "reading": [
         {
-            "title": "Designing Data-Intensive Applications",
-            "author": "Martin Kleppmann",
+            "title": " Building Microservices, 2nd Edition",
+            "author": "Sam Newman",
         },
         {
             "title": "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow",
@@ -25,8 +26,8 @@ about = {
         "Elixir (programming language)",
     ],
     "working_on": [{
-        "title": "Canopy (side project)",
-        "subtitle": "a real-time spatial conversation platform",
-        "link": "https://github.com/Eoic/Canopy",
+        "title": "WebTiler (side project)",
+        "subtitle": "a web-based tiling window manager",
+        "link": "https://github.com/WebTiler",
     }]
 }

@@ -3,6 +3,31 @@ projects = {
     "article_title_prefix": "Project",
     "items": [
         {
+            "title": "Boids",
+            "title_link": "https://github.com/Eoic/Boids",
+            "subtitle": "a flocking simulation",
+            "description": """
+                    <p>
+                        A flocking simulation based on the Boids algorithm. The simulation
+                        is based on the original paper by Craig Reynolds, which describes the
+                        behavior of a flock of birds. Implements the three basic rules of
+                        flocking: separation, alignment, cohesion and some additional
+                        features like goal chasing, dynamic boundaries, wind effect, and so on.
+                    </p>
+                    <b> Features </b>
+                    <ul>
+                        <li> Real-time simulation of boid movement;</li>
+                        <li> Configurable environment (number of boids, visual range, speed, wind strength and direction, etc.);
+                        <li> Can save and load simulation settings and state;</li>
+                    </ul>
+                """.strip(),
+            "tags": [
+                "Python",
+                "Pygame",
+                "ImGui",
+            ],
+        },
+        {
             "title": "Papyrus",
             "title_link": "https://github.com/Eoic/Papyrus",
             "subtitle": "a cross-platform e-book management system",
@@ -48,10 +73,10 @@ projects = {
             "subtitle": "a real time spatial conversation platform",
             "description": """
                     <p>
-                        Sounds weird, right? Well, it kind of is. Essentially, it's a real time forum / board 
+                        Essentially, it's a real time forum / board 
                         where conversations grow like virtual forests. Instead of usual threads like on Reddit,
-                         you plant virtual trees as posts or replies to posts on an infinite, shared grid - each tree representing 
-                         an idea, opinion, or a question. Over time, clusters of trees form a virtual forest,
+                        you plant virtual trees as posts or replies to posts on an infinite, shared grid - each tree representing 
+                        an idea, opinion, or a question. Over time, clusters of trees form something like a virtual forest,
                         creating a unique conversation space.
                     </p>
 

@@ -132,6 +132,18 @@ header h3 {
     background-image: url(../images/icons/email.svg);
 }
 
+.icon.read {
+    background-image: url(../images/icons/read.svg);
+}
+
+.icon.work {
+    background-image: url(../images/icons/work.svg);
+}
+
+.icon.learn {
+    background-image: url(../images/icons/learn.svg);
+}
+
 .icon.interactive {
     transition: filter var(--transition-duration) ease-in-out;
 }
@@ -141,6 +153,10 @@ header h3 {
     max-width: 1.75rem;
     min-height: 1.75rem;
     max-height: 1.75rem;
+}
+
+.icon.inline {
+    display: inline-block;
 }
 
 /* Tabs */
@@ -225,6 +241,10 @@ header h3 {
 
 .flex.row-gap-1 {
     row-gap: 0.8rem;
+}
+
+.mt-1 {
+    margin-top: 1rem;
 }
 
 .avatar {

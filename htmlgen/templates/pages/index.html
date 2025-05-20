@@ -5,30 +5,37 @@
         <div><b> Description </b></div>
         <hr>
         <p class="info">${description}</p>
-
-        <br>
-
-        <b> Reading: </b>
+    </article>
+    <article>
+        <div class="flex row-center-y col-gap-1">
+            <span class="icon medium inline read"></span>
+            <b> Reading </b>
+        </div>
         <ul>
             %for item in reading:
                 <li>
                     %if "link" in item:
                         <a class="link bordered" href="${item['link']}" target="_blank">${item['title']};</a>
                     %else:
-                        <b>${item['title']}</b> &mdash; <em>${item['author']}</em>;
+                        <span>${item['title']}</span> &mdash; <em>${item['author']}</em>;
                     %endif
                 </li>
             %endfor
         </ul>
-
-        <b> Learning about: </b>
+        <div class="flex row-center-y col-gap-1 mt-1">
+            <span class="icon medium inline learn"></span>
+            <b> Learning about </b>
+        </div>
         <ul>
             %for item in learning_about:
                 <li> ${item}; </li>
             %endfor
         </ul>
 
-        <b> Working on: </b>
+        <div class="flex row-center-y col-gap-1 mt-1">
+            <span class="icon medium inline work"></span>
+            <b> Working on </b>
+        </div>
         <ul>
             %for item in working_on:
                 <li>
