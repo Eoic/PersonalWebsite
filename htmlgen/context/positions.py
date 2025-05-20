@@ -2,6 +2,7 @@ from datetime import datetime
 
 positions = {
     "page": "positions",
+    "title": "Positions",
     "article_title_prefix": "Position",
     "items": [
         {

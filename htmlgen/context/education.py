@@ -2,6 +2,7 @@ from datetime import datetime
 
 education = {
     "page": "education",
+    "title": "Education",
     "article_title_prefix": "Education",
     "items": [
         {

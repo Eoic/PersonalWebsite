@@ -1,5 +1,6 @@
 about = {
     "page": "index",
+    "title": "About",
     "description": """
             I'm a software engineer passionate about building useful things 
             for the web. Curious about a broad range of technologies, concepts 

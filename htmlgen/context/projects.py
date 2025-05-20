@@ -1,5 +1,6 @@
 projects = {
     "page": "projects",
+    "title": "Projects",
     "article_title_prefix": "Project",
     "items": [
         {
