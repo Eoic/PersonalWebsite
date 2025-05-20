@@ -29,6 +29,6 @@ about = {
     "working_on": [{
         "title": "WebTiler (side project)",
         "subtitle": "a web-based tiling window manager",
-        "link": "https://github.com/WebTiler",
+        "link": "https://github.com/Eoic/WebTiler",
     }]
 }
