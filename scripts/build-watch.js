@@ -1,6 +1,20 @@
 const chokidar = require('chokidar');
 const { execSync } = require('child_process');
 
+let isInitialized = false;
+const handlerDebounceMs = 250;
+
+function debounce(handler, timeout = 250) {
+    let handlerTimeoutId = null;
+
+    return (...args) => {
+        if (handlerTimeoutId)
+            clearTimeout(handlerTimeoutId);
+
+        handlerTimeoutId = setTimeout(() => handler(...args), timeout);
+    }
+}
+
 function handleChanges() {
     try {
         execSync(`npm run chore:compile-html`, { stdio: 'inherit' });
@@ -10,13 +24,14 @@ function handleChanges() {
     }
 }
 
+const handleChangesDebounced = debounce(handleChanges, handlerDebounceMs);
+
 const watcher = chokidar.watch('htmlgen/', {
     ignored: (path, stats) => stats?.isFile() && !(path.endsWith('.html') || path.endsWith('.py')),
     persistent: true
 });
 
 const log = console.log.bind(console);
-let isInitialized = false;
 
 watcher
     .on('add', path => {
@@ -24,21 +39,21 @@ watcher
             return;
 
         log(`Added ${path}.`);
-        handleChanges();
+        handleChangesDebounced();
     })
     .on('change', path => {
         if (!isInitialized)
             return;
 
         log(`Changed ${path}.`);
-        handleChanges();
+        handleChangesDebounced();
     })
     .on('unlink', path => {
         if (!isInitialized)
             return;
 
         log(`Removed ${path}.`);
-        handleChanges();
+        handleChangesDebounced();
     });
 
 watcher
@@ -47,7 +62,7 @@ watcher
         process.exit(1);
     })
     .on('ready', () => {
-        handleChanges();
+        handleChangesDebounced();
         isInitialized = true;
         log('Watching for changes...');
     });
