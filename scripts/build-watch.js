@@ -56,10 +56,22 @@ watcher
         handleChangesDebounced();
     });
 
+const maxRetries = 5;
+let retryCount = 0;
+
 watcher
     .on('error', error => {
         log(`Watcher error: ${error}`);
-        process.exit(1);
+        if (retryCount < maxRetries) {
+            retryCount++;
+            log(`Retrying watcher initialization (${retryCount}/${maxRetries})...`);
+            setTimeout(() => {
+                watcher.close();
+                watcher.add('htmlgen/');
+            }, 1000 * retryCount); // Exponential backoff
+        } else {
+            log('Max retries reached. Watcher will not be restarted.');
+        }
     })
     .on('ready', () => {
         handleChangesDebounced();
