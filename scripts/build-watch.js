@@ -68,7 +68,7 @@ watcher
             setTimeout(() => {
                 watcher.close();
                 watcher.add('htmlgen/');
-            }, 1000 * retryCount); // Exponential backoff
+            }, 1000 * Math.pow(2, retryCount - 1)); // Exponential backoff
         } else {
             log('Max retries reached. Watcher will not be restarted.');
         }
