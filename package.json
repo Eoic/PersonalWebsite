@@ -1,16 +1,18 @@
 {
   "name": "personal-site",
-  "version": "1.4.7",
+  "version": "1.7.4",
   "description": "Personal website.",
   "scripts": {
     "chore:minify-js": "uglifyjs --compress --mangle -- ./assets/js/main.js > ./build/js/main.js",
     "chore:minify-css": "minify ./assets/css/main.css > ./build/css/main.css",
     "chore:compile-html": "node scripts/compile-html.js",
     "chore:watch": "node scripts/build-watch.js",
+    "chore:install-hooks": "chmod +x .git/hooks/pre-commit && echo 'Git hooks installed successfully!'",
     "dev": "concurrently \"npm run chore:watch\" \"npm run serve:dev\"",
     "build": "npm run chore:compile-html && node scripts/build-prod.js",
     "serve": "npm run chore:compile-html && serve build",
     "serve:dev": "serve assets/",
+    "serve:prod": "serve build/",
     "build:prod": "node scripts/build-prod.js"
   },
   "author": "Karolis Strazdas",

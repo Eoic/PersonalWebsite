@@ -1,8 +1,20 @@
 {
     "id": "/",
-    "name": "Karolis Strazdas's personal website",
+    "name": "Karolis Strazdas - Software Engineer",
     "short_name": "Karolis Strazdas",
+    "description": "Software engineer passionate about building useful things for the web and solving real-world problems.",
     "display": "standalone",
+    "orientation": "portrait-primary",
+    "start_url": "/",
+    "scope": "/",
+    "theme_color": "#0d1117",
+    "background_color": "#0d1117",
+    "lang": "en",
+    "categories": [
+        "productivity",
+        "portfolio",
+        "personal"
+    ],
     "icons": [
         {
             "src": "/images/favicon/android-chrome-192x192.png",
@@ -36,18 +48,14 @@
             "sizes": "1920x1080",
             "type": "image/png",
             "form_factor": "wide",
-            "label": "Karolis Strazdas"
+            "label": "Karolis Strazdas - Desktop View"
         },
         {
             "src": "/images/pwa/mobile.png",
             "sizes": "500x849",
             "type": "image/png",
             "form_factor": "narrow",
-            "label": "Karolis Strazdas"
+            "label": "Karolis Strazdas - Mobile View"
         }
-    ],
-    "start_url": "/",
-    "background_color": "#121524",
-    "theme_color": "#ebeef2",
-    "orientation": "portrait"
+    ]
 }

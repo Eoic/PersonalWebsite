@@ -1,28 +1,31 @@
 <header class="profile col-gap-2">
-    <img src="images/avatar.webp" alt="${personal['name']}" class="avatar">
+    <img src="images/avatar.webp" alt="${personal['name']} - Software Engineer" class="avatar" loading="eager">
     <section class="flex column row-gap-1">
         <h1>${personal['name']}</h1>
-        <h2>${position['name']} at ${position['company']}.</h2>
+        <h2>${position['name']} at <span itemscope itemtype="https://schema.org/Organization"><span
+                    itemprop="name">${position['company']}</span></span></h2>
 
         <div class="profile-location flex col-gap-1">
             <div class="flex row-center-y">
-                <h3><span class="icon location medium"></span>${personal['location']}</h3>
+                <h3><span class="icon location medium" aria-hidden="true"></span><span
+                        itemprop="addressLocality">${personal['location']}</span></h3>
             </div>
 
-            <div class="flex col-gap-1">
-                <a href="https://www.linkedin.com/in/karolis-strazdas" target="_blank"
-                    aria-label="Learn more about me at LinkedIn.">
+            <nav class="social-links flex col-gap-1" aria-label="Social media links">
+                <a href="https://www.linkedin.com/in/karolis-strazdas" target="_blank" rel="noopener noreferrer"
+                    aria-label="LinkedIn profile - Learn more about me at LinkedIn">
                     <span class="icon medium interactive linkedin"></span>
                 </a>
 
-                <a href="https://www.github.com/Eoic" target="_blank" aria-label="Explore my side projects at GitHub">
+                <a href="https://www.github.com/Eoic" target="_blank" rel="noopener noreferrer"
+                    aria-label="GitHub profile - Explore my side projects at GitHub">
                     <span class="icon medium interactive github"></span>
                 </a>
 
-                <a href="mailto:karolis.strazdas@pm.me" aria-label="Contact via email.">
+                <a href="mailto:karolis.strazdas@pm.me" aria-label="Email contact">
                     <span class="icon medium interactive email"></span>
                 </a>
-            </div>
+            </nav>
         </div>
     </section>
 </header>

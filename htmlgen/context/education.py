@@ -3,6 +3,7 @@ from datetime import datetime
 education = {
     "page": "education",
     "title": "Education",
+    "description": "Learn about Karolis Strazdas' educational background, including his Bachelor's degree in Software Systems from Kaunas University of Technology.",
     "article_title_prefix": "Education",
     "items": [
         {

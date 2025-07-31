@@ -6,19 +6,38 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Software engineer passionate about building useful things for the web and solving real-world problems. Explore my portfolio and side projects here."> 
+    <meta name="description" content="${description}">
     <meta name="author" content="Karolis Strazdas">
+    <meta name="keywords"
+        content="software engineer, web development, Python, JavaScript, TypeScript, React, Django, full-stack developer, Kaunas, Lithuania">
+    <meta name="theme-color" content="#0d1117">
     <link rel="canonical" href="https://karolis-strazdas.lt">
     <link rel="stylesheet" type="text/css" href="css/main.css?v=${build['version']}">
+    <link rel="preload" href="css/main.css?v=${build['version']}" as="style">
+    <link rel="preload" href="images/avatar.webp" as="image">
 
     <!-- OpenGraph -->
-    <meta property="og:title" content="Karolis Strazdas">
-    <meta property="og:image" content="https://karolis-strazdas.lt/images/initials.png">
-    <meta property="og:logo" content="https://karolis-strazdas.lt/images/initials.png">
-    <meta property="og:description" content="Software engineer passionate about building innovative web applications. Explore my projects and professional background.">
+    <meta property="og:title" content="Karolis Strazdas${'• ' + title if title != 'About' else ''}">
+    <meta property="og:image" content="https://karolis-strazdas.lt/images/avatar.webp">
+    <meta property="og:image:alt" content="Karolis Strazdas - Software Engineer">
+    <meta property="og:image:width" content="400">
+    <meta property="og:image:height" content="400">
+    <meta property="og:description" content="${description}">
     <meta property="og:url" content="https://karolis-strazdas.lt">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Karolis Strazdas | Software engineer">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="Karolis Strazdas | Software Engineer">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Karolis Strazdas${'• ' + title if title != 'About' else ''}">
+    <meta name="twitter:description" content="${description}">
+    <meta name="twitter:image" content="https://karolis-strazdas.lt/images/avatar.webp">
+
+    <!-- Additional SEO -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="alternate" type="application/rss+xml" title="Karolis Strazdas - Software Engineer"
+        href="https://karolis-strazdas.lt/sitemap.xml">
 
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
@@ -31,20 +50,42 @@
             "@type": "Person",
             "name": "Karolis Strazdas",
             "url": "https://karolis-strazdas.lt",
-            "image": "https://karolis-strazdas.lt/images/initials.png",
+            "image": "https://karolis-strazdas.lt/images/avatar.webp",
             "jobTitle": "Software Engineer",
+            "description": "${description}",
+            "alumniOf": {
+                "@type": "CollegeOrUniversity",
+                "name": "Kaunas University of Technology"
+            },
+            "knowsAbout": [
+                "Software Engineering",
+                "Web Development", 
+                "Python",
+                "JavaScript",
+                "TypeScript",
+                "React",
+                "Django",
+                "Full Stack Development",
+                "Computer Graphics",
+                "Functional Programming"
+            ],
             "sameAs": [
                 "https://www.linkedin.com/in/karolis-strazdas",
                 "https://github.com/Eoic"
             ],
             "worksFor": {
                 "@type": "Organization",
-                "name": "Indeform Ltd."
+                "name": "Indeform Ltd.",
+                "url": "https://indeform.com"
             },
             "address": {
-                "@type": "PostalAddress",content="Software engineer building useful things for the web. Passionate about creating innovative applications and solving real-world problems. Explore my portfolio and side projects here."
+                "@type": "PostalAddress",
                 "addressLocality": "Kaunas",
                 "addressCountry": "Lithuania"
+            },
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://karolis-strazdas.lt"
             }
         }
     </script>
@@ -56,12 +97,22 @@
     </script>
 
     <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => console.info('Service worker registered: ', registration))
+                    .catch((registrationError) => console.error('Service worker registration failed: ', registrationError));
+            });
+        }
+    </script>
+
+    <script>
         window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
     </script>
 
     <script defer src="/_vercel/speed-insights/script.js"></script>
 
-    <title> Karolis Strazdas • ${title}</title> 
+    <title> Karolis Strazdas • ${title}</title>
 </head>
 
 <body>

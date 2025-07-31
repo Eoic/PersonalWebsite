@@ -3,6 +3,7 @@ from datetime import datetime
 positions = {
     "page": "positions",
     "title": "Positions",
+    "description": "Explore Karolis Strazdas' professional experience as a software engineer, including his current role at Indeform Ltd. and previous internship experience.",
     "article_title_prefix": "Position",
     "items": [
         {

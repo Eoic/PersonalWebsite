@@ -2,11 +2,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
 
 :root {
-    --text-color-dark: #e4ae00;
-    --text-color-light: #414241;
+    --text-color-dark: #ffb000;
+    --text-color-light: #1a237e;
     --background-color-dark: #121524;
     --background-color-light: #ebeef2;
-    --transition-duration: 0ms;
+    --accent-color-dark: #ffae00;
+    --accent-color-light: #303f9f;
+    --hover-color-dark: #f0ba09;
+    --hover-color-light: #3d51b5;
+    --transition-duration: 150ms;
 }
 
 html,
@@ -15,7 +19,8 @@ body {
     max-width: 60rem;
     box-sizing: border-box;
     scrollbar-gutter: stable;
-    font-family: 'Fira Code', sans-serif;
+    font-family: 'Fira Code', monospace;
+    font-weight: 400;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -77,21 +82,25 @@ h1 {
 }
 
 header h1 {
-    font-weight: 600;
-    line-height: 1em;
+    font-weight: 700;
+    line-height: 1.1;
     font-size: clamp(2rem, 5vw, 2.5rem);
+    letter-spacing: -0.01em;
 }
 
 header h2 {
     margin: 0;
-    font-weight: 300;
+    font-weight: 400;
     font-size: clamp(1.25rem, 5vw, 1.5rem);
+    line-height: 1.3;
+    letter-spacing: 0.005em;
 }
 
 header h3 {
     margin: 0;
-    font-weight: 300;
+    font-weight: 400;
     font-size: clamp(1rem, 5vw, 1.25rem);
+    line-height: 1.4;
 }
 
 .profile {
@@ -186,6 +195,7 @@ header h3 {
     white-space: nowrap;
     text-overflow: ellipsis;
     font-size: clamp(1.125rem, 5vw - 1rem, 1.625rem);
+    letter-spacing: 0.01em;
     transition: background-color var(--transition-duration) ease-in-out, color var(--transition-duration) ease-in-out;
 }
 
@@ -292,8 +302,41 @@ header h3 {
 
 article {
     text-wrap: pretty;
-    line-height: 1.8;
-    letter-spacing: 0.02em;
+    line-height: 1.75;
+    letter-spacing: 0.01em;
+}
+
+/* Content headings (h3 in main sections) */
+main section article h3 {
+    margin: 0 0 0.75rem 0;
+    font-weight: 500;
+    font-size: clamp(1.1rem, 4.5vw, 1.375rem);
+    line-height: 1.3;
+    letter-spacing: 0.005em;
+}
+
+/* Better paragraph spacing */
+main section article p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+/* List improvements */
+main section article ul {
+    margin-block: 0.5rem;
+    line-height: 1.65;
+}
+
+main section article li {
+    margin-bottom: 0.4rem;
+    line-height: 1.65;
+}
+
+/* Bold text improvements */
+main section article b,
+main section article strong {
+    font-weight: 600;
+    letter-spacing: 0.005em;
 }
 
 article p.quote {
@@ -324,6 +367,7 @@ main section article {
     border-width: 1px;
     border-style: solid;
     border-radius: 0.375em;
+    transition: border-color var(--transition-duration) ease-in-out;
 }
 
 main section article ul {
@@ -348,7 +392,14 @@ main section article .technologies span {
     border-width: 1px;
     border-radius: 0.375em;
     padding: 0.25em 0.75em;
-    transition: color var(--transition-duration) ease-in-out, background-color var(--transition-duration) ease-in-out;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: color var(--transition-duration) ease-in-out, background-color var(--transition-duration) ease-in-out, border-color var(--transition-duration) ease-in-out;
+}
+
+main section article .technologies span:hover {
+    border-color: var(--accent-color-dark);
 }
 
 /* Themes. */
@@ -367,14 +418,6 @@ main section article .technologies span {
 
 .theme-switcher:hover {
     animation: sway 2s infinite alternate ease-in-out;
-}
-
-.theme.light {
-    /* background-image: radial-gradient(var(--text-color-light) 1px, transparent 0); */
-}
-
-.theme.dark {
-    /* background-image: radial-gradient(var(--text-color-dark) 1px, transparent 0); */
 }
 
 .theme.light .theme-switcher {
@@ -405,12 +448,22 @@ main section article .technologies span {
     background-color: var(--background-color-dark);
 }
 
+.theme.light main section article:hover {
+    border-color: var(--accent-color-light);
+}
+
+.theme.dark main section article:hover {
+    border-color: var(--accent-color-dark);
+}
+
 .theme.light main section article .technologies span:hover {
+    border-color: var(--accent-color-light);
     color: var(--background-color-light);
-    background-color: var(--text-color-light);
+    background-color: var(--accent-color-light);
 }
 
 .theme.dark main section article .technologies span:hover {
+    border-color: var(--accent-color-dark);
     color: var(--background-color-dark);
     background-color: var(--text-color-dark);
 }
@@ -468,7 +521,7 @@ main section article .technologies span {
 
 .theme.light .tab a:hover,
 .theme.light .tab a:focus {
-    background-color: color-mix(in srgb, var(--text-color-light), transparent 75%);
+    background-color: color-mix(in srgb, var(--accent-color-light), transparent 75%);
 }
 
 .theme.dark .tab a:hover,
@@ -505,11 +558,19 @@ main section article .technologies span {
 }
 
 .theme.light a.link {
-    color: var(--text-color-light);
+    color: var(--accent-color-light);
 }
 
 .theme.dark a.link {
-    color: var(--text-color-dark);
+    color: var(--accent-color-dark);
+}
+
+.theme.light a.link:hover {
+    color: var(--hover-color-light);
+}
+
+.theme.dark a.link:hover {
+    color: var(--hover-color-dark);
 }
 
 .theme.light a.link.bordered {
@@ -523,7 +584,7 @@ main section article .technologies span {
 }
 
 .theme.light a.link:hover {
-    background-color: color-mix(in srgb, var(--text-color-light), transparent 75%);
+    background-color: color-mix(in srgb, var(--accent-color-light), transparent 75%);
 }
 
 .theme.dark a.link:hover {
@@ -557,7 +618,12 @@ a.link {
     padding-left: 0.45em;
     padding-right: 0.45em;
     display: inline-block;
-    transition: background-color var(--transition-duration) ease-in-out;
+    color: var(--accent-color-dark);
+    transition: background-color var(--transition-duration) ease-in-out, color var(--transition-duration) ease-in-out;
+}
+
+a.link:hover {
+    color: var(--hover-color-dark);
 }
 
 a.link.bordered {

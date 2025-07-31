@@ -6,19 +6,38 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Software engineer passionate about building useful things for the web and solving real-world problems. Explore my portfolio and side projects here."> 
+    <meta name="description" content="Learn about Karolis Strazdas, a software engineer passionate about building innovative web applications, functional programming, and machine learning. Explore my background and interests.">
     <meta name="author" content="Karolis Strazdas">
+    <meta name="keywords"
+        content="software engineer, web development, Python, JavaScript, TypeScript, React, Django, full-stack developer, Kaunas, Lithuania">
+    <meta name="theme-color" content="#0d1117">
     <link rel="canonical" href="https://karolis-strazdas.lt">
-    <link rel="stylesheet" type="text/css" href="css/main.css?v=1.6">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v=1.7.4">
+    <link rel="preload" href="css/main.css?v=1.7.4" as="style">
+    <link rel="preload" href="images/avatar.webp" as="image">
 
     <!-- OpenGraph -->
     <meta property="og:title" content="Karolis Strazdas">
-    <meta property="og:image" content="https://karolis-strazdas.lt/images/initials.png">
-    <meta property="og:logo" content="https://karolis-strazdas.lt/images/initials.png">
-    <meta property="og:description" content="Software engineer passionate about building innovative web applications. Explore my projects and professional background.">
+    <meta property="og:image" content="https://karolis-strazdas.lt/images/avatar.webp">
+    <meta property="og:image:alt" content="Karolis Strazdas - Software Engineer">
+    <meta property="og:image:width" content="400">
+    <meta property="og:image:height" content="400">
+    <meta property="og:description" content="Learn about Karolis Strazdas, a software engineer passionate about building innovative web applications, functional programming, and machine learning. Explore my background and interests.">
     <meta property="og:url" content="https://karolis-strazdas.lt">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Karolis Strazdas | Software engineer">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="Karolis Strazdas | Software Engineer">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Karolis Strazdas">
+    <meta name="twitter:description" content="Learn about Karolis Strazdas, a software engineer passionate about building innovative web applications, functional programming, and machine learning. Explore my background and interests.">
+    <meta name="twitter:image" content="https://karolis-strazdas.lt/images/avatar.webp">
+
+    <!-- Additional SEO -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="alternate" type="application/rss+xml" title="Karolis Strazdas - Software Engineer"
+        href="https://karolis-strazdas.lt/sitemap.xml">
 
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
@@ -31,20 +50,42 @@
             "@type": "Person",
             "name": "Karolis Strazdas",
             "url": "https://karolis-strazdas.lt",
-            "image": "https://karolis-strazdas.lt/images/initials.png",
+            "image": "https://karolis-strazdas.lt/images/avatar.webp",
             "jobTitle": "Software Engineer",
+            "description": "Learn about Karolis Strazdas, a software engineer passionate about building innovative web applications, functional programming, and machine learning. Explore my background and interests.",
+            "alumniOf": {
+                "@type": "CollegeOrUniversity",
+                "name": "Kaunas University of Technology"
+            },
+            "knowsAbout": [
+                "Software Engineering",
+                "Web Development", 
+                "Python",
+                "JavaScript",
+                "TypeScript",
+                "React",
+                "Django",
+                "Full Stack Development",
+                "Computer Graphics",
+                "Functional Programming"
+            ],
             "sameAs": [
                 "https://www.linkedin.com/in/karolis-strazdas",
                 "https://github.com/Eoic"
             ],
             "worksFor": {
                 "@type": "Organization",
-                "name": "Indeform Ltd."
+                "name": "Indeform Ltd.",
+                "url": "https://indeform.com"
             },
             "address": {
-                "@type": "PostalAddress",content="Software engineer building useful things for the web. Passionate about creating innovative applications and solving real-world problems. Explore my portfolio and side projects here."
+                "@type": "PostalAddress",
                 "addressLocality": "Kaunas",
                 "addressCountry": "Lithuania"
+            },
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://karolis-strazdas.lt"
             }
         }
     </script>
@@ -56,64 +97,80 @@
     </script>
 
     <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => console.info('Service worker registered: ', registration))
+                    .catch((registrationError) => console.error('Service worker registration failed: ', registrationError));
+            });
+        }
+    </script>
+
+    <script>
         window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
     </script>
 
     <script defer src="/_vercel/speed-insights/script.js"></script>
 
-    <title> Karolis Strazdas • About</title> 
+    <title> Karolis Strazdas • About</title>
 </head>
 
 <body>
     <button id="theme-switcher" class="icon interactive theme-switcher" aria-label="Theme switcher"></button>
 
     <header class="profile col-gap-2">
-    <img src="images/avatar.webp" alt="Karolis Strazdas" class="avatar">
+    <img src="images/avatar.webp" alt="Karolis Strazdas - Software Engineer" class="avatar" loading="eager">
     <section class="flex column row-gap-1">
         <h1>Karolis Strazdas</h1>
-        <h2>Software engineer at Indeform Ltd.</h2>
+        <h2>Software engineer at <span itemscope itemtype="https://schema.org/Organization"><span
+                    itemprop="name">Indeform Ltd</span></span></h2>
 
         <div class="profile-location flex col-gap-1">
             <div class="flex row-center-y">
-                <h3><span class="icon location medium"></span>Kaunas, Lithuania</h3>
+                <h3><span class="icon location medium" aria-hidden="true"></span><span
+                        itemprop="addressLocality">Kaunas, Lithuania</span></h3>
             </div>
 
-            <div class="flex col-gap-1">
-                <a href="https://www.linkedin.com/in/karolis-strazdas" target="_blank"
-                    aria-label="Learn more about me at LinkedIn.">
+            <nav class="social-links flex col-gap-1" aria-label="Social media links">
+                <a href="https://www.linkedin.com/in/karolis-strazdas" target="_blank" rel="noopener noreferrer"
+                    aria-label="LinkedIn profile - Learn more about me at LinkedIn">
                     <span class="icon medium interactive linkedin"></span>
                 </a>
 
-                <a href="https://www.github.com/Eoic" target="_blank" aria-label="Explore my side projects at GitHub">
+                <a href="https://www.github.com/Eoic" target="_blank" rel="noopener noreferrer"
+                    aria-label="GitHub profile - Explore my side projects at GitHub">
                     <span class="icon medium interactive github"></span>
                 </a>
 
-                <a href="mailto:karolis.strazdas@pm.me" aria-label="Contact via email.">
+                <a href="mailto:karolis.strazdas@pm.me" aria-label="Email contact">
                     <span class="icon medium interactive email"></span>
                 </a>
-            </div>
+            </nav>
         </div>
     </section>
 </header>
-    <nav>
+    <nav role="navigation" aria-label="Main navigation">
     <div class="tab-navigator">
-        <ul id="tabs" class="tabs">
-                <li class="tab"  data-active>
-                    <a href="/"> About </a>
-                </li>
-                <li class="tab" >
-                    <a href="/positions"> Positions </a>
-                </li>
-                <li class="tab" >
-                    <a href="/education"> Education </a>
-                </li>
-                <li class="tab" >
-                    <a href="/projects"> Projects </a>
-                </li>
+        <ul id="tabs" class="tabs" role="tablist">
+            <li class="tab" role="presentation"  data-active>
+                <a href="/" role="tab" aria-selected="true">
+                    About </a>
+            </li>
+            <li class="tab" role="presentation" >
+                <a href="/positions" role="tab" aria-selected="false">
+                    Positions </a>
+            </li>
+            <li class="tab" role="presentation" >
+                <a href="/education" role="tab" aria-selected="false">
+                    Education </a>
+            </li>
+            <li class="tab" role="presentation" >
+                <a href="/projects" role="tab" aria-selected="false">
+                    Projects </a>
+            </li>
         </ul>
     </div>
 </nav>
-
     <main>
 
 <section>
@@ -121,10 +178,10 @@
         <div><b> Description </b></div>
         <hr>
         <p class="info">I'm a software engineer passionate about building useful things 
-            for the web. Curious about a broad range of technologies, concepts 
-            and ideas, I have a particular interest in functional programming 
-            and computer graphics. I also enjoy reading and working on side projects
-            in my free time. Feel free to check out my side projects and work experience here.</p>
+            for the web. I enjoy learning and experimenting with a broad
+            range of technologies, with particular interest in functional programming 
+            and machine learning. I also enjoy reading books and working on side projects
+            in my free time. Feel free to check out my projects and work experience here.</p>
     </article>
     <article>
         <div class="flex row-center-y col-gap-1">
@@ -132,23 +189,20 @@
             <b> Reading </b>
         </div>
         <ul>
-                <li>
-                        <span> Building Microservices, 2nd Edition</span> &mdash; <em>Sam Newman</em>;
-                </li>
-                <li>
-                        <span>Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow</span> &mdash; <em>Aurélien Géron</em>;
-                </li>
-                <li>
-                        <span>Olympos</span> &mdash; <em>Dan Simmons</em>;
-                </li>
+            <li>
+                <span>Building Microservices, 2nd Edition</span> &mdash; <em>Sam Newman</em>;
+            </li>
+            <li>
+                <span>Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow</span> &mdash; <em>Aurélien Géron</em>;
+            </li>
         </ul>
         <div class="flex row-center-y col-gap-1 mt-1">
             <span class="icon medium inline learn"></span>
             <b> Learning about </b>
         </div>
         <ul>
-                <li> Machine learning; </li>
-                <li> Elixir (programming language); </li>
+            <li> Machine learning; </li>
+            <li> Elixir (programming language); </li>
         </ul>
 
         <div class="flex row-center-y col-gap-1 mt-1">
@@ -156,16 +210,15 @@
             <b> Working on </b>
         </div>
         <ul>
-                <li>
-                    <a class="link bordered" href="https://github.com/Eoic/WebTiler" target="_blank">WebTiler (side project)</a>
-                    - a web-based tiling window manager;
-                </li>
+            <li>
+                <a class="link bordered" href="https://github.com/Eoic/ASCIIGround" target="_blank">ASCIIGround (side project)</a>
+                - a TypeScript library for creating backgrounds out of character patterns;
+            </li>
         </ul>
     </article>
-</section>
-</main>
+</section></main>
     <canvas id="background"></canvas>
-    <script src="js/main.js?v=1.6"></script>
+    <script src="js/main.js?v=1.7.4"></script>
 </body>
 
 </html>

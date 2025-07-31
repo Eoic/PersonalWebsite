@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://karolis-strazdas.lt/sitemap.xml
+
+Crawl-delay: 1
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

@@ -1,8 +1,36 @@
 projects = {
     "page": "projects",
     "title": "Projects",
+    "description": "Discover Karolis Strazdas' portfolio of software projects including ASCIIGround, Boids simulation, Papyrus book management app, and other innovative applications.",
     "article_title_prefix": "Project",
     "items": [
+        {
+            "title": "ASCIIGround",
+            "title_link": "https://github.com/Eoic/ASCIIGround",
+            "subtitle": "a TypeScript library for creating backgrounds out of character patterns.",
+            "description": """
+                    <p>
+                        Renders a grid of characters on the canvas using patterns such as Perlin noise, simplex
+                        noise, character rain, signed distance fields and more. Generated backgrounds can be static, 
+                        animated or interactive, and can be used as backgrounds for websites to create a unique 
+                        visual style. Various configuration options are supported to customize the appearance 
+                        and behavior.
+                    </p>
+                    <b> Features </b>
+                    <ul>
+                        <li>Multiple animation patterns: Perlin noise, rain, static noise with extensible pattern system;</li>
+                        <li>Configuration options for font, animation speed, character sets, noise parameters, and much more;</li>
+                        <li>Responsive and resizable canvas rendering;</li>
+                        <li>Easy to use API and comprehensive documentation;</li>
+                        <li>Supports both ESM and UMD/CDN usage;</li>
+                    </ul>
+                """.strip(),
+            "tags": [
+                "TypeScript",
+                "HTML5",
+                "CSS3",
+            ],
+        },
         {
             "title": "Boids",
             "title_link": "https://github.com/Eoic/Boids",

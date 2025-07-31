@@ -1,34 +1,31 @@
 about = {
     "page": "index",
     "title": "About",
-    "description": """
+    "description": "Learn about Karolis Strazdas, a software engineer passionate about building innovative web applications, functional programming, and machine learning. Explore my background and interests.",
+    "content_description": """
             I'm a software engineer passionate about building useful things 
-            for the web. Curious about a broad range of technologies, concepts 
-            and ideas, I have a particular interest in functional programming 
-            and computer graphics. I also enjoy reading and working on side projects
-            in my free time. Feel free to check out my side projects and work experience here.
+            for the web. I enjoy learning and experimenting with a broad
+            range of technologies, with particular interest in functional programming 
+            and machine learning. I also enjoy reading books and working on side projects
+            in my free time. Feel free to check out my projects and work experience here.
     """.strip(),
     "reading": [
         {
-            "title": " Building Microservices, 2nd Edition",
+            "title": "Building Microservices, 2nd Edition",
             "author": "Sam Newman",
         },
         {
             "title": "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow",
             "author": "Aurélien Géron",
         },
-        {
-            "title": "Olympos",
-            "author": "Dan Simmons",
-        }
     ],
     "learning_about": [
         "Machine learning",
         "Elixir (programming language)",
     ],
     "working_on": [{
-        "title": "WebTiler (side project)",
-        "subtitle": "a web-based tiling window manager",
-        "link": "https://github.com/Eoic/WebTiler",
+        "title": "ASCIIGround (side project)",
+        "subtitle": "a TypeScript library for creating backgrounds out of character patterns",
+        "link": "https://github.com/Eoic/ASCIIGround",
     }]
 }
