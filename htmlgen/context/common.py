@@ -28,5 +28,5 @@ common = {
     "seo": {
         "base_description": "Karolis Strazdas - software engineer at Indeform Ltd. Passionate about building innovative web applications and solving real-world problems.",
         "site_url": "https://karolis-strazdas.lt"
-    }
+    },
 }
