@@ -22,17 +22,17 @@ pip install -r requirements.txt
 
 - Start development server:
 
-  ```bash
-  npm run dev
-  ```
+    ```bash
+    npm run dev
+    ```
 
 - Build site for production:
 
-  ```bash
-  npm run build
-  ```
+    ```bash
+    npm run build
+    ```
 
 - Serve production site:
-  ```bash
-  npm run serve
-  ```
+    ```bash
+    npm run serve
+    ```

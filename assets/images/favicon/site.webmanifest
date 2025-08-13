@@ -10,11 +10,7 @@
     "theme_color": "#0d1117",
     "background_color": "#0d1117",
     "lang": "en",
-    "categories": [
-        "productivity",
-        "portfolio",
-        "personal"
-    ],
+    "categories": ["productivity", "portfolio", "personal"],
     "icons": [
         {
             "src": "/images/favicon/android-chrome-192x192.png",

@@ -1,3 +1,4 @@
+const LOG_ID = '[Worker]';
 const CACHE_NAME = 'karolis-strazdas-v__VERSION__';
 
 const urlsToCache = [
@@ -17,28 +18,33 @@ const urlsToCache = [
     '/images/icons/theme-light.svg',
     '/positions',
     '/projects',
-    '/education'
+    '/education',
 ];
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => {
-                console.info('Opened cache...');
-                return cache.addAll(urlsToCache);
-            })
+        caches.open(CACHE_NAME).then((cache) => {
+            console.info(`${LOG_ID} Opened cache...`);
+            return cache.addAll(urlsToCache);
+        })
     );
 });
 
 self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request)
-            .then((response) => {
-                if (response)
-                    return response;
+    try {
+        const url = new URL(event.request.url);
+        if (url.pathname === '/events' || url.pathname === '/alive') {
+            return;
+        }
+    } catch (error) {
+        console.error(`${LOG_ID} Fetch event error:`, error);
+    }
 
-                return fetch(event.request);
-            })
+    event.respondWith(
+        caches.match(event.request).then((response) => {
+            if (response) return response;
+            return fetch(event.request);
+        })
     );
 });
 
@@ -48,7 +54,7 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
                     if (cacheName !== CACHE_NAME) {
-                        console.info('Deleting old cache:', cacheName);
+                        console.info(`${LOG_ID} Deleting old cache:`, cacheName);
                         return caches.delete(cacheName);
                     }
                 })

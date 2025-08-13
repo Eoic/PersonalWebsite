@@ -1,6 +1,5 @@
 import os
 import sys
-import json
 from io import StringIO
 from mako.lookup import TemplateLookup
 from mako.runtime import Context
@@ -15,6 +14,7 @@ def main():
             "Please specify the output directory, for example: 'python main.py out/'.",
             file=sys.stderr,
         )
+
         sys.exit(1)
 
     if not os.path.isdir(out_dir):

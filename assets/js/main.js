@@ -1,10 +1,20 @@
 (() => {
-    const handleThemeSwitch = (_event) => {
-        const element = document.documentElement;
-        element.classList.toggle('light') && localStorage.setItem('theme', 'light');
-        element.classList.toggle('dark') && localStorage.setItem('theme', 'dark');
-        fillBackground();
+    const SSE_PORT = 35730;
+
+    try {
+        const source = new EventSource(`http://localhost:${SSE_PORT}/events`);
+        source.addEventListener('reload', () => window.location.reload());
+        source.onopen = () => console.info('[DEV] Live reload connected.');
+    } catch (error) {
+        console.warn('[DEV] Live reload not available:', error);
     }
+
+    const handleThemeSwitch = (_event) => {
+        const classList = document.documentElement.classList;
+        classList.toggle('light') && localStorage.setItem('theme', 'light');
+        classList.toggle('dark') && localStorage.setItem('theme', 'dark');
+        fillBackground();
+    };
 
     const fillBackground = () => {
         let lastCenterChanged;
@@ -15,7 +25,29 @@
         const charFlipChance = 0.2;
         const canvas = document.getElementById('background');
         const ctx = canvas.getContext('2d');
-        const charPool = ['~', '#', '$', '%', '!', '?', '@', '^', '&', '*', '(', ')', '-', '+', '{', '}', '<', '>', '\\', '/', '='];
+        const charPool = [
+            '~',
+            '#',
+            '$',
+            '%',
+            '!',
+            '?',
+            '@',
+            '^',
+            '&',
+            '*',
+            '(',
+            ')',
+            '-',
+            '+',
+            '{',
+            '}',
+            '<',
+            '>',
+            '\\',
+            '/',
+            '=',
+        ];
         const charPoolSize = charPool.length;
         const rootStyles = getComputedStyle(document.documentElement);
 
@@ -46,31 +78,37 @@
                 if (isCallable) {
                     func(...args);
                     isCallable = false;
-                    setTimeout(() => isCallable = true, delay);
+                    setTimeout(() => (isCallable = true), delay);
                 }
-            }
+            };
         }
 
         function flipChars(event) {
             const cx = Math.floor(event.clientX / cellSize) * cellSize;
             const cy = Math.floor(event.clientY / cellSize) * cellSize;
 
-            if (lastCenterChanged && lastCenterChanged.x == cx && lastCenterChanged.y == cy)
-                return;
+            if (lastCenterChanged && lastCenterChanged.x == cx && lastCenterChanged.y == cy) return;
 
             lastCenterChanged = { x: cx, y: cy };
 
             for (let sqx = cx - flipCircleRadius; sqx <= cx + flipCircleRadius; sqx += cellSize) {
-                for (let sqy = cy - flipCircleRadius; sqy <= cy + flipCircleRadius; sqy += cellSize) {
+                for (
+                    let sqy = cy - flipCircleRadius;
+                    sqy <= cy + flipCircleRadius;
+                    sqy += cellSize
+                ) {
                     const dx = cx - sqx;
                     const dy = cy - sqy;
 
                     if (dx * dx + dy * dy <= flipCircleRadiusSqr) {
-                        if (Math.random() > charFlipChance)
-                            continue;
+                        if (Math.random() > charFlipChance) continue;
 
                         ctx.clearRect(sqx, sqy, cellSize, cellSize);
-                        ctx.fillText(charPool[Math.floor(Math.random() * charPoolSize)], sqx + cellHalfSize, sqy + cellHalfSize);
+                        ctx.fillText(
+                            charPool[Math.floor(Math.random() * charPoolSize)],
+                            sqx + cellHalfSize,
+                            sqy + cellHalfSize
+                        );
                     }
                 }
             }
@@ -100,7 +138,7 @@
         window.addEventListener('resize', resizeCanvas);
         window.addEventListener('pointermove', debounce(flipChars, 0));
         resizeCanvas();
-    }
+    };
 
     const computeEntryTimespans = () => {
         const timespans = document.querySelectorAll('div[data-timespan]');
@@ -108,7 +146,9 @@
         timespans.forEach((timespan) => {
             const durationElement = timespan.querySelector('[data-duration=""]');
             const dateFrom = new Date(durationElement.getAttribute('data-date-from'));
-            const dateUntil = new Date(durationElement.getAttribute('data-date-until') || new Date().toDateString());
+            const dateUntil = new Date(
+                durationElement.getAttribute('data-date-until') || new Date().toDateString()
+            );
             let months = (dateUntil.getFullYear() - dateFrom.getFullYear()) * 12;
             months -= dateFrom.getMonth();
             months += dateUntil.getMonth();

@@ -1,0 +1,27 @@
+# Build output
+build/
+assets/**/*.html
+
+# Dependencies
+node_modules/
+
+# Generated caches
+.vercel/
+.next/
+.cache/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Custom templating files (non-HTML syntax)
+htmlgen/templates/**/*.html
+
+# Misc
+.DS_Store
+.env

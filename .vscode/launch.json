@@ -9,10 +9,8 @@
             "type": "debugpy",
             "request": "launch",
             "module": "htmlgen.main",
-            "args": [
-                "assets/"
-            ],
-            "cwd": "${workspaceFolder}",
+            "args": ["assets/"],
+            "cwd": "${workspaceFolder}"
         }
     ]
 }
