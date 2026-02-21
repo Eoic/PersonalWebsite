@@ -1,85 +1,93 @@
 (() => {
+    const cellSize = 64;
+    const flipCircleRadius = 256;
+    const flipCircleRadiusSqr = flipCircleRadius * flipCircleRadius;
+    const cellHalfSize = cellSize / 2;
+    const charFlipChance = 0.2;
+    const charPool = [
+        '~',
+        '#',
+        '$',
+        '%',
+        '!',
+        '?',
+        '@',
+        '^',
+        '&',
+        '*',
+        '(',
+        ')',
+        '-',
+        '+',
+        '{',
+        '}',
+        '<',
+        '>',
+        '\\',
+        '/',
+        '=',
+    ];
+    const charPoolSize = charPool.length;
+
+    let canvas, ctx, lastCenterChanged, pendingFlip;
+
     const handleThemeSwitch = (_event) => {
         const classList = document.documentElement.classList;
         classList.toggle('light') && localStorage.setItem('theme', 'light');
         classList.toggle('dark') && localStorage.setItem('theme', 'dark');
-        fillBackground();
+        drawGrid();
     };
 
-    const fillBackground = () => {
-        let lastCenterChanged;
-        const cellSize = 64;
-        const flipCircleRadius = 256;
-        const flipCircleRadiusSqr = flipCircleRadius * flipCircleRadius;
-        const cellHalfSize = cellSize / 2;
-        const charFlipChance = 0.2;
-        const canvas = document.getElementById('background');
-        const ctx = canvas.getContext('2d');
-        const charPool = [
-            '~',
-            '#',
-            '$',
-            '%',
-            '!',
-            '?',
-            '@',
-            '^',
-            '&',
-            '*',
-            '(',
-            ')',
-            '-',
-            '+',
-            '{',
-            '}',
-            '<',
-            '>',
-            '\\',
-            '/',
-            '=',
-        ];
-        const charPoolSize = charPool.length;
+    function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        const width = Math.ceil(window.innerWidth * dpr);
+        const height = Math.ceil(window.innerHeight * dpr);
+
+        canvas.width = width;
+        canvas.height = height;
+        canvas.style.width = `${window.innerWidth}px`;
+        canvas.style.height = `${window.innerHeight}px`;
+        ctx.scale(dpr, dpr);
+        drawGrid();
+    }
+
+    function drawGrid() {
         const rootStyles = getComputedStyle(document.documentElement);
+        const columns = Math.ceil(window.innerWidth / cellSize);
+        const rows = Math.ceil(window.innerHeight / cellSize);
 
-        function resizeCanvas() {
-            let width, height;
-            const dpr = window.devicePixelRatio;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = 'bold 20px Lekton';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.globalAlpha = 0.4;
+        ctx.fillStyle = rootStyles.getPropertyValue('color');
 
-            if (dpr >= 1) {
-                width = Math.ceil(window.innerWidth * dpr);
-                height = Math.ceil(window.innerHeight * dpr);
-            } else {
-                width = Math.ceil(window.innerWidth / dpr);
-                height = Math.ceil(window.innerHeight / dpr);
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < columns; col++) {
+                const x = col * cellSize;
+                const y = row * cellSize;
+                ctx.fillText(
+                    charPool[Math.floor(Math.random() * charPoolSize)],
+                    x + cellHalfSize,
+                    y + cellHalfSize
+                );
             }
-
-            canvas.width = width;
-            canvas.height = height;
-            canvas.style.width = `${width / dpr}px`;
-            canvas.style.height = `${height / dpr}px`;
-            ctx.scale(dpr, dpr);
-            drawGrid();
         }
+    }
 
-        function debounce(func, delay) {
-            let isCallable = true;
+    function flipChars(event) {
+        const cx = Math.floor(event.clientX / cellSize) * cellSize;
+        const cy = Math.floor(event.clientY / cellSize) * cellSize;
 
-            return (...args) => {
-                if (isCallable) {
-                    func(...args);
-                    isCallable = false;
-                    setTimeout(() => (isCallable = true), delay);
-                }
-            };
-        }
+        if (lastCenterChanged && lastCenterChanged.x === cx && lastCenterChanged.y === cy) return;
 
-        function flipChars(event) {
-            const cx = Math.floor(event.clientX / cellSize) * cellSize;
-            const cy = Math.floor(event.clientY / cellSize) * cellSize;
+        lastCenterChanged = { x: cx, y: cy };
 
-            if (lastCenterChanged && lastCenterChanged.x == cx && lastCenterChanged.y == cy) return;
+        if (pendingFlip) return;
 
-            lastCenterChanged = { x: cx, y: cy };
+        pendingFlip = requestAnimationFrame(() => {
+            pendingFlip = null;
 
             for (let sqx = cx - flipCircleRadius; sqx <= cx + flipCircleRadius; sqx += cellSize) {
                 for (
@@ -102,33 +110,8 @@
                     }
                 }
             }
-        }
-
-        function drawGrid() {
-            const columns = Math.ceil(canvas.width / cellSize);
-            const rows = Math.ceil(canvas.height / cellSize);
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.font = 'bold 20px Fira Code';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.globalAlpha = 0.4;
-            ctx.fillStyle = rootStyles.getPropertyValue('color');
-
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < columns; col++) {
-                    const x = col * cellSize;
-                    const y = row * cellSize;
-                    const nextSymbolIndex = Math.floor(Math.random() * charPoolSize);
-                    ctx.fillText(charPool[nextSymbolIndex], x + cellHalfSize, y + cellHalfSize);
-                }
-            }
-        }
-
-        window.addEventListener('resize', resizeCanvas);
-        window.addEventListener('pointermove', debounce(flipChars, 0));
-        resizeCanvas();
-    };
+        });
+    }
 
     const computeEntryTimespans = () => {
         const timespans = document.querySelectorAll('div[data-timespan]');
@@ -145,7 +128,7 @@
             months = Math.max(months, 0);
 
             if (months < 1) {
-                durationElement.innerHTML = '(Less than a month)';
+                durationElement.textContent = '(Less than a month)';
                 return;
             }
 
@@ -163,14 +146,17 @@
             }
 
             durationText += ')';
-            durationElement.innerHTML = durationText;
+            durationElement.textContent = durationText;
         });
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-        const themeSwitchBtn = document.getElementById('theme-switcher');
-        themeSwitchBtn.addEventListener('click', handleThemeSwitch);
+        canvas = document.getElementById('background');
+        ctx = canvas.getContext('2d');
+        document.getElementById('theme-switcher').addEventListener('click', handleThemeSwitch);
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('pointermove', flipChars);
         computeEntryTimespans();
-        fillBackground();
+        resizeCanvas();
     });
 })();

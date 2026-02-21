@@ -1,6 +1,6 @@
 {
     "name": "personal-site",
-    "version": "1.7.7",
+    "version": "1.9.0",
     "description": "Personal website.",
     "scripts": {
         "chore:minify-js": "uglifyjs --compress --mangle -- ./assets/js/main.js > ./build/js/main.js",
