@@ -36,13 +36,6 @@ try {
         fs.copyFileSync(path.join(source_dir, file), path.join(build_dir, file))
     );
 
-    if (fs.existsSync(path.join(source_dir, 'sw.js'))) {
-        const swContent = fs.readFileSync(path.join(source_dir, 'sw.js'), 'utf8');
-        const processedSwContent = swContent.replace(/__VERSION__/g, version);
-        fs.writeFileSync(path.join(build_dir, 'sw.js'), processedSwContent);
-        console.info(`Service worker processed with version: ${version}.`);
-    }
-
     console.info('Files copied successfully.');
 } catch (error) {
     console.error('Error copying files:', error);
@@ -52,13 +45,6 @@ try {
     execSync(`npm run chore:minify-js`, { stdio: 'inherit' });
     execSync(`npm run chore:minify-css`, { stdio: 'inherit' });
 
-    if (fs.existsSync(path.join(build_dir, 'sw.js'))) {
-        execSync(
-            `uglifyjs --compress --mangle -- ./build/sw.js > ./build/sw.min.js && mv ./build/sw.min.js ./build/sw.js`,
-            { stdio: 'inherit' }
-        );
-        console.info('Service worker minified successfully.');
-    }
 } catch (error) {
     console.error('Build failed:', error);
     process.exit(1);
