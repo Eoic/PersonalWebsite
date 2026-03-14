@@ -50,42 +50,7 @@
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-        const canvas = document.getElementById('background');
-        const offscreen = canvas.transferControlToOffscreen();
-
-        worker = new Worker('js/background.js');
-        worker.postMessage(
-            {
-                type: 'init',
-                canvas: offscreen,
-                width: window.innerWidth,
-                height: window.innerHeight,
-                dpr: window.devicePixelRatio || 1,
-                color: getColor(),
-            },
-            [offscreen]
-        );
-
         document.getElementById('theme-switcher').addEventListener('click', handleThemeSwitch);
-
-        window.addEventListener('resize', () => {
-            worker.postMessage({
-                type: 'resize',
-                width: window.innerWidth,
-                height: window.innerHeight,
-                dpr: window.devicePixelRatio || 1,
-                color: getColor(),
-            });
-        });
-
-        window.addEventListener('pointermove', (event) => {
-            worker.postMessage({
-                type: 'pointermove',
-                clientX: event.clientX,
-                clientY: event.clientY,
-            });
-        });
-
         computeEntryTimespans();
     });
 })();

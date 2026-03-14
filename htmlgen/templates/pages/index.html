@@ -22,15 +22,19 @@
             </li>
             %endfor
         </ul>
-        <div class="flex row-center-y col-gap-1 mt-1">
-            <span class="icon medium inline learn"></span>
-            <b> Learning about </b>
-        </div>
-        <ul>
-            %for item in learning_about:
-            <li> ${item}; </li>
-            %endfor
-        </ul>
+
+        %if learning_about:
+            <div class="flex row-center-y col-gap-1 mt-1">
+                <span class="icon medium inline learn"></span>
+                <b> Learning about </b>
+            </div>
+
+            <ul>
+                %for item in learning_about:
+                <li> ${item}; </li>
+                %endfor
+            </ul>
+        %endif
 
         <div class="flex row-center-y col-gap-1 mt-1">
             <span class="icon medium inline work"></span>

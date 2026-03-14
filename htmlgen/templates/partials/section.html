@@ -5,7 +5,7 @@
                 <b> ${article_title_prefix} </b>
 
                 %if "from" in item:
-                    &bull; <span>${item["from"].strftime("%B, %Y")}</span> &rarr; <span>${item["until"].strftime("%B, %Y") if item["until"] else "Now"}</span>
+                    &bull; <span>${item["from"].strftime("%B, %Y")}</span> - <span>${item["until"].strftime("%B, %Y") if item["until"] else "Now"}</span>
 
                     <span 
                         data-date-from="${item['from'].strftime('%Y-%m-%d') if item['from'] else ''}"

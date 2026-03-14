@@ -12,8 +12,8 @@
         content="software engineer, web development, Python, JavaScript, TypeScript, React, Django, full-stack developer, Kaunas, Lithuania">
     <meta name="theme-color" content="#0d1117">
     <link rel="canonical" href="https://karolis-strazdas.lt">
-    <link rel="stylesheet" type="text/css" href="css/main.css?v=1.9.0">
-    <link rel="preload" href="css/main.css?v=1.9.0" as="style">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v=1.10.3">
+    <link rel="preload" href="css/main.css?v=1.10.3" as="style">
     <link rel="preload" href="images/avatar.webp" as="image">
 
     <!-- OpenGraph -->
@@ -114,7 +114,9 @@
 </head>
 
 <body>
-    <button id="theme-switcher" class="icon interactive theme-switcher" aria-label="Theme switcher"></button>
+    <button id="theme-switcher" class="theme-switcher" aria-label="Theme switcher">
+        <span class="icon theme"></span>
+    </button>
 
     <header class="profile col-gap-2">
     <section class="flex column row-gap-1">
@@ -122,7 +124,7 @@
         <h2>Software engineer at <span itemscope itemtype="https://schema.org/Organization"><span
                     itemprop="name">Indeform Ltd</span></span></h2>
 
-        <div class="profile-location flex col-gap-1">
+        <div class="profile-location flex row-center-y col-gap-1">
             <div class="flex row-center-y">
                 <h3><span class="icon location medium" aria-hidden="true"></span><span
                         itemprop="addressLocality">Kaunas, Lithuania</span></h3>
@@ -174,7 +176,7 @@
             <div data-timespan>
                 <b> Position </b>
 
-                    &bull; <span>July, 2020</span> &rarr; <span>Now</span>
+                    &bull; <span>July, 2020</span> - <span>Now</span>
 
                     <span 
                         data-date-from="2020-07-13"
@@ -218,7 +220,7 @@
             <div data-timespan>
                 <b> Position </b>
 
-                    &bull; <span>February, 2020</span> &rarr; <span>May, 2020</span>
+                    &bull; <span>February, 2020</span> - <span>May, 2020</span>
 
                     <span 
                         data-date-from="2020-02-13"
@@ -255,8 +257,7 @@
 </section>
 
 </main>
-    <canvas id="background"></canvas>
-    <script src="js/main.js?v=1.9.0"></script>
+    <script src="js/main.js?v=1.10.3"></script>
 </body>
 
 </html>

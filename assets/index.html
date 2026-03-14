@@ -12,8 +12,8 @@
         content="software engineer, web development, Python, JavaScript, TypeScript, React, Django, full-stack developer, Kaunas, Lithuania">
     <meta name="theme-color" content="#0d1117">
     <link rel="canonical" href="https://karolis-strazdas.lt">
-    <link rel="stylesheet" type="text/css" href="css/main.css?v=1.9.0">
-    <link rel="preload" href="css/main.css?v=1.9.0" as="style">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v=1.10.3">
+    <link rel="preload" href="css/main.css?v=1.10.3" as="style">
     <link rel="preload" href="images/avatar.webp" as="image">
 
     <!-- OpenGraph -->
@@ -114,7 +114,9 @@
 </head>
 
 <body>
-    <button id="theme-switcher" class="icon interactive theme-switcher" aria-label="Theme switcher"></button>
+    <button id="theme-switcher" class="theme-switcher" aria-label="Theme switcher">
+        <span class="icon theme"></span>
+    </button>
 
     <header class="profile col-gap-2">
     <section class="flex column row-gap-1">
@@ -122,7 +124,7 @@
         <h2>Software engineer at <span itemscope itemtype="https://schema.org/Organization"><span
                     itemprop="name">Indeform Ltd</span></span></h2>
 
-        <div class="profile-location flex col-gap-1">
+        <div class="profile-location flex row-center-y col-gap-1">
             <div class="flex row-center-y">
                 <h3><span class="icon location medium" aria-hidden="true"></span><span
                         itemprop="addressLocality">Kaunas, Lithuania</span></h3>
@@ -174,11 +176,8 @@
     <article>
         <div><b> Description </b></div>
         <hr>
-        <p class="info">I'm a software engineer passionate about building useful things 
-            for the web. I enjoy learning and experimenting with a broad
-            range of technologies, with particular interest in functional programming 
-            and machine learning. I also enjoy reading books and working on side projects
-            in my free time. Feel free to check out my projects and work experience here.</p>
+        <p class="info">I'm a software engineer passionate about building useful and/or interesting things 
+            for the web. Feel free to check out my projects and work experience here.</p>
     </article>
     <article>
         <div class="flex row-center-y col-gap-1">
@@ -187,20 +186,10 @@
         </div>
         <ul>
             <li>
-                <span>Building Microservices, 2nd Edition</span> &mdash; <em>Sam Newman</em>;
-            </li>
-            <li>
-                <span>Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow</span> &mdash; <em>Aurélien Géron</em>;
+                <span>Fluent Python, 2nd Edition</span> &mdash; <em>Luciano Ramalho</em>;
             </li>
         </ul>
-        <div class="flex row-center-y col-gap-1 mt-1">
-            <span class="icon medium inline learn"></span>
-            <b> Learning about </b>
-        </div>
-        <ul>
-            <li> Machine learning; </li>
-            <li> Elixir (programming language); </li>
-        </ul>
+
 
         <div class="flex row-center-y col-gap-1 mt-1">
             <span class="icon medium inline work"></span>
@@ -208,14 +197,13 @@
         </div>
         <ul>
             <li>
-                <a class="link bordered" href="https://github.com/Eoic/ASCIIGround" target="_blank">ASCIIGround (side project)</a>
-                - a TypeScript library for creating backgrounds out of character patterns;
+                <a class="link bordered" href="https://github.com/PapyrusReader/client" target="_blank">Papyrus</a>
+                - a cross-platform book reading and management application;
             </li>
         </ul>
     </article>
 </section></main>
-    <canvas id="background"></canvas>
-    <script src="js/main.js?v=1.9.0"></script>
+    <script src="js/main.js?v=1.10.3"></script>
 </body>
 
 </html>

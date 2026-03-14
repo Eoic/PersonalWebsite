@@ -38,7 +38,7 @@ projects = {
             "description": """
                     <p>
                         A flocking simulation based on the Boids algorithm. The simulation
-                        is based on the original paper by Craig Reynolds, which describes the
+                        is based on the original paper by Craig Reynolds <a class="link bordered" href="https://www.red3d.com/cwr/papers/1987/SIGGRAPH87.pdf" target="_blank">Flocks, Herds, and Schools</a>, which describes the
                         behavior of a flock of birds. Implements the three basic rules of
                         flocking: separation, alignment, cohesion and some additional
                         features like goal chasing, dynamic boundaries, wind effect, and so on.
@@ -134,9 +134,8 @@ projects = {
                     <p>
                         Briefly, it's a robot battle tank programming game that runs in
                         the browser, similar to games such as
-                        <a class="link bordered" href="https://robocode.sourceforge.io/" target="_blank"> Robocode </a> and
-                        <a class="link bordered" href="https://screeps.com/" target="_blank">
-                        Screeps </a>. You can write a script to you robot and make it fight against
+                        <a class="link bordered" href="https://robocode.sourceforge.io/" target="_blank">Robocode</a> and
+                        <a class="link bordered" href="https://screeps.com/" target="_blank">Screeps</a>. You can write a script to you robot and make it fight against
                         robots of other players in real-time.
                     </p>
 

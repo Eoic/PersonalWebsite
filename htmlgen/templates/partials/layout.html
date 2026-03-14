@@ -114,12 +114,13 @@
 </head>
 
 <body>
-    <button id="theme-switcher" class="icon interactive theme-switcher" aria-label="Theme switcher"></button>
+    <button id="theme-switcher" class="theme-switcher" aria-label="Theme switcher">
+        <span class="icon theme"></span>
+    </button>
 
     <%include file="header.html" />
     <%include file="navigation.html" />
     <main>${self.body()}</main>
-    <canvas id="background"></canvas>
     <script src="js/main.js?v=${build['version']}"></script>
 </body>
 

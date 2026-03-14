@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="5.4074" height="5.4074" version="1.1" viewBox="0 0 5.4074 5.4074" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-7.7402 -1.1434)"><g transform="translate(7.7402 2.6646)"><path class="UnoptimicedTransforms" d="m0.10671 1.1825h0.47127m0.28937 1.8364 0.33324-0.33324m1.5031 1.0939v-0.47127m1.8364-0.28937-0.33324-0.33324m1.0939-1.5031h-0.47127m-0.28937-1.8364-0.33324 0.33324m-1.5031-1.0939v0.47127m-1.8364 0.28937 0.33324 0.33324" fill="none" stroke="#1b1b1b" stroke-linecap="round" stroke-width=".21341"/><circle cx="2.7037" cy="1.1825" r="1.1825" fill="#1b1b1b"/></g></g></svg>
+<svg width="5.4074" height="5.4074" version="1.1" viewBox="0 0 5.4074 5.4074" xml:space="preserve"
+    xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(-7.7402 -1.1434)">
+        <g transform="translate(7.7402 2.6646)">
+            <path class="UnoptimicedTransforms"
+                d="m0.10671 1.1825h0.47127m0.28937 1.8364 0.33324-0.33324m1.5031 1.0939v-0.47127m1.8364-0.28937-0.33324-0.33324m1.0939-1.5031h-0.47127m-0.28937-1.8364-0.33324 0.33324m-1.5031-1.0939v0.47127m-1.8364 0.28937 0.33324 0.33324"
+                fill="none" stroke="currentColor" stroke-linecap="round" stroke-width=".21341" />
+            <circle cx="2.7037" cy="1.1825" r="1.1825" fill="currentColor" />
+        </g>
+    </g>
+</svg>

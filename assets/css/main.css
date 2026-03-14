@@ -1,5 +1,4 @@
-/* General */
-@import url('https://fonts.googleapis.com/css2?family=Lekton:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
 
 :root {
     --text-color-dark: #ffb000;
@@ -19,7 +18,7 @@ body {
     max-width: 60rem;
     box-sizing: border-box;
     scrollbar-gutter: stable;
-    font-family: 'Lekton', monospace;
+    font-family: 'DM Mono', monospace;
     font-weight: 400;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -102,6 +101,67 @@ header h3 {
     line-height: 1.4;
 }
 
+
+
+/* Icons */
+.icon {
+    height: 100%;
+    display: block;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    background-color: currentColor;
+}
+
+.icon.github {
+    mask-image: url(../images/icons/github.svg);
+}
+
+.icon.linkedin {
+    mask-image: url(../images/icons/linkedin.svg);
+}
+
+.icon.location {
+    mask-image: url(../images/icons/location.svg);
+}
+
+.icon.email {
+    padding: 0.125rem;
+    mask-image: url(../images/icons/email.svg);
+}
+
+.icon.read {
+    mask-image: url(../images/icons/read.svg);
+}
+
+.icon.work {
+    mask-image: url(../images/icons/work.svg);
+}
+
+.icon.learn {
+    mask-image: url(../images/icons/learn.svg);
+}
+
+.icon.external {
+    mask-image: url(../images/icons/external.svg);
+}   
+
+.icon.medium {
+    min-width: 1.75rem;
+    max-width: 1.75rem;
+    min-height: 1.75rem;
+    max-height: 1.75rem;
+}
+
+.icon.inline {
+    display: inline-block;
+}
+
+button.icon:focus-visible {
+    outline-offset: 2px;
+    outline: 2px solid currentColor;
+}
+
 .profile {
     display: flex;
     row-gap: 1.5rem;
@@ -115,55 +175,15 @@ header h3 {
     vertical-align: middle;
 }
 
-/* Icons */
-.icon {
-    height: 100%;
-    display: block;
-    background-size: contain;
-    background-repeat: no-repeat;
+.profile a {
+    border-radius: 50%;
+
+    &:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+    }
 }
 
-.icon.github {
-    background-image: url(../images/icons/github.svg);
-}
-
-.icon.linkedin {
-    background-image: url(../images/icons/linkedin.svg);
-}
-
-.icon.location {
-    background-image: url(../images/icons/location.svg);
-}
-
-.icon.email {
-    padding: 0.125rem;
-    background-image: url(../images/icons/email.svg);
-}
-
-.icon.read {
-    background-image: url(../images/icons/read.svg);
-}
-
-.icon.work {
-    background-image: url(../images/icons/work.svg);
-}
-
-.icon.learn {
-    background-image: url(../images/icons/learn.svg);
-}
-
-.icon.medium {
-    min-width: 1.75rem;
-    max-width: 1.75rem;
-    min-height: 1.75rem;
-    max-height: 1.75rem;
-}
-
-.icon.inline {
-    display: inline-block;
-}
-
-/* Tabs */
 .tab-navigator {
     overflow-x: hidden;
 }
@@ -195,6 +215,11 @@ header h3 {
 .tab a {
     display: block;
     padding: 0.25rem 1.25rem;
+}
+
+.tab a:focus-visible {
+    outline: none;
+    background-color: color-mix(in srgb, currentColor, transparent 75%);;
 }
 
 .tab:not(:first-child) {
@@ -392,18 +417,34 @@ main section article .technologies span:hover {
     background-size: contain;
     background-repeat: no-repeat;
     background-color: transparent;
+    border-radius: 50%;
 }
 
-.theme-switcher:hover {
+.theme-switcher:focus-visible {
+    outline-offset: 2px;
+    outline: 2px solid currentColor;
+}
+
+.theme-switcher .icon:hover {
     animation: sway 2s infinite alternate ease-in-out;
 }
 
 .theme.light .theme-switcher {
-    background-image: url('../images/icons/theme-light.svg');
+    color: var(--text-color-light);
+}
+
+.theme.light .theme-switcher .theme {
+    background-color: var(--text-color-light);
+    mask-image: url('../images/icons/theme-light.svg');
 }
 
 .theme.dark .theme-switcher {
-    background-image: url('../images/icons/theme-dark.svg');
+    color: var(--text-color-dark);
+}
+
+.theme.dark .theme-switcher .theme {
+    background-color: var(--text-color-dark);
+    mask-image: url('../images/icons/theme-dark.svg');
 }
 
 .theme.dark *::selection {
@@ -507,22 +548,20 @@ main section article .technologies span:hover {
     color: var(--background-color-dark);
 }
 
-.theme.light .tab a:hover,
-.theme.light .tab a:focus {
+.theme.light .tab a:hover {
     background-color: color-mix(in srgb, var(--accent-color-light), transparent 75%);
 }
 
-.theme.dark .tab a:hover,
-.theme.dark .tab a:focus {
+.theme.dark .tab a:hover {
     background-color: color-mix(in srgb, var(--text-color-dark), transparent 75%);
 }
 
-.theme.light .icon.interactive:hover {
-    filter: brightness(0.5);
+.theme.light .profile a {
+    color: var(--text-color-light);
 }
 
-.theme.dark .icon.interactive:hover {
-    filter: brightness(2);
+.theme.dark .profile a {
+    color: var(--text-color-dark);
 }
 
 .theme.light {
@@ -607,8 +646,25 @@ a.link {
     color: var(--accent-color-dark);
 }
 
+a.link::after {
+    content: 'hello';
+    display: inline-block;
+    mask-image: url('../images/icons/external.svg');
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    background-color: currentColor;
+    width: 0.6em;
+    margin-left: 0.25em;
+    opacity: 0.85;
+}
+
 a.link:hover {
     color: var(--hover-color-dark);
+}
+
+a.link:focus-visible {
+    outline: 2px solid currentColor;
 }
 
 a.link.bordered {

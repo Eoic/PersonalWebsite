@@ -1,21 +1,21 @@
 # Personal website
 
-### Development
+## Development
 
-#### Dependencies
+### Dependencies
 
 - Install NodeJS dependencies:
 
-```
+```bash
 npm ci
 ```
 
 - Install Python dependences:
 
-```
+```bash
 python -m venv .venv
 . .venv/bin/activate
-pip install -r requirements.txt
+
 ```
 
 #### Scripts
@@ -33,6 +33,7 @@ pip install -r requirements.txt
     ```
 
 - Serve production site:
+
     ```bash
     npm run serve
     ```
