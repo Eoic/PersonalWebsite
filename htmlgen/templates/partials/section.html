@@ -26,6 +26,14 @@
             %else:
                 <h3>${item["title"]}</h3>
             %endif
+            
+            %if "media" in item:
+                %for res in item["media"]:
+                    %if res["type"] == "image":
+                        <img src="${res['src']}" alt="${res['alt']}" lazy>
+                    %endif
+                %endfor
+            %endif
 
             <div>${item["description"]}</div>
             <hr>

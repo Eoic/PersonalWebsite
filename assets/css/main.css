@@ -313,6 +313,11 @@ article {
     letter-spacing: 0.01em;
 }
 
+article img {
+    max-width: 100%;
+    border-radius: 0.25rem;
+}
+
 /* Content headings (h3 in main sections) */
 main section article h3 {
     margin: 0 0 0.75rem 0;
@@ -674,4 +679,12 @@ a.link.bordered {
 
 p.info {
     margin-bottom: 0;
+}
+
+.theme.light .icon, .theme.light .theme-switcher .theme {
+    background-color: #2d2d2d;
+}
+
+.theme.dark .icon, .theme.dark .theme-switcher .theme {
+    background-color: #c0c0c0;
 }

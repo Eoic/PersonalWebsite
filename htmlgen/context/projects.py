@@ -8,6 +8,11 @@ projects = {
             "title": "ASCIIGround",
             "title_link": "https://github.com/Eoic/ASCIIGround",
             "subtitle": "a TypeScript library for creating backgrounds out of character patterns.",
+            "media": [{
+                "type": "image",
+                "src": "images/projects/asciiground.webp",
+                "alt": "ASCIIGround demo screenshot",
+            }],
             "description": """
                     <p>
                         Renders a grid of characters on the canvas using patterns such as Perlin noise, simplex
@@ -35,6 +40,11 @@ projects = {
             "title": "Boids",
             "title_link": "https://github.com/Eoic/Boids",
             "subtitle": "a flocking simulation",
+            "media": [{
+                "type": "image",
+                "src": "images/projects/boids.webp",
+                "alt": "Boids simulation screenshot",
+            }],
             "description": """
                     <p>
                         A flocking simulation based on the Boids algorithm. The simulation
@@ -60,6 +70,13 @@ projects = {
             "title": "Papyrus",
             "title_link": "https://github.com/Eoic/Papyrus",
             "subtitle": "a cross-platform e-book management system",
+            "media": [
+                {
+                    "type": "image",
+                    "src": "images/projects/papyrus-library.webp",
+                    "alt": "Papyrus library view",
+                }
+            ],
             "description": """
                     <p>
                         I like collecting books, both in physical and digital form,

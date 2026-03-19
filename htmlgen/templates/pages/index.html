@@ -13,13 +13,13 @@
         </div>
         <ul>
             %for item in reading:
-            <li>
-                %if "link" in item:
-                <a class="link bordered" href="${item['link']}" target="_blank">${item['title']};</a>
-                %else:
-                <span>${item['title']}</span> &mdash; <em>${item['author']}</em>;
-                %endif
-            </li>
+                <li>
+                    %if "link" in item:
+                        <a class="link bordered" href="${item['link']}" target="_blank">${item['title']};</a>
+                    %else:
+                        <span>${item['title']}</span> &mdash; <em>${item['author']}</em>;
+                    %endif
+                </li>
             %endfor
         </ul>
 
@@ -31,7 +31,7 @@
 
             <ul>
                 %for item in learning_about:
-                <li> ${item}; </li>
+                    <li> ${item}; </li>
                 %endfor
             </ul>
         %endif
@@ -42,10 +42,10 @@
         </div>
         <ul>
             %for item in working_on:
-            <li>
-                <a class="link bordered" href="${item['link']}" target="_blank">${item['title']}</a>
-                - ${item['subtitle']};
-            </li>
+                <li>
+                    <a class="link bordered" href="${item['link']}" target="_blank">${item['title']}</a>
+                    - ${item['subtitle']};
+                </li>
             %endfor
         </ul>
     </article>
