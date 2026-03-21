@@ -9,7 +9,6 @@
         const classList = document.documentElement.classList;
         classList.toggle('light') && localStorage.setItem('theme', 'light');
         classList.toggle('dark') && localStorage.setItem('theme', 'dark');
-        worker.postMessage({ type: 'theme', color: getColor() });
     };
 
     const computeEntryTimespans = () => {
