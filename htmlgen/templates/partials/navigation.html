@@ -1,9 +1,9 @@
-<nav role="navigation" aria-label="Main navigation">
+<nav aria-label="Main navigation">
     <div class="tab-navigator">
-        <ul id="tabs" class="tabs" role="tablist">
+        <ul id="tabs" class="tabs">
             % for item in navigation:
-            <li class="tab" role="presentation" ${" data-active" if page==item["id"] else "" }>
-                <a href="${item['url']}" role="tab" aria-selected="${'true' if page == item['id'] else 'false'}">
+            <li class="tab" ${" data-active" if page==item["id"] else "" }>
+                <a href="${item['url']}" ${"aria-current='page'" if page == item['id'] else ""}>
                     ${item["title"]} </a>
             </li>
             % endfor

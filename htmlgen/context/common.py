@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import date
 
 print(os.getcwd())
 
@@ -10,6 +11,8 @@ common = {
     "page": "common",
     "build": {
         "version": package_data.get("version", "1.0.0"),
+        "year": date.today().year,
+        "date": date.today().strftime("%Y-%m-%d"),
     },
     "personal": {
         "location": "Kaunas, Lithuania",

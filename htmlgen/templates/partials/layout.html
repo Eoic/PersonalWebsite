@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="${description}">
     <meta name="author" content="Karolis Strazdas">
@@ -113,13 +112,17 @@
 </head>
 
 <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <button id="theme-switcher" class="theme-switcher" aria-label="Theme switcher">
         <span class="icon theme"></span>
     </button>
 
     <%include file="header.html" />
     <%include file="navigation.html" />
-    <main>${self.body()}</main>
+    <main id="main-content">${self.body()}</main>
+    <footer>
+        <p>v${build['version']} &middot; Updated ${build['date']}</p>
+    </footer>
     <script src="js/main.js?v=${build['version']}"></script>
 </body>
 

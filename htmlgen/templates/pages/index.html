@@ -2,14 +2,14 @@
 
 <section>
     <article>
-        <div><b> Description </b></div>
+        <h2 class="section-label"> Description </h2>
         <hr>
         <p class="info">${content_description}</p>
     </article>
     <article>
         <div class="flex row-center-y col-gap-1">
             <span class="icon medium inline read"></span>
-            <b> Reading </b>
+            <h2 class="section-label"> Reading </h2>
         </div>
         <ul>
             %for item in reading:
@@ -26,7 +26,7 @@
         %if learning_about:
             <div class="flex row-center-y col-gap-1 mt-1">
                 <span class="icon medium inline learn"></span>
-                <b> Learning about </b>
+                <h3 class="section-label"> Learning about </h3>
             </div>
 
             <ul>
@@ -38,7 +38,7 @@
 
         <div class="flex row-center-y col-gap-1 mt-1">
             <span class="icon medium inline work"></span>
-            <b> Working on </b>
+            <h3 class="section-label"> Working on </h3>
         </div>
         <ul>
             %for item in working_on:
