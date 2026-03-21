@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Learn about Karolis Strazdas, a software engineer passionate about building innovative web applications, functional programming, and machine learning. Explore my background and interests.">
     <meta name="author" content="Karolis Strazdas">
@@ -113,6 +112,7 @@
 </head>
 
 <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <button id="theme-switcher" class="theme-switcher" aria-label="Theme switcher">
         <span class="icon theme"></span>
     </button>
@@ -125,8 +125,8 @@
 
         <div class="profile-location flex row-center-y col-gap-1">
             <div class="flex row-center-y">
-                <h3><span class="icon location medium" aria-hidden="true"></span><span
-                        itemprop="addressLocality">Kaunas, Lithuania</span></h3>
+                <p class="location-text"><span class="icon location medium" aria-hidden="true"></span><span
+                        itemprop="addressLocality">Kaunas, Lithuania</span></p>
             </div>
 
             <nav class="social-links flex col-gap-1" aria-label="Social media links">
@@ -147,33 +147,33 @@
         </div>
     </section>
 </header>
-    <nav role="navigation" aria-label="Main navigation">
+    <nav aria-label="Main navigation">
     <div class="tab-navigator">
-        <ul id="tabs" class="tabs" role="tablist">
-            <li class="tab" role="presentation"  data-active>
-                <a href="/" role="tab" aria-selected="true">
+        <ul id="tabs" class="tabs">
+            <li class="tab"  data-active>
+                <a href="/" aria-current='page'>
                     About </a>
             </li>
-            <li class="tab" role="presentation" >
-                <a href="/positions" role="tab" aria-selected="false">
+            <li class="tab" >
+                <a href="/positions" >
                     Positions </a>
             </li>
-            <li class="tab" role="presentation" >
-                <a href="/education" role="tab" aria-selected="false">
+            <li class="tab" >
+                <a href="/education" >
                     Education </a>
             </li>
-            <li class="tab" role="presentation" >
-                <a href="/projects" role="tab" aria-selected="false">
+            <li class="tab" >
+                <a href="/projects" >
                     Projects </a>
             </li>
         </ul>
     </div>
 </nav>
-    <main>
+    <main id="main-content">
 
 <section>
     <article>
-        <div><b> Description </b></div>
+        <h2 class="section-label"> Description </h2>
         <hr>
         <p class="info">I'm a software engineer passionate about building useful and/or interesting things 
             for the web. Feel free to check out my projects and work experience here.</p>
@@ -181,7 +181,7 @@
     <article>
         <div class="flex row-center-y col-gap-1">
             <span class="icon medium inline read"></span>
-            <b> Reading </b>
+            <h2 class="section-label"> Reading </h2>
         </div>
         <ul>
                 <li>
@@ -192,7 +192,7 @@
 
         <div class="flex row-center-y col-gap-1 mt-1">
             <span class="icon medium inline work"></span>
-            <b> Working on </b>
+            <h3 class="section-label"> Working on </h3>
         </div>
         <ul>
                 <li>
@@ -202,6 +202,9 @@
         </ul>
     </article>
 </section></main>
+    <footer>
+        <p>v2.0.0 &middot; Updated 2026-03-21</p>
+    </footer>
     <script src="js/main.js?v=2.0.0"></script>
 </body>
 

@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Discover Karolis Strazdas' portfolio of software projects including ASCIIGround, Boids simulation, Papyrus book management app, and other innovative applications.">
     <meta name="author" content="Karolis Strazdas">
@@ -113,6 +112,7 @@
 </head>
 
 <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <button id="theme-switcher" class="theme-switcher" aria-label="Theme switcher">
         <span class="icon theme"></span>
     </button>
@@ -125,8 +125,8 @@
 
         <div class="profile-location flex row-center-y col-gap-1">
             <div class="flex row-center-y">
-                <h3><span class="icon location medium" aria-hidden="true"></span><span
-                        itemprop="addressLocality">Kaunas, Lithuania</span></h3>
+                <p class="location-text"><span class="icon location medium" aria-hidden="true"></span><span
+                        itemprop="addressLocality">Kaunas, Lithuania</span></p>
             </div>
 
             <nav class="social-links flex col-gap-1" aria-label="Social media links">
@@ -147,29 +147,29 @@
         </div>
     </section>
 </header>
-    <nav role="navigation" aria-label="Main navigation">
+    <nav aria-label="Main navigation">
     <div class="tab-navigator">
-        <ul id="tabs" class="tabs" role="tablist">
-            <li class="tab" role="presentation" >
-                <a href="/" role="tab" aria-selected="false">
+        <ul id="tabs" class="tabs">
+            <li class="tab" >
+                <a href="/" >
                     About </a>
             </li>
-            <li class="tab" role="presentation" >
-                <a href="/positions" role="tab" aria-selected="false">
+            <li class="tab" >
+                <a href="/positions" >
                     Positions </a>
             </li>
-            <li class="tab" role="presentation" >
-                <a href="/education" role="tab" aria-selected="false">
+            <li class="tab" >
+                <a href="/education" >
                     Education </a>
             </li>
-            <li class="tab" role="presentation"  data-active>
-                <a href="/projects" role="tab" aria-selected="true">
+            <li class="tab"  data-active>
+                <a href="/projects" aria-current='page'>
                     Projects </a>
             </li>
         </ul>
     </div>
 </nav>
-    <main>
+    <main id="main-content">
 <section>
         <article>
             <div >
@@ -183,7 +183,7 @@
                     - a TypeScript library for creating backgrounds out of character patterns.
                 </h3>
             
-                        <img src="images/projects/asciiground.webp" alt="ASCIIGround demo screenshot" lazy>
+                        <img src="images/projects/asciiground.webp" alt="ASCIIGround demo screenshot" loading="lazy">
 
             <div><p>
                         Renders a grid of characters on the canvas using patterns such as Perlin noise, simplex
@@ -220,7 +220,7 @@
                     - a flocking simulation
                 </h3>
             
-                        <img src="images/projects/boids.webp" alt="Boids simulation screenshot" lazy>
+                        <img src="images/projects/boids.webp" alt="Boids simulation screenshot" loading="lazy">
 
             <div><p>
                         A flocking simulation based on the Boids algorithm. The simulation
@@ -255,7 +255,7 @@
                     - a cross-platform e-book management system
                 </h3>
             
-                        <img src="images/projects/papyrus-library.webp" alt="Papyrus library view" lazy>
+                        <img src="images/projects/papyrus-library.webp" alt="Papyrus library view" loading="lazy">
 
             <div><p>
                         I like collecting books, both in physical and digital form,
@@ -412,6 +412,9 @@
 </section>
 
 </main>
+    <footer>
+        <p>v2.0.0 &middot; Updated 2026-03-21</p>
+    </footer>
     <script src="js/main.js?v=2.0.0"></script>
 </body>
 
