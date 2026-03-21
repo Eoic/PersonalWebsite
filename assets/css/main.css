@@ -28,6 +28,7 @@ body {
 body {
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
     padding-inline: clamp(1.5rem, 5vw, 4rem);
     padding-block: 0 clamp(1rem, 5vw, 4rem);
 }
@@ -71,6 +72,19 @@ hr {
     box-sizing: border-box;
 }
 
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    padding: 0.75rem 1.5rem;
+    z-index: 100;
+    font-weight: 500;
+}
+
+.skip-link:focus {
+    top: 1rem;
+}
+
 a {
     text-decoration: none;
 }
@@ -94,7 +108,8 @@ header h2 {
     letter-spacing: 0.005em;
 }
 
-header h3 {
+header h3,
+.location-text {
     margin: 0;
     font-weight: 400;
     font-size: clamp(1rem, 5vw, 1.25rem);
@@ -151,6 +166,14 @@ header h3 {
     max-width: 1.75rem;
     min-height: 1.75rem;
     max-height: 1.75rem;
+}
+
+.icon.medium.interactive {
+    padding: 0.5rem;
+    min-width: 2.75rem;
+    max-width: 2.75rem;
+    min-height: 2.75rem;
+    max-height: 2.75rem;
 }
 
 .icon.inline {
@@ -218,8 +241,9 @@ button.icon:focus-visible {
 }
 
 .tab a:focus-visible {
-    outline: none;
-    background-color: color-mix(in srgb, currentColor, transparent 75%);;
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+    background-color: color-mix(in srgb, currentColor, transparent 75%);
 }
 
 .tab:not(:first-child) {
@@ -351,6 +375,14 @@ main section article strong {
     letter-spacing: 0.005em;
 }
 
+.section-label {
+    margin: 0;
+    font-size: inherit;
+    font-weight: 600;
+    letter-spacing: 0.005em;
+    display: inline;
+}
+
 article p.quote {
     margin-top: 0.5rem;
     font-style: italic;
@@ -365,7 +397,7 @@ article p.quote {
 
 main {
     flex: 1;
-    font-size: clamp(0.85em, 3vw, 1em);
+    font-size: clamp(0.9375em, 3vw, 1em);
 }
 
 main section {
@@ -406,17 +438,13 @@ main section article .technologies span {
     letter-spacing: 0.01em;
 }
 
-main section article .technologies span:hover {
-    border-color: var(--accent-color-dark);
-}
-
 /* Themes. */
 .theme-switcher {
     right: 0;
     border: 0;
     margin: 2rem;
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2.75rem;
+    height: 2.75rem;
     cursor: pointer;
     position: absolute;
     background-size: contain;
@@ -488,18 +516,6 @@ main section article .technologies span:hover {
 
 .theme.dark main section article:hover {
     border-color: var(--accent-color-dark);
-}
-
-.theme.light main section article .technologies span:hover {
-    border-color: var(--accent-color-light);
-    color: var(--background-color-light);
-    background-color: var(--accent-color-light);
-}
-
-.theme.dark main section article .technologies span:hover {
-    border-color: var(--accent-color-dark);
-    color: var(--background-color-dark);
-    background-color: var(--text-color-dark);
 }
 
 .theme.light hr {
@@ -606,12 +622,10 @@ main section article .technologies span:hover {
 }
 
 .theme.light a.link.bordered {
-    border-bottom-color: var(--text-color-light);
     border-bottom-color: color-mix(in srgb, var(--text-color-light), transparent 25%);
 }
 
 .theme.dark a.link.bordered {
-    border-bottom-color: var(--text-color-dark);
     border-bottom-color: color-mix(in srgb, var(--text-color-dark), transparent 25%);
 }
 
@@ -652,7 +666,7 @@ a.link {
 }
 
 a.link::after {
-    content: 'hello';
+    content: '';
     display: inline-block;
     mask-image: url('../images/icons/external.svg');
     mask-size: contain;
@@ -660,6 +674,7 @@ a.link::after {
     mask-position: center;
     background-color: currentColor;
     width: 0.6em;
+    height: 0.6em;
     margin-left: 0.25em;
     opacity: 0.85;
 }
@@ -674,11 +689,35 @@ a.link:focus-visible {
 
 a.link.bordered {
     position: relative;
-    border-bottom: 1px solid currentColor;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
 }
 
 p.info {
     margin-bottom: 0;
+}
+
+footer {
+    margin-top: auto;
+    padding: 2rem 0 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+    opacity: 0.7;
+}
+
+footer p {
+    margin: 0;
+}
+
+.theme.light .skip-link {
+    background-color: var(--text-color-light);
+    color: var(--background-color-light);
+}
+
+.theme.dark .skip-link {
+    background-color: var(--text-color-dark);
+    color: var(--background-color-dark);
 }
 
 .theme.light .icon, .theme.light .theme-switcher .theme {
