@@ -30,7 +30,7 @@
             %if "media" in item:
                 %for res in item["media"]:
                     %if res["type"] == "image":
-                        <img src="${res['src']}" alt="${res['alt']}" loading="lazy">
+                        <img src="/assets/${res['src']}" alt="${res['alt']}" loading="lazy">
                     %endif
                 %endfor
             %endif

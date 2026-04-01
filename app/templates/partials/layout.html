@@ -11,8 +11,12 @@
         content="software engineer, web development, Python, JavaScript, TypeScript, React, Django, full-stack developer, Kaunas, Lithuania">
     <meta name="theme-color" content="#0d1117">
     <link rel="canonical" href="https://karolis-strazdas.lt">
-    <link rel="stylesheet" type="text/css" href="css/main.css?v=${build['version']}">
-    <link rel="preload" href="css/main.css?v=${build['version']}" as="style">
+    <%
+        css_file = "main.css" if debug else "main.min.css"
+        js_file = "main.js" if debug else "main.min.js"
+    %>
+    <link rel="stylesheet" type="text/css" href="/assets/css/${css_file}?v=${build['version']}">
+    <link rel="preload" href="/assets/css/${css_file}?v=${build['version']}" as="style">
 
     <!-- OpenGraph -->
     <meta property="og:title" content="Karolis Strazdas${'• ' + title if title != 'About' else ''}">
@@ -38,10 +42,10 @@
         href="https://karolis-strazdas.lt/sitemap.xml">
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
-    <link rel="manifest" href="images/favicon/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/assets/images/favicon/site.webmanifest">
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
@@ -94,20 +98,6 @@
         document.documentElement.classList.add(selectedTheme ?? defaultTheme);
     </script>
 
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then((registrations) => {
-                registrations.forEach((registration) => registration.unregister());
-            });
-        }
-    </script>
-
-    <script>
-        window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-    </script>
-
-    <script defer src="/_vercel/speed-insights/script.js"></script>
-
     <title> Karolis Strazdas • ${title}</title>
 </head>
 
@@ -123,7 +113,10 @@
     <footer>
         <p>v${build['version']} &middot; Updated ${build['date']}</p>
     </footer>
-    <script src="js/main.js?v=${build['version']}"></script>
+    <script src="/assets/js/${js_file}?v=${build['version']}"></script>
+% if debug:
+    <script src="/assets/js/livereload.js"></script>
+% endif
 </body>
 
 </html>

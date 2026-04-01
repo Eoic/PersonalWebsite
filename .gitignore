@@ -1,6 +1,6 @@
-build/
-node_modules/
-*.min.*
 .venv
-assets/html
 __pycache__/
+data/
+*.min.css
+*.min.js
+node_modules/
