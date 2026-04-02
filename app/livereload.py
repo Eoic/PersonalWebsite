@@ -16,6 +16,7 @@ from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
 _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_RELOAD_EVENT_TYPES = {"created", "modified", "deleted", "moved"}
 
 # All connected SSE clients receive events through these queues.
 _clients: list[queue.Queue] = []
@@ -38,6 +39,8 @@ class _ReloadHandler(FileSystemEventHandler):
 
     def on_any_event(self, event):
         if event.is_directory:
+            return
+        if event.event_type not in _RELOAD_EVENT_TYPES:
             return
 
         with self._lock:
