@@ -1,0 +1,38 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Sync files
+        run: |
+          rsync -avz --delete \
+            --exclude='.git' \
+            --exclude='.venv' \
+            --exclude='__pycache__' \
+            --exclude='.ruff_cache' \
+            --exclude='data/' \
+            ./ root@${{ secrets.DEPLOY_HOST }}:/opt/website/
+
+      - name: Install service and restart
+        run: |
+          ssh root@${{ secrets.DEPLOY_HOST }} << 'EOF'
+            cp /opt/website/website.service /etc/systemd/system/website.service
+            systemctl daemon-reload
+            cd /opt/website && uv sync
+            systemctl enable --now website
+            systemctl restart website
+          EOF

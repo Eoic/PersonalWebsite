@@ -1,0 +1,13 @@
+[Unit]
+Description=Personal Website
+After=network.target
+
+[Service]
+Type=exec
+WorkingDirectory=/opt/website
+ExecStart=/opt/website/.venv/bin/gunicorn wsgi:app --bind 127.0.0.1:8000 --workers 2
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
