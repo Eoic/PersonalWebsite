@@ -4,6 +4,8 @@ After=network.target
 
 [Service]
 Type=exec
+User=website
+Group=website
 WorkingDirectory=/opt/website
 ExecStart=/opt/website/.venv/bin/gunicorn wsgi:app --bind 127.0.0.1:8000 --workers 2
 Restart=on-failure

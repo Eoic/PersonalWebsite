@@ -20,19 +20,35 @@ jobs:
       - name: Sync files
         run: |
           rsync -avz --delete \
-            --exclude='.git' \
-            --exclude='.venv' \
-            --exclude='__pycache__' \
-            --exclude='.ruff_cache' \
-            --exclude='data/' \
+            --exclude='.git/' \
+            --exclude-from='.gitignore' \
             ./ root@${{ secrets.DEPLOY_HOST }}:/opt/website/
 
       - name: Install service and restart
         run: |
           ssh root@${{ secrets.DEPLOY_HOST }} << 'EOF'
+            set -eu
+
+            command -v uv >/dev/null || {
+              echo "uv is required on the deploy host."
+              exit 1
+            }
+
+            uv python find --no-python-downloads '>=3.14' >/dev/null || {
+              echo "Python 3.14+ is required on the deploy host."
+              exit 1
+            }
+
+            id -u website >/dev/null 2>&1 || {
+              echo "The deploy host must have a website user."
+              exit 1
+            }
+
             cp /opt/website/website.service /etc/systemd/system/website.service
+            chown -R website:website /opt/website
+            su -s /bin/sh -c 'cd /opt/website && uv sync --locked --no-python-downloads' website
+            su -s /bin/sh -c 'cd /opt/website && uv run python -m app.build_assets' website
             systemctl daemon-reload
-            cd /opt/website && uv sync
-            systemctl enable --now website
+            systemctl enable website
             systemctl restart website
           EOF
