@@ -5,3 +5,4 @@ data/
 *.min.js
 node_modules/
 build/
+.ruff_cache/
