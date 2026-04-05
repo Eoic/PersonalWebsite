@@ -35,6 +35,7 @@
 
         timespans.forEach((timespan) => {
             const durationElement = timespan.querySelector('[data-duration]');
+
             if (!durationElement) {
                 return;
             }

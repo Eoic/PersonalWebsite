@@ -1,39 +1,30 @@
 # Personal website
 
+## Prerequisites
+
+- Python 3.14+
+- [uv](https://docs.astral.sh/uv/)
+
+## Setup
+
+```bash
+uv sync
+make seed
+```
+
 ## Development
 
-### Dependencies
-
-- Install NodeJS dependencies:
-
 ```bash
-npm ci
+make dev
 ```
 
-- Install Python dependences:
+Starts Flask on `localhost:5000` with live reload for templates and assets.
+
+## Production
 
 ```bash
-python -m venv .venv
-. .venv/bin/activate
-
+make build-assets
+make serve
 ```
 
-#### Scripts
-
-- Start development server:
-
-    ```bash
-    npm run dev
-    ```
-
-- Build site for production:
-
-    ```bash
-    npm run build
-    ```
-
-- Serve production site:
-
-    ```bash
-    npm run serve
-    ```
+Minifies CSS/JS and runs Gunicorn on `127.0.0.1:8000`.

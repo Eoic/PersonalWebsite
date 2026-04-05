@@ -76,7 +76,12 @@ class PositionTag(BaseModel):
 
 
 class EducationTag(BaseModel):
-    education = ForeignKeyField(Education, backref="education_tags", on_delete="CASCADE")
+    education = ForeignKeyField(
+        Education,
+        backref="education_tags",
+        on_delete="CASCADE",
+    )
+
     tag = ForeignKeyField(Tag, backref="education_tags", on_delete="CASCADE")
 
     class Meta:
@@ -105,6 +110,13 @@ class Post(BaseModel):
     sort_order = IntegerField()
 
 
+class Book(BaseModel):
+    id = AutoField()
+    title = CharField()
+    author = CharField()
+    cover = CharField()
+
+
 ALL_MODELS = [
     Page,
     Position,
@@ -117,4 +129,5 @@ ALL_MODELS = [
     ProjectTag,
     About,
     Post,
+    Book,
 ]

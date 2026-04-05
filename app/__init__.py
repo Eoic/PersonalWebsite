@@ -58,8 +58,14 @@ def create_app(config=None):
         init_db(db_path=app.config.get("DATABASE_PATH"))
 
     # Per-request database connection management.
+    # The SSE live-reload endpoint is long-lived and needs no database access,
+    # so skip connection handling for it to avoid holding idle connections.
     @app.before_request
     def _db_connect():
+        from flask import request
+
+        if request.endpoint == "_dev_sse":
+            return
         db_proxy.connect(reuse_if_open=True)
 
     @app.teardown_request
@@ -67,14 +73,7 @@ def create_app(config=None):
         if not db_proxy.is_closed():
             db_proxy.close()
 
-    # Register the main blueprint (page routes).
     from .routes import bp as main_bp
 
     app.register_blueprint(main_bp)
-
-    # Enable live reload in debug mode.
-    from . import livereload
-
-    livereload.init_app(app)
-
     return app

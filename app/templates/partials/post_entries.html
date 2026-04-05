@@ -9,4 +9,8 @@
             <div class="entry-copy">${item["body"]}</div>
         </article>
     % endfor
+
+    %if not items:
+        <p> Nothing here yet. </p>
+    % endif
 </section>

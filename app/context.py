@@ -15,8 +15,10 @@ _project_root = os.path.dirname(_app_dir)
 def _get_version():
     """Read the project version from pyproject.toml (cached)."""
     pyproject_path = os.path.join(_project_root, "pyproject.toml")
-    with open(pyproject_path, "rb") as f:
-        data = tomllib.load(f)
+
+    with open(pyproject_path, "rb") as file:
+        data = tomllib.load(file)
+
     return data["project"]["version"]
 
 
@@ -44,8 +46,8 @@ def get_common_context(page_slug):
             "company": "Indeform Ltd",
         },
         "navigation": [
-            {"id": p.slug, "title": p.title, "url": p.url}
-            for p in Page.select().order_by(Page.sort_order)
+            {"id": page.slug, "title": page.title, "url": page.url}
+            for page in Page.select().order_by(Page.sort_order)
         ],
         "build": {
             "version": _get_version(),

@@ -3,8 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="${description}">
     <meta name="author" content="Karolis Strazdas">
     <meta name="keywords"
@@ -17,7 +16,7 @@
         page_path = "~/about" if page == "index" else f"~/{page}"
     %>
     <link rel="stylesheet" type="text/css" href="/assets/css/${css_file}?v=${build['version']}">
-    <link rel="preload" href="/assets/css/${css_file}?v=${build['version']}" as="style">
+
 
     <meta property="og:title" content="Karolis Strazdas${' • ' + title if title != 'About' else ''}">
     <meta property="og:image" content="https://karolis-strazdas.lt/assets/images/avatar.webp">
@@ -36,8 +35,7 @@
     <meta name="twitter:image" content="https://karolis-strazdas.lt/assets/images/avatar.webp">
 
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <link rel="alternate" type="application/rss+xml" title="Karolis Strazdas - Software Engineer"
-        href="https://karolis-strazdas.lt/sitemap.xml">
+
 
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png">
@@ -101,6 +99,7 @@
 
             document.documentElement.classList.add(theme);
             const meta = document.getElementById('theme-color-meta');
+
             if (meta) {
                 meta.setAttribute('content', themeColor);
             }
@@ -116,11 +115,6 @@
         <aside class="site-rail">
             <%include file="header.html" />
             <%include file="navigation.html" />
-            <footer class="site-footer">
-                <p>v${build['version']}</p>
-                <p>Updated ${build['date']}</p>
-                <p>&copy; ${build['year']} Karolis Strazdas</p>
-            </footer>
         </aside>
 
         <main id="main-content" class="site-main">
@@ -133,11 +127,12 @@
             </header>
             ${self.body()}
         </main>
+
+        <footer class="site-footer">
+            <p>v${build['version']} &bull; updated ${build['date']}</p>
+        </footer>
     </div>
     <script src="/assets/js/${js_file}?v=${build['version']}"></script>
-% if debug:
-    <script src="/assets/js/livereload.js"></script>
-% endif
 </body>
 
 </html>
