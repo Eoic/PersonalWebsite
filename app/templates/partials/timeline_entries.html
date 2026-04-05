@@ -1,0 +1,31 @@
+<section class="entry-list">
+    % for item in items:
+        <article class="entry entry-timeline">
+            <header class="entry-header" data-timespan>
+                <p class="entry-meta">
+                    ${article_title_prefix}
+                    <span class="entry-separator">/</span>
+                    <span>${item["from"].strftime("%b %Y")}</span>
+                    <span>to</span>
+                    <span>${item["until"].strftime("%b %Y") if item["until"] else "Now"}</span>
+                    <span
+                        data-date-from="${item['from'].strftime('%Y-%m-%d') if item['from'] else ''}"
+                        data-date-until="${item['until'].strftime('%Y-%m-%d') if item['until'] else ''}"
+                        data-duration
+                    ></span>
+                </p>
+                <h2>${item["title"]}</h2>
+            </header>
+
+            <div class="entry-copy">${item["description"]}</div>
+
+            % if item["tags"]:
+                <ul class="tag-list" aria-label="Technologies">
+                    % for tag in item["tags"]:
+                        <li>${tag}</li>
+                    % endfor
+                </ul>
+            % endif
+        </article>
+    % endfor
+</section>

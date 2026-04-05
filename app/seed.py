@@ -14,6 +14,7 @@ from .models import (
     Education,
     EducationTag,
     Page,
+    Post,
     Position,
     PositionTag,
     Project,
@@ -31,6 +32,7 @@ PAGES = [
     {"slug": "positions", "title": "Positions", "description": "Explore Karolis Strazdas' professional experience as a software engineer, including his current role at Indeform Ltd. and previous internship experience.", "url": "/positions", "sort_order": 1},
     {"slug": "education", "title": "Education", "description": "Learn about Karolis Strazdas' educational background, including his Bachelor's degree in Software Systems from Kaunas University of Technology.", "url": "/education", "sort_order": 2},
     {"slug": "projects", "title": "Projects", "description": "Discover Karolis Strazdas' portfolio of software projects including ASCIIGround, Boids simulation, Papyrus book management app, and other innovative applications.", "url": "/projects", "sort_order": 3},
+    {"slug": "posts", "title": "Posts", "description": "Read short notes, engineering updates, and journal-style posts from Karolis Strazdas.", "url": "/posts", "sort_order": 4},
 ]
 
 POSITIONS = [
@@ -130,6 +132,39 @@ ABOUT = [
     {"key": "working_on", "value": json.dumps([{"title": "Papyrus", "subtitle": "a cross-platform book reading and management application", "link": "https://github.com/PapyrusReader/client"}])},
 ]
 
+POSTS = [
+    {
+        "title": "Redesigning the site",
+        "published_on": date(2026, 4, 2),
+        "body": "<p>I wanted this website to feel quieter and more precise. The new direction is closer to a working notebook than a portfolio gallery: smaller type, clearer hierarchy, fewer visual flourishes, and more room for the actual content.</p>",
+        "sort_order": 0,
+    },
+    {
+        "title": "Papyrus worklog",
+        "published_on": date(2026, 4, 1),
+        "body": "<p>Most of my side-project energy still goes into Papyrus. I keep circling around the same core question: how to make personal library management feel fast, local-first, and pleasant across devices without turning it into a bloated reading platform.</p>",
+        "sort_order": 0,
+    },
+    {
+        "title": "Reading note",
+        "published_on": date(2026, 3, 29),
+        "body": "<p>Still working through <em>Fluent Python</em>. It is one of those books that rewards slower reading. Every few chapters I end up revisiting small parts of the standard library that I had been using mechanically for years.</p>",
+        "sort_order": 0,
+    },
+    {
+        "title": "Engineering observation",
+        "published_on": date(2026, 3, 24),
+        "body": "<p>A lot of interface polish comes from removing uncertainty, not from adding decoration. Clear defaults, stable spacing, and predictable navigation usually do more work than extra components or motion.</p>",
+        "sort_order": 0,
+    },
+    {
+        "title": "Daily status",
+        "published_on": date(2026, 3, 20),
+        "body": "<p>Current baseline: daytime client work, evening experiments, and a running list of small website improvements that finally seemed worth consolidating into a full redesign.</p>",
+        "sort_order": 0,
+    },
+]
+
 # ---------------------------------------------------------------------------
 # Seeding logic
 # ---------------------------------------------------------------------------
@@ -200,6 +235,11 @@ def seed():
         for row in ABOUT:
             About.create(**row)
         print(f"  About: {len(ABOUT)}")
+
+        # Posts
+        for row in POSTS:
+            Post.create(**row)
+        print(f"  Posts: {len(POSTS)}")
 
         # Summary for tags
         tag_count = Tag.select().count()

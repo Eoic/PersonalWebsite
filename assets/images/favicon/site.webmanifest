@@ -7,47 +7,47 @@
     "orientation": "portrait-primary",
     "start_url": "/",
     "scope": "/",
-    "theme_color": "#0d1117",
-    "background_color": "#0d1117",
+    "theme_color": "#f3f3ef",
+    "background_color": "#f3f3ef",
     "lang": "en",
     "categories": ["productivity", "portfolio", "personal"],
     "icons": [
         {
-            "src": "/images/favicon/android-chrome-192x192.png",
+            "src": "/assets/images/favicon/android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/images/favicon/android-chrome-512x512.png",
+            "src": "/assets/images/favicon/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
         },
         {
-            "src": "/images/favicon/apple-touch-icon.png",
+            "src": "/assets/images/favicon/apple-touch-icon.png",
             "sizes": "180x180",
             "type": "image/png"
         },
         {
-            "src": "/images/favicon/favicon-16x16.png",
+            "src": "/assets/images/favicon/favicon-16x16.png",
             "sizes": "16x16",
             "type": "image/png"
         },
         {
-            "src": "/images/favicon/favicon-32x32.png",
+            "src": "/assets/images/favicon/favicon-32x32.png",
             "sizes": "32x32",
             "type": "image/png"
         }
     ],
     "screenshots": [
         {
-            "src": "/images/pwa/desktop.png",
+            "src": "/assets/images/pwa/desktop.png",
             "sizes": "1920x1080",
             "type": "image/png",
             "form_factor": "wide",
             "label": "Karolis Strazdas - Desktop View"
         },
         {
-            "src": "/images/pwa/mobile.png",
+            "src": "/assets/images/pwa/mobile.png",
             "sizes": "500x849",
             "type": "image/png",
             "form_factor": "narrow",

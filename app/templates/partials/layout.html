@@ -9,50 +9,48 @@
     <meta name="author" content="Karolis Strazdas">
     <meta name="keywords"
         content="software engineer, web development, Python, JavaScript, TypeScript, React, Django, full-stack developer, Kaunas, Lithuania">
-    <meta name="theme-color" content="#0d1117">
+    <meta name="theme-color" content="#f3f3ef" id="theme-color-meta">
     <link rel="canonical" href="https://karolis-strazdas.lt">
     <%
         css_file = "main.css" if debug else "main.min.css"
         js_file = "main.js" if debug else "main.min.js"
+        page_path = "~/about" if page == "index" else f"~/{page}"
     %>
     <link rel="stylesheet" type="text/css" href="/assets/css/${css_file}?v=${build['version']}">
     <link rel="preload" href="/assets/css/${css_file}?v=${build['version']}" as="style">
 
-    <!-- OpenGraph -->
-    <meta property="og:title" content="Karolis Strazdas${'• ' + title if title != 'About' else ''}">
-    <meta property="og:image" content="https://karolis-strazdas.lt/images/avatar.webp">
+    <meta property="og:title" content="Karolis Strazdas${' • ' + title if title != 'About' else ''}">
+    <meta property="og:image" content="https://karolis-strazdas.lt/assets/images/avatar.webp">
     <meta property="og:image:alt" content="Karolis Strazdas - Software Engineer">
     <meta property="og:image:width" content="400">
     <meta property="og:image:height" content="400">
     <meta property="og:description" content="${description}">
-    <meta property="og:url" content="https://karolis-strazdas.lt">
+    <meta property="og:url" content="https://karolis-strazdas.lt${'' if page == 'index' else '/' + page}">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="en_US">
     <meta property="og:site_name" content="Karolis Strazdas | Software Engineer">
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Karolis Strazdas${'• ' + title if title != 'About' else ''}">
+    <meta name="twitter:title" content="Karolis Strazdas${' • ' + title if title != 'About' else ''}">
     <meta name="twitter:description" content="${description}">
-    <meta name="twitter:image" content="https://karolis-strazdas.lt/images/avatar.webp">
+    <meta name="twitter:image" content="https://karolis-strazdas.lt/assets/images/avatar.webp">
 
-    <!-- Additional SEO -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="alternate" type="application/rss+xml" title="Karolis Strazdas - Software Engineer"
         href="https://karolis-strazdas.lt/sitemap.xml">
 
-    <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png">
     <link rel="manifest" href="/assets/images/favicon/site.webmanifest">
+
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
             "@type": "Person",
             "name": "Karolis Strazdas",
             "url": "https://karolis-strazdas.lt",
-            "image": "https://karolis-strazdas.lt/images/avatar.webp",
+            "image": "https://karolis-strazdas.lt/assets/images/avatar.webp",
             "jobTitle": "Software Engineer",
             "description": "${description}",
             "alumniOf": {
@@ -61,7 +59,7 @@
             },
             "knowsAbout": [
                 "Software Engineering",
-                "Web Development", 
+                "Web Development",
                 "Python",
                 "JavaScript",
                 "TypeScript",
@@ -87,32 +85,55 @@
             },
             "mainEntityOfPage": {
                 "@type": "WebPage",
-                "@id": "https://karolis-strazdas.lt"
+                "@id": "https://karolis-strazdas.lt${'' if page == 'index' else '/' + page}"
             }
         }
     </script>
 
     <script>
-        const selectedTheme = localStorage.getItem('theme') || 'dark';
-        const defaultTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        document.documentElement.classList.add(selectedTheme ?? defaultTheme);
+        (() => {
+            const storedTheme = localStorage.getItem('theme');
+            const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+            const theme = storedTheme || preferredTheme;
+            const themeColor = theme === 'dark' ? '#111111' : '#f3f3ef';
+
+            document.documentElement.classList.add(theme);
+            const meta = document.getElementById('theme-color-meta');
+            if (meta) {
+                meta.setAttribute('content', themeColor);
+            }
+        })();
     </script>
 
-    <title> Karolis Strazdas • ${title}</title>
+    <title>Karolis Strazdas${' • ' + title if title != 'About' else ''}</title>
 </head>
 
 <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
-    <button id="theme-switcher" class="theme-switcher" aria-label="Theme switcher">
-        <span class="icon theme"></span>
-    </button>
+    <div class="site-shell">
+        <aside class="site-rail">
+            <%include file="header.html" />
+            <%include file="navigation.html" />
+            <footer class="site-footer">
+                <p>v${build['version']}</p>
+                <p>Updated ${build['date']}</p>
+                <p>&copy; ${build['year']} Karolis Strazdas</p>
+            </footer>
+        </aside>
 
-    <%include file="header.html" />
-    <%include file="navigation.html" />
-    <main id="main-content">${self.body()}</main>
-    <footer>
-        <p>v${build['version']} &middot; Updated ${build['date']}</p>
-    </footer>
+        <main id="main-content" class="site-main">
+            <header class="page-header">
+                <p class="page-path">${page_path}</p>
+                <h1>${title}</h1>
+                % if page_intro:
+                    <p class="page-intro">${page_intro}</p>
+                % endif
+            </header>
+            ${self.body()}
+        </main>
+    </div>
     <script src="/assets/js/${js_file}?v=${build['version']}"></script>
 % if debug:
     <script src="/assets/js/livereload.js"></script>

@@ -1,30 +1,19 @@
-<header class="profile col-gap-2">
-    <section class="flex column row-gap-1">
-        <h1>${personal['name']}</h1>
-        <h2>${position['name']} at <span itemscope itemtype="https://schema.org/Organization"><span
-                    itemprop="name">${position['company']}</span></span></h2>
+<header class="rail-header">
+    <div class="identity-block">
+        <h2>${personal['name']}</h2>
+        <p>${position['name']} at ${position['company']}.</p>
+        <p>${personal['location']}</p>
+    </div>
 
-        <div class="profile-location flex row-center-y col-gap-1">
-            <div class="flex row-center-y">
-                <p class="location-text"><span class="icon location medium" aria-hidden="true"></span><span
-                        itemprop="addressLocality">${personal['location']}</span></p>
-            </div>
+    <div class="rail-actions">
+        <button id="theme-switcher" class="theme-switcher" type="button" aria-label="Toggle color theme">
+            theme
+        </button>
+    </div>
 
-            <nav class="social-links flex col-gap-1" aria-label="Social media links">
-                <a href="https://www.linkedin.com/in/karolis-strazdas" target="_blank" rel="noopener noreferrer"
-                    aria-label="LinkedIn profile - Learn more about me at LinkedIn">
-                    <span class="icon medium interactive linkedin"></span>
-                </a>
-
-                <a href="https://www.github.com/Eoic" target="_blank" rel="noopener noreferrer"
-                    aria-label="GitHub profile - Explore my side projects at GitHub">
-                    <span class="icon medium interactive github"></span>
-                </a>
-
-                <a href="mailto:karolis.strazdas@pm.me" aria-label="Email contact">
-                    <span class="icon medium interactive email"></span>
-                </a>
-            </nav>
-        </div>
-    </section>
+    <ul class="contact-list" aria-label="Contact and profile links">
+        <li><a href="https://www.github.com/Eoic" target="_blank" rel="noopener noreferrer">github</a></li>
+        <li><a href="https://www.linkedin.com/in/karolis-strazdas" target="_blank" rel="noopener noreferrer">linkedin</a></li>
+        <li><a href="mailto:karolis.strazdas@pm.me">email</a></li>
+    </ul>
 </header>

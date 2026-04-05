@@ -1,52 +1,56 @@
 <%inherit file="../partials/layout.html" />
 
-<section>
-    <article>
-        <h2 class="section-label"> Description </h2>
-        <hr>
-        <p class="info">${content_description}</p>
-    </article>
-    <article>
-        <div class="flex row-center-y col-gap-1">
-            <span class="icon medium inline read"></span>
-            <h2 class="section-label"> Reading </h2>
+<section class="document-section">
+    <article class="entry entry-note">
+        <header class="entry-header">
+            <p class="entry-meta">Profile</p>
+            <h2>Short version</h2>
+        </header>
+        <div class="entry-copy">
+            <p>${content_description}</p>
         </div>
-        <ul>
-            %for item in reading:
-                <li>
-                    %if "link" in item:
-                        <a class="link bordered" href="${item['link']}" target="_blank">${item['title']};</a>
-                    %else:
-                        <span>${item['title']}</span> &mdash; <em>${item['author']}</em>;
-                    %endif
-                </li>
-            %endfor
-        </ul>
+    </article>
 
-        %if learning_about:
-            <div class="flex row-center-y col-gap-1 mt-1">
-                <span class="icon medium inline learn"></span>
-                <h3 class="section-label"> Learning about </h3>
-            </div>
-
-            <ul>
-                %for item in learning_about:
-                    <li> ${item}; </li>
-                %endfor
+    <div class="about-grid">
+        <section class="subsection">
+            <h2>/working-on</h2>
+            <ul class="stack-list">
+                % for item in working_on:
+                    <li>
+                        <a href="${item['link']}" target="_blank" rel="noopener noreferrer">${item['title']}</a>
+                        <span>${item['subtitle']}</span>
+                    </li>
+                % endfor
             </ul>
-        %endif
+        </section>
 
-        <div class="flex row-center-y col-gap-1 mt-1">
-            <span class="icon medium inline work"></span>
-            <h3 class="section-label"> Working on </h3>
-        </div>
-        <ul>
-            %for item in working_on:
-                <li>
-                    <a class="link bordered" href="${item['link']}" target="_blank">${item['title']}</a>
-                    - ${item['subtitle']};
-                </li>
-            %endfor
-        </ul>
-    </article>
+        <section class="subsection">
+            <h2>/reading</h2>
+            <ul class="stack-list">
+                % for item in reading:
+                    <li>
+                        % if "link" in item:
+                            <a href="${item['link']}" target="_blank" rel="noopener noreferrer">${item['title']}</a>
+                        % else:
+                            <span>${item['title']}</span>
+                        % endif
+                        % if "author" in item:
+                            <span>${item['author']}</span>
+                        % endif
+                    </li>
+                % endfor
+            </ul>
+        </section>
+
+        % if learning_about:
+            <section class="subsection">
+                <h2>/learning-about</h2>
+                <ul class="stack-list">
+                    % for item in learning_about:
+                        <li><span>${item}</span></li>
+                    % endfor
+                </ul>
+            </section>
+        % endif
+    </div>
 </section>

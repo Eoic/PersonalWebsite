@@ -1,0 +1,12 @@
+<section class="entry-list">
+    % for item in items:
+        <article class="entry entry-post">
+            <header class="entry-header">
+                <p class="entry-meta">Post <span class="entry-separator">/</span> ${item["published_on"].strftime("%Y-%m-%d")}</p>
+                <h2>${item["title"]}</h2>
+            </header>
+
+            <div class="entry-copy">${item["body"]}</div>
+        </article>
+    % endfor
+</section>

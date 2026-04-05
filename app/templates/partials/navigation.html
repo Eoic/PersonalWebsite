@@ -1,12 +1,12 @@
-<nav aria-label="Main navigation">
-    <div class="tab-navigator">
-        <ul id="tabs" class="tabs">
-            % for item in navigation:
-            <li class="tab" ${" data-active" if page==item["id"] else "" }>
-                <a href="${item['url']}" ${"aria-current='page'" if page == item['id'] else ""}>
-                    ${item["title"]} </a>
+<nav class="site-nav" aria-label="Main navigation">
+    <p class="rail-section-title">Navigation</p>
+    <ul>
+        % for item in navigation:
+            <li>
+                <a href="${item['url']}" ${"aria-current='page'" if page == item["id"] else ""}>
+                    ${item["title"]}
+                </a>
             </li>
-            % endfor
-        </ul>
-    </div>
+        % endfor
+    </ul>
 </nav>

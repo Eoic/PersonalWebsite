@@ -1,25 +1,49 @@
 (() => {
-    let worker;
-
-    function getColor() {
-        return getComputedStyle(document.documentElement).getPropertyValue('color');
-    }
-
-    const handleThemeSwitch = (_event) => {
-        const classList = document.documentElement.classList;
-        classList.toggle('light') && localStorage.setItem('theme', 'light');
-        classList.toggle('dark') && localStorage.setItem('theme', 'dark');
+    const THEME_COLORS = {
+        light: '#f3f3ef',
+        dark: '#111111',
     };
 
-    const computeEntryTimespans = () => {
-        const timespans = document.querySelectorAll('div[data-timespan]');
+    function applyTheme(theme) {
+        const root = document.documentElement;
+        const meta = document.getElementById('theme-color-meta');
+        const switcher = document.getElementById('theme-switcher');
+
+        root.classList.remove('light', 'dark');
+        root.classList.add(theme);
+        localStorage.setItem('theme', theme);
+
+        if (meta) {
+            meta.setAttribute('content', THEME_COLORS[theme]);
+        }
+
+        if (switcher) {
+            switcher.textContent = `theme: ${theme}`;
+            switcher.setAttribute('aria-pressed', String(theme === 'dark'));
+        }
+    }
+
+    function handleThemeSwitch() {
+        const nextTheme = document.documentElement.classList.contains('dark')
+            ? 'light'
+            : 'dark';
+        applyTheme(nextTheme);
+    }
+
+    function computeEntryTimespans() {
+        const timespans = document.querySelectorAll('[data-timespan]');
 
         timespans.forEach((timespan) => {
-            const durationElement = timespan.querySelector('[data-duration=""]');
+            const durationElement = timespan.querySelector('[data-duration]');
+            if (!durationElement) {
+                return;
+            }
+
             const dateFrom = new Date(durationElement.getAttribute('data-date-from'));
             const dateUntil = new Date(
                 durationElement.getAttribute('data-date-until') || new Date().toDateString()
             );
+
             let months = (dateUntil.getFullYear() - dateFrom.getFullYear()) * 12;
             months -= dateFrom.getMonth();
             months += dateUntil.getMonth();
@@ -30,26 +54,31 @@
                 return;
             }
 
-            let durationText = '(';
             const years = Math.floor(months / 12);
-
-            months = months % 12;
+            const remainingMonths = months % 12;
+            const parts = [];
 
             if (years > 0) {
-                durationText += `${years} year${years > 1 ? 's' : ''}`;
+                parts.push(`${years} year${years > 1 ? 's' : ''}`);
             }
 
-            if (months > 0) {
-                durationText += `${years > 0 ? ', ' : ''}${months} month${months > 1 ? 's' : ''}`;
+            if (remainingMonths > 0) {
+                parts.push(`${remainingMonths} month${remainingMonths > 1 ? 's' : ''}`);
             }
 
-            durationText += ')';
-            durationElement.textContent = durationText;
+            durationElement.textContent = `(${parts.join(', ')})`;
         });
-    };
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('theme-switcher').addEventListener('click', handleThemeSwitch);
+        const switcher = document.getElementById('theme-switcher');
+        const initialTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+
+        applyTheme(initialTheme);
         computeEntryTimespans();
+
+        if (switcher) {
+            switcher.addEventListener('click', handleThemeSwitch);
+        }
     });
 })();

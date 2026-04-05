@@ -11,6 +11,7 @@ from .models import (
     About,
     Education,
     EducationTag,
+    Post,
     Position,
     PositionTag,
     Project,
@@ -23,6 +24,14 @@ bp = Blueprint("main", __name__)
 
 _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _assets_dir = os.path.join(_project_root, "assets")
+
+_PAGE_INTROS = {
+    "index": "Software engineer based in Kaunas, building useful tools for the web and other interactive systems.",
+    "positions": "Professional work, responsibilities, and the tools I have spent the most time shipping with.",
+    "education": "Formal education and the technical foundation behind the way I approach software work.",
+    "projects": "Selected side projects, experiments, and longer-running ideas.",
+    "posts": "Short notes, worklog entries, and small observations.",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -118,6 +127,7 @@ def index():
         about_data[row.key] = json.loads(row.value)
 
     ctx.update(
+        page_intro=_PAGE_INTROS["index"],
         content_description=about_data.get("content_description", ""),
         reading=about_data.get("reading", []),
         learning_about=about_data.get("learning_about", []),
@@ -149,7 +159,11 @@ def positions():
             }
         )
 
-    ctx.update(items=items, article_title_prefix="Position")
+    ctx.update(
+        page_intro=_PAGE_INTROS["positions"],
+        items=items,
+        article_title_prefix="Position",
+    )
     return render_mako("pages/positions.html", **ctx)
 
 
@@ -175,7 +189,11 @@ def education():
             }
         )
 
-    ctx.update(items=items, article_title_prefix="Education")
+    ctx.update(
+        page_intro=_PAGE_INTROS["education"],
+        items=items,
+        article_title_prefix="Education",
+    )
     return render_mako("pages/education.html", **ctx)
 
 
@@ -210,8 +228,37 @@ def projects():
 
         items.append(item)
 
-    ctx.update(items=items, article_title_prefix="Project")
+    ctx.update(
+        page_intro=_PAGE_INTROS["projects"],
+        items=items,
+        article_title_prefix="Project",
+    )
     return render_mako("pages/projects.html", **ctx)
+
+
+@bp.route("/posts")
+def posts():
+    """Render the posts page."""
+    ctx = get_common_context("posts")
+
+    items = []
+    for p in (
+        Post.select()
+        .order_by(Post.published_on.desc(), Post.sort_order)
+    ):
+        items.append(
+            {
+                "title": p.title,
+                "published_on": p.published_on,
+                "body": p.body,
+            }
+        )
+
+    ctx.update(
+        page_intro=_PAGE_INTROS["posts"],
+        items=items,
+    )
+    return render_mako("pages/posts.html", **ctx)
 
 
 # ---------------------------------------------------------------------------

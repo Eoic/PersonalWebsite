@@ -1,0 +1,41 @@
+<section class="entry-list">
+    % for item in items:
+        <article class="entry entry-project">
+            <header class="entry-header">
+                <p class="entry-meta">
+                    ${article_title_prefix}
+                    % if "subtitle" in item:
+                        <span class="entry-separator">/</span>
+                        <span>${item["subtitle"]}</span>
+                    % endif
+                </p>
+
+                % if "title_link" in item:
+                    <h2><a href="${item['title_link']}" target="_blank" rel="noopener noreferrer">${item["title"]}</a></h2>
+                % else:
+                    <h2>${item["title"]}</h2>
+                % endif
+            </header>
+
+            % if "media" in item and item["media"]:
+                <div class="project-media">
+                    % for res in item["media"]:
+                        % if res["type"] == "image":
+                            <img src="/assets/${res['src']}" alt="${res['alt']}" loading="lazy">
+                        % endif
+                    % endfor
+                </div>
+            % endif
+
+            <div class="entry-copy">${item["description"]}</div>
+
+            % if item["tags"]:
+                <ul class="tag-list" aria-label="Technologies">
+                    % for tag in item["tags"]:
+                        <li>${tag}</li>
+                    % endfor
+                </ul>
+            % endif
+        </article>
+    % endfor
+</section>

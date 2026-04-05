@@ -97,6 +97,14 @@ class About(BaseModel):
     value = TextField()
 
 
+class Post(BaseModel):
+    id = AutoField()
+    title = CharField()
+    published_on = DateField()
+    body = TextField()
+    sort_order = IntegerField()
+
+
 ALL_MODELS = [
     Page,
     Position,
@@ -108,4 +116,5 @@ ALL_MODELS = [
     EducationTag,
     ProjectTag,
     About,
+    Post,
 ]
