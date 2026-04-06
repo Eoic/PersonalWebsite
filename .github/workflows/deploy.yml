@@ -26,4 +26,4 @@ jobs:
 
       - name: Deploy on server
         run: |
-          ssh root@${{ secrets.DEPLOY_HOST }} 'cd /opt/website && ./deploy/deploy.sh'
+          ssh root@${{ secrets.DEPLOY_HOST }} 'cd /opt/website && sh ./deploy/deploy.sh'
