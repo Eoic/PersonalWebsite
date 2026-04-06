@@ -4,9 +4,5 @@ karolis-strazdas.lt, www.karolis-strazdas.lt {
 	@www host www.karolis-strazdas.lt
 	redir @www https://karolis-strazdas.lt{uri} permanent
 
-	reverse_proxy 127.0.0.1:8000 {
-		header_up Host {host}
-		header_up X-Forwarded-For {remote_host}
-		header_up X-Forwarded-Proto {scheme}
-	}
+	reverse_proxy 127.0.0.1:8000
 }

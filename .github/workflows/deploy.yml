@@ -19,59 +19,11 @@ jobs:
 
       - name: Sync files
         run: |
-          rsync -avz --delete \
+          rsync -avz --delete --chown=website:website \
             --exclude='.git/' \
             --exclude-from='.gitignore' \
             ./ root@${{ secrets.DEPLOY_HOST }}:/opt/website/
 
-      - name: Install service and restart
+      - name: Deploy on server
         run: |
-          ssh root@${{ secrets.DEPLOY_HOST }} << 'EOF'
-            set -eu
-
-            if [ -x /usr/local/bin/uv ]; then
-              UV_BIN=/usr/local/bin/uv
-            else
-              UV_BIN="$(command -v uv || true)"
-            fi
-
-            [ -n "$UV_BIN" ] || {
-              echo "uv is required on the deploy host."
-              exit 1
-            }
-
-            su -s /bin/sh -c "'$UV_BIN' --version >/dev/null" website || {
-              echo "uv must be installed in a system-wide location accessible to the website user."
-              exit 1
-            }
-
-            "$UV_BIN" python find --no-python-downloads '>=3.14' >/dev/null || {
-              echo "Python 3.14+ is required on the deploy host."
-              exit 1
-            }
-
-            id -u website >/dev/null 2>&1 || {
-              echo "The deploy host must have a website user."
-              exit 1
-            }
-
-            cp /opt/website/website.service /etc/systemd/system/website.service
-            chown -R website:website /opt/website
-            install -d -o website -g website /opt/website/data
-            find /opt/website/data -mindepth 1 -maxdepth 1 -exec chown -R website:website {} +
-            su -s /bin/sh -c "cd /opt/website && '$UV_BIN' sync --locked --no-python-downloads" website
-            su -s /bin/sh -c "cd /opt/website && '$UV_BIN' run python -m app.build_assets" website
-            systemctl daemon-reload
-            if command -v caddy >/dev/null 2>&1; then
-              install -d /etc/caddy/sites
-              install -m 644 /opt/website/deploy/caddy/Caddyfile /etc/caddy/Caddyfile
-              install -m 644 /opt/website/deploy/caddy/sites/karolis-strazdas.lt.caddy /etc/caddy/sites/karolis-strazdas.lt.caddy
-              caddy validate --config /etc/caddy/Caddyfile
-              systemctl enable caddy
-            fi
-            systemctl enable website
-            systemctl restart website
-            if command -v caddy >/dev/null 2>&1; then
-              systemctl reload caddy || systemctl restart caddy
-            fi
-          EOF
+          ssh root@${{ secrets.DEPLOY_HOST }} 'cd /opt/website && ./deploy/deploy.sh'
