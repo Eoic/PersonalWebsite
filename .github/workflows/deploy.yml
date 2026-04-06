@@ -29,7 +29,11 @@ jobs:
           ssh root@${{ secrets.DEPLOY_HOST }} << 'EOF'
             set -eu
 
-            UV_BIN="$(command -v uv || true)"
+            if [ -x /usr/local/bin/uv ]; then
+              UV_BIN=/usr/local/bin/uv
+            else
+              UV_BIN="$(command -v uv || true)"
+            fi
 
             [ -n "$UV_BIN" ] || {
               echo "uv is required on the deploy host."
