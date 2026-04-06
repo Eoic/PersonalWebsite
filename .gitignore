@@ -6,3 +6,5 @@ data/
 node_modules/
 build/
 .ruff_cache/
+DEPLOYMENT.md
+deploy/bootstrap.sh
