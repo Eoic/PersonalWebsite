@@ -1,5 +1,6 @@
 import json
 import os
+from urllib.parse import urlparse
 
 import bcrypt
 from flask import Blueprint, redirect, request, send_from_directory, session, url_for
@@ -8,7 +9,7 @@ from flask_login import current_user
 
 from app.forms import LoginForm
 
-from . import render_mako
+from . import limiter, render_mako
 from .context import get_common_context
 from .models import (
     About,
@@ -21,7 +22,6 @@ from .models import (
     ProjectMedia,
     ProjectTag,
     Tag,
-    User,
     User,
 )
 
@@ -274,13 +274,31 @@ def bookshelf():
     return render_mako("pages/bookshelf.html", **ctx)
 
 
+def _safe_next_url(target):
+    """Return target if it is a same-host relative URL, else None."""
+    if not target:
+        return None
+
+    parsed = urlparse(target)
+
+    if parsed.netloc or parsed.scheme:
+        return None
+
+    if not parsed.path.startswith("/"):
+        return None
+
+    return target
+
+
 @bp.route("/login", methods=["GET", "POST"])
+@limiter.limit("10 per minute;50 per hour", methods=["POST"])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
 
     ctx = get_common_context("login")
-    form = LoginForm(request.form, meta={"csrf_context": session})
+    form_data = request.form if request.method == "POST" else None
+    form = LoginForm(form_data, meta={"csrf_context": session})
     ctx.update(form=form, errors=[])
 
     if request.method == "POST":
@@ -298,7 +316,8 @@ def login():
                 return render_mako("pages/login.html", **ctx)
 
             login_user(user, remember=True)
-            return redirect(url_for("main.index"))
+            next_url = _safe_next_url(request.args.get("next"))
+            return redirect(next_url or url_for("main.index"))
         else:
             ctx.update(errors=["Invalid username or password"])
 

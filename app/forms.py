@@ -39,7 +39,7 @@ class RegistrationForm(Form):
     password = PasswordField(
         "Password",
         [
-            validators.Length(min=6, max=255),
+            validators.Length(min=12, max=255),
             validators.DataRequired(),
         ],
         name="password",

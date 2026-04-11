@@ -2,11 +2,15 @@ import os
 import tomllib
 
 from flask import Flask, Response
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask_login import LoginManager
 from mako.lookup import TemplateLookup
 from app.models import User
 
 from .db import db_proxy, init_db
+
+limiter = Limiter(key_func=get_remote_address)
 
 _app_dir = os.path.dirname(os.path.abspath(__file__))
 _template_lookup = None
@@ -44,11 +48,7 @@ def render_mako(template_name, **context):
 
 
 def create_app():
-    """Flask application factory.
-
-    Args:
-        config: Optional dict of configuration overrides.
-    """
+    """Flask application factory."""
     app = Flask(
         __name__,
         static_folder=os.path.join(_app_dir, os.pardir, "assets"),
@@ -62,9 +62,31 @@ def create_app():
         silent=False,
     )
 
-    app.secret_key = app.config.get("SECRET_KEY")
+    secret_key = app.config.get("SECRET_KEY")
+
+    if not secret_key:
+        raise RuntimeError(
+            "SECRET_KEY must be set in config.toml. "
+            "Copy config.example.toml to config.toml and set a strong random value."
+        )
+
+    app.secret_key = secret_key
+
+    app.config.update(
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE="Lax",
+        SESSION_COOKIE_SECURE=not app.debug,
+        REMEMBER_COOKIE_HTTPONLY=True,
+        REMEMBER_COOKIE_SAMESITE="Lax",
+        REMEMBER_COOKIE_SECURE=not app.debug,
+    )
+
     login_manager = LoginManager()
+    login_manager.login_view = "main.login"
+    login_manager.login_message = None
     login_manager.init_app(app)
+
+    limiter.init_app(app)
 
     with app.app_context():
         init_db(db_path=app.config.get("DATABASE_PATH"))
