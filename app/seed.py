@@ -68,7 +68,7 @@ POSITIONS = [
         "company": "Indeform Ltd.",
         "date_from": date(2020, 7, 13),
         "date_until": None,
-        "description": "<p>Developing dynamic web applications utilizing a full stack technology stack, maintaining server configurations, and establishing CI/CD pipelines.</p><ul><li> Developing interactive wall projection games and tools with OpenCV (C++, Python), Godot, ImGui. </li><li> Doing web development and graphics programming for orthopedics software. </li><li> Working on internal software solutions for the web platform. </li><li> Deploying products and services to internal servers and cloud platforms such as AWS, creating configurations for NGINX, Docker, Docker Compose, Jenkins. </li><li> Writing, maintaining and executing manual functional tests, creating automatic tests. </li></ul>",
+        "description": "<p>Developing dynamic web applications utilizing a broad technology stack, maintaining server configurations, and CI/CD pipelines.</p><ul><li> Developing interactive wall projection games and tools with OpenCV (C++, Python), Godot, ImGui. </li><li> Doing web development and graphics programming for orthopedics software. </li><li> Working on internal software solutions for the web platform. </li><li> Deploying products and services to internal servers and cloud platforms such as AWS, creating configurations for NGINX, Docker, Docker Compose, Jenkins. </li><li> Writing, maintaining and executing manual functional tests, creating automatic tests. </li></ul>",
         "sort_order": 0,
         "tags": [
             "Django",
@@ -126,7 +126,7 @@ PROJECTS = [
         "subtitle": "Library for creating backgrounds from character patterns",
         "title_link": "https://github.com/Eoic/ASCIIGround",
         "description": "<p>Renders a grid of characters on the canvas using patterns such as Perlin noise, simplex noise, character rain, signed distance fields and more. Generated backgrounds can be static, animated or interactive, and can be used as backgrounds for websites to create a unique visual style. Various configuration options are supported to customize the appearance and behavior.</p><b> Features </b><ul><li>Multiple animation patterns: Perlin noise, rain, static noise with extensible pattern system;</li><li>Configuration options for font, animation speed, character sets, noise parameters, and much more;</li><li>Responsive and resizable canvas rendering;</li><li>Easy to use API and comprehensive documentation;</li><li>Supports both ESM and UMD/CDN usage;</li></ul>",
-        "sort_order": 0,
+        "sort_order": 2,
         "tags": ["TypeScript", "HTML5", "CSS3"],
         "media": [
             {
@@ -156,7 +156,7 @@ PROJECTS = [
         "subtitle": "cross-platform e-book management system",
         "title_link": "https://github.com/Eoic/Papyrus",
         "description": "<p>I like collecting books, both in physical and digital form, but none of the applications that I used so far to track my collections met my expectations - Calibre, Google Books, Amazon Kindle, Bookshelf, etc. Some of the main pain points for me are ugly user interface, lack of support for multiple platforms, file size limits, unsupported file formats, no ability to manage physical books and notes. I wish address these issues and add some of the more more interesting features like reading statistics, goal tracking, and potentially integrate some form of social interaction (e.g., book borrowing) and to bring this experience to the most commonly used platforms - Windows, Linux, Web, Android (including e-readers) and iOS.</p><b> Features </b><ul><li>File uploads, metadata management and categorization (e.g., shelves, topics, tags);</li><li>Management and progress tracking for physical books;</li><li>Reading progress sync across devices;</li><li>Notes and annotations;</li><li>Full-text search;</li><li>Reading statictics;</li></ul>",
-        "sort_order": 2,
+        "sort_order": 0,
         "tags": ["Flutter", "Dart", "Rust", "MongoDB", "Realm"],
         "media": [
             {
@@ -197,12 +197,6 @@ PROJECTS = [
 
 ABOUT = [
     {
-        "key": "content_description",
-        "value": json.dumps(
-            "I'm a software engineer passionate about building useful and/or interesting things for the web. Feel free to check out my projects and work experience here."
-        ),
-    },
-    {
         "key": "reading",
         "value": json.dumps(
             [{"title": "Fluent Python, 2nd Edition", "author": "Luciano Ramalho"}]
@@ -224,12 +218,12 @@ ABOUT = [
 ]
 
 POSTS = [
-    # {
-    #     "title": "<TITLE>",
-    #     "published_on": date(2026, 4, 2),
-    #     "body": "<HTML CONTENT>",
-    #     "sort_order": 0,
-    # },
+    {
+        "title": "#1",
+        "published_on": date(2026, 4, 11),
+        "body": "I existed and this it proof.",
+        "sort_order": 0,
+    },
 ]
 
 

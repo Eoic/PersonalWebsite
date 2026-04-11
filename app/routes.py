@@ -24,7 +24,7 @@ _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _assets_dir = os.path.join(_project_root, "assets")
 
 _PAGE_INTROS = {
-    "index": "I'm a software engineer passionate about building useful and/or interesting things for the web. Feel free to check out my projects and work experience here.",
+    "index": "I'm a software engineer passionate about building useful and/or interesting things for the web. You can explore my projects and work experience here.",
     "positions": "Professional work, responsibilities, and the tools I have spent the most time working with.",
     "education": "Formal education and the technical foundation behind the way I approach software work.",
     "projects": "Selected side projects, experiments, and longer-running ideas.",
