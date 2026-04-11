@@ -72,10 +72,12 @@ h3 {
     --color-bg: #f3f3ef;
     --color-surface: #fbfbf8;
     --color-surface-muted: #efefea;
+    --color-surface-error: #ff515180;
     --color-text: #1a1a1a;
     --color-muted: #606060;
     --color-rule: #d6d6cf;
     --color-border: #c8c8c0;
+    --color-border-error: #c77373;
     --color-selection-bg: #1a1a1a;
     --color-selection-text: #f3f3ef;
 }
@@ -83,11 +85,13 @@ h3 {
 .theme.dark {
     --color-bg: #111111;
     --color-surface: #171717;
+    --color-surface-error: #dc2c2c8e;
     --color-surface-muted: #1d1d1d;
     --color-text: #e8e8e3;
     --color-muted: #9a9a93;
     --color-rule: #313131;
     --color-border: #3b3b3b;
+    --color-border-error: #dc2c2c;
     --color-selection-bg: #e8e8e3;
     --color-selection-text: #111111;
 }
@@ -175,14 +179,6 @@ h3 {
     margin-bottom: 1.5rem;
 }
 
-.theme-switcher {
-    padding: 0.55rem 0.8rem;
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    cursor: pointer;
-}
-
-.theme-switcher:focus-visible,
 a:focus-visible {
     outline: 2px solid var(--color-text);
     outline-offset: 2px;
@@ -406,5 +402,66 @@ a:focus-visible {
 
     .side-nav ul {
         flex-direction: row;
+    }
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0;
+    background: var(--color-surface);
+    color: var(--color-text);
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--color-surface-muted);
+    }
+}
+
+/* Form. */
+form {
+    label, input {
+        display: block;
+    }
+
+    input {
+        margin-bottom: 1em;
+    }
+
+    input {
+        padding: 0.5em;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface);
+        border-radius: 0;
+        width: 100%;
+        max-width: 30ch;
+        color: var(--color-text)
+    }
+
+    button[type="submit"] {
+        margin-top: 0.5em;
+    }
+}
+
+@media  (max-width: 32rem) {
+    form {
+        input {
+            max-width: 100%;
+        }
+    }
+}
+
+.messages {
+    margin-bottom: 1em;
+    padding: 0.75em 1em;
+    border: 1px solid var(--color-border-error);
+    background-color: var(--color-surface-error);
+    color: var(--color-text);
+
+    p {
+        margin: 0;
+        padding: 0;
     }
 }

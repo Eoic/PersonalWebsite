@@ -8,3 +8,4 @@ build/
 .ruff_cache/
 DEPLOYMENT.md
 deploy/bootstrap.sh
+config.toml

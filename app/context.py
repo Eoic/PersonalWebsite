@@ -6,6 +6,7 @@ import tomllib
 from datetime import date
 
 from .models import Page
+from flask_login import current_user
 
 _app_dir = os.path.dirname(os.path.abspath(__file__))
 _project_root = os.path.dirname(_app_dir)
@@ -46,13 +47,18 @@ def get_common_context(page_slug):
             "company": "Indeform Ltd",
         },
         "navigation": [
-            {"id": page.slug, "title": page.title, "url": page.url}
-            for page in Page.select().order_by(Page.sort_order)
+            {
+                "id": page.slug,
+                "title": page.title,
+                "url": page.url,
+            }
+            for page in Page.select().where(Page.hidden == 0).order_by(Page.sort_order)
         ],
         "build": {
             "version": _get_version(),
             "year": date.today().year,
             "date": date.today().strftime("%Y-%m-%d"),
         },
+        "current_user": current_user,
         "debug": os.environ.get("FLASK_DEBUG", "0") == "1",
     }

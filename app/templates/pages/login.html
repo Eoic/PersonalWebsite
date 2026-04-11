@@ -1,0 +1,16 @@
+<%inherit file="../partials/layout.html" />
+
+<form method="post" action="/login">
+    % if errors:
+        <div class="messages">
+            % for error in errors:
+                <p> ${error} </p>
+            % endfor
+        </div>
+    % endif
+    
+    ${form.csrf_token}
+    ${form.username.label} ${form.username}
+    ${form.password.label} ${form.password}
+    <button class="btn" type="submit"> Login </button>
+</form>

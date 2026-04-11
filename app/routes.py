@@ -1,7 +1,12 @@
 import json
 import os
 
-from flask import Blueprint, send_from_directory
+import bcrypt
+from flask import Blueprint, redirect, request, send_from_directory, session, url_for
+from flask_login import login_required, login_user, logout_user
+from flask_login import current_user
+
+from app.forms import LoginForm
 
 from . import render_mako
 from .context import get_common_context
@@ -16,6 +21,8 @@ from .models import (
     ProjectMedia,
     ProjectTag,
     Tag,
+    User,
+    User,
 )
 
 bp = Blueprint("main", __name__)
@@ -265,6 +272,44 @@ def bookshelf():
     )
 
     return render_mako("pages/bookshelf.html", **ctx)
+
+
+@bp.route("/login", methods=["GET", "POST"])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("main.index"))
+
+    ctx = get_common_context("login")
+    form = LoginForm(request.form, meta={"csrf_context": session})
+    ctx.update(form=form, errors=[])
+
+    if request.method == "POST":
+        if form.validate():
+            try:
+                user = User.get(User.username == form.username.data)
+            except User.DoesNotExist:
+                user = None
+
+            if not user or not bcrypt.checkpw(
+                form.password.data.encode("utf-8"),
+                user.password.encode("utf-8"),
+            ):
+                ctx.update(errors=["Invalid username or password"])
+                return render_mako("pages/login.html", **ctx)
+
+            login_user(user, remember=True)
+            return redirect(url_for("main.index"))
+        else:
+            ctx.update(errors=["Invalid username or password"])
+
+    return render_mako("pages/login.html", **ctx)
+
+
+@bp.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("main.index"))
 
 
 @bp.route("/robots.txt")

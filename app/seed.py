@@ -60,6 +60,14 @@ PAGES = [
         "url": "/bookshelf",
         "sort_order": 5,
     },
+    {
+        "slug": "login",
+        "title": "Login",
+        "description": "",
+        "url": "/login",
+        "sort_order": 6,
+        "hidden": 1,
+    },
 ]
 
 POSITIONS = [

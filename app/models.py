@@ -1,3 +1,4 @@
+from flask_login import UserMixin
 from peewee import (
     AutoField,
     CharField,
@@ -16,6 +17,12 @@ class BaseModel(Model):
         database = db_proxy
 
 
+class User(UserMixin, BaseModel):
+    id = AutoField()
+    username = CharField(unique=True)
+    password = CharField()
+
+
 class Page(BaseModel):
     id = AutoField()
     slug = CharField(unique=True)
@@ -23,6 +30,7 @@ class Page(BaseModel):
     description = TextField()
     url = CharField()
     sort_order = IntegerField()
+    hidden = IntegerField(default=0)
 
 
 class Position(BaseModel):
@@ -130,4 +138,5 @@ ALL_MODELS = [
     About,
     Post,
     Book,
+    User,
 ]

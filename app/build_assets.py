@@ -1,7 +1,7 @@
 """Minify CSS and JS assets.
 
 Usage:
-    python -m app.build_assets
+    uv run python -m app.build_assets
 """
 
 import os

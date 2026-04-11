@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow /login$
 
 Sitemap: https://karolis-strazdas.lt/sitemap.xml
 
