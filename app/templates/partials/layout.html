@@ -151,8 +151,8 @@
 
                 <div class="title">
                     <h1>${title}</h1>
-
-                    % if page_actions:
+                    
+                    % if page_actions and current_user.is_authenticated:
                         % for action_path in page_actions:
                             <a href="${action_path}">New post</a>
                         % endfor
