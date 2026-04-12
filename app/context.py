@@ -34,6 +34,8 @@ def get_common_context(page_slug):
     """
     page_obj = Page.get(Page.slug == page_slug)
 
+    debug = os.environ.get("FLASK_DEBUG", "0") == "1"
+
     return {
         "page": page_slug,
         "title": page_obj.title,
@@ -60,5 +62,9 @@ def get_common_context(page_slug):
             "date": date.today().strftime("%Y-%m-%d"),
         },
         "current_user": current_user,
-        "debug": os.environ.get("FLASK_DEBUG", "0") == "1",
+        "debug": debug,
+        "vite_dev_server_url": os.environ.get("VITE_DEV_SERVER_URL") if debug else None,
+        "page_head_scripts": [],
+        "page_styles": [],
+        "page_scripts": [],
     }

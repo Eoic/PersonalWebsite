@@ -11,11 +11,27 @@
     <meta name="theme-color" content="#f3f3ef" id="theme-color-meta">
     <link rel="canonical" href="https://karolis-strazdas.lt">
     <%
-        css_file = "main.css" if debug else "main.min.css"
-        js_file = "main.js" if debug else "main.min.js"
         page_path = "~/about" if page == "index" else f"~/{page}"
+        vite_url = vite_dev_server_url.rstrip("/") if vite_dev_server_url else None
     %>
-    <link rel="stylesheet" type="text/css" href="/assets/css/${css_file}?v=${build['version']}">
+    % if debug and vite_url:
+        <script type="module" src="${vite_url}/@vite/client"></script>
+        <link rel="stylesheet" type="text/css" href="${vite_url}/src/scss/main.scss">
+        % for style_name in page_styles:
+            <link rel="stylesheet" type="text/css" href="${vite_url}/src/scss/${style_name}.scss">
+        % endfor
+    % else:
+        <%
+            css_file = "main.css" if debug else "main.min.css"
+        %>
+        <link rel="stylesheet" type="text/css" href="/assets/css/${css_file}?v=${build['version']}">
+        % for style_name in page_styles:
+            <%
+                page_css_file = f"{style_name}.css" if debug else f"{style_name}.min.css"
+            %>
+            <link rel="stylesheet" type="text/css" href="/assets/css/${page_css_file}?v=${build['version']}">
+        % endfor
+    % endif
 
 
     <meta property="og:title" content="Karolis Strazdas${' • ' + title if title != 'About' else ''}">
@@ -106,6 +122,10 @@
         })();
     </script>
 
+    % for script in page_head_scripts:
+        <script src="${script['src']}" crossorigin="${script.get('crossorigin', 'anonymous')}"></script>
+    % endfor
+
     <title>Karolis Strazdas${' • ' + title if title != 'About' else ''}</title>
 </head>
 
@@ -132,7 +152,23 @@
             <p>v${build['version']} &bull; updated ${build['date']}</p>
         </footer>
     </div>
-    <script src="/assets/js/${js_file}?v=${build['version']}"></script>
+    % if debug and vite_url:
+        <script type="module" src="${vite_url}/src/ts/main.ts"></script>
+        % for script_name in page_scripts:
+            <script type="module" src="${vite_url}/src/ts/${script_name}.ts"></script>
+        % endfor
+    % else:
+        <%
+            js_file = "main.js" if debug else "main.min.js"
+        %>
+        <script src="/assets/js/${js_file}?v=${build['version']}"></script>
+        % for script_name in page_scripts:
+            <%
+                page_js_file = f"{script_name}.js" if debug else f"{script_name}.min.js"
+            %>
+            <script src="/assets/js/${page_js_file}?v=${build['version']}"></script>
+        % endfor
+    % endif
 </body>
 
 </html>

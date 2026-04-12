@@ -21,6 +21,9 @@ else
   UV_BIN="$(command -v uv || true)"
 fi
 
+NODE_BIN="$(command -v node || true)"
+NPM_BIN="$(command -v npm || true)"
+
 id -u "$WEBSITE_USER" >/dev/null 2>&1 || {
   echo "The deploy host must have a $WEBSITE_USER user."
   exit 1
@@ -28,6 +31,16 @@ id -u "$WEBSITE_USER" >/dev/null 2>&1 || {
 
 [ -n "$UV_BIN" ] || {
   echo "uv is required on the deploy host."
+  exit 1
+}
+
+[ -n "$NODE_BIN" ] || {
+  echo "Node.js is required on the deploy host."
+  exit 1
+}
+
+[ -n "$NPM_BIN" ] || {
+  echo "npm is required on the deploy host."
   exit 1
 }
 
@@ -47,6 +60,7 @@ install -d -o "$WEBSITE_USER" -g "$WEBSITE_USER" "$APP_ROOT/data"
 chown -R "$WEBSITE_USER:$WEBSITE_USER" "$APP_ROOT/data"
 
 su -s /bin/sh -c "cd '$APP_ROOT' && '$UV_BIN' sync --locked --no-python-downloads" "$WEBSITE_USER"
+su -s /bin/sh -c "cd '$APP_ROOT' && '$NPM_BIN' ci" "$WEBSITE_USER"
 su -s /bin/sh -c "cd '$APP_ROOT' && '$UV_BIN' run python -m app.build_assets" "$WEBSITE_USER"
 
 systemctl daemon-reload

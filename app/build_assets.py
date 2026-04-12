@@ -1,52 +1,36 @@
-"""Minify CSS and JS assets.
+"""Build frontend assets with Vite.
 
 Usage:
     uv run python -m app.build_assets
 """
 
-import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
 
-import rcssmin
-import rjsmin
-
-_project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_assets_dir = os.path.join(_project_root, "assets")
-
-_FILES = [
-    {
-        "input": os.path.join(_assets_dir, "css", "main.css"),
-        "output": os.path.join(_assets_dir, "css", "main.min.css"),
-        "minifier": rcssmin.cssmin,
-    },
-    {
-        "input": os.path.join(_assets_dir, "js", "main.js"),
-        "output": os.path.join(_assets_dir, "js", "main.min.js"),
-        "minifier": rjsmin.jsmin,
-    },
-]
+_project_root = Path(__file__).resolve().parent.parent
+_scripts = ("build:debug", "build")
 
 
 def build():
-    """Minify all configured asset files."""
-    for entry in _FILES:
-        with open(entry["input"], "r", encoding="utf-8") as file:
-            source = file.read()
+    """Build debug and production assets with npm."""
+    npm_bin = shutil.which("npm")
 
-        minified = entry["minifier"](source)
+    if not npm_bin:
+        raise RuntimeError("npm is required to build frontend assets.")
 
-        with open(entry["output"], "w", encoding="utf-8") as file:
-            file.write(minified)
-
-        src_size = len(source.encode("utf-8"))
-        out_size = len(minified.encode("utf-8"))
-        ratio = (1 - out_size / src_size) * 100 if src_size else 0
-        rel_in = os.path.relpath(entry["input"], _project_root)
-        rel_out = os.path.relpath(entry["output"], _project_root)
-
-        print(
-            f"{rel_in} ({src_size:,}B) -> {rel_out} ({out_size:,}B) [{ratio:.1f}% reduction]"
+    for script_name in _scripts:
+        print(f"Running npm script: {script_name}", flush=True)
+        subprocess.run(
+            [npm_bin, "run", script_name],
+            check=True,
+            cwd=_project_root,
         )
 
 
 if __name__ == "__main__":
-    build()
+    try:
+        build()
+    except subprocess.CalledProcessError as exc:
+        sys.exit(exc.returncode)

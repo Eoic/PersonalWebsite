@@ -3,6 +3,8 @@ __pycache__/
 data/
 *.min.css
 *.min.js
+assets/css/*.css
+assets/js/*.js
 node_modules/
 build/
 .ruff_cache/

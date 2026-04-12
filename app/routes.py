@@ -1,5 +1,8 @@
 import json
+import math
 import os
+import re
+from datetime import UTC
 from urllib.parse import urlparse
 
 import bcrypt
@@ -23,18 +26,28 @@ from .models import (
     ProjectTag,
     Tag,
     User,
+    WhiteboardStroke,
 )
 
 bp = Blueprint("main", __name__)
 
 _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _assets_dir = os.path.join(_project_root, "assets")
+_WHITEBOARD_BOARD_SLUG = "main"
+_WHITEBOARD_ALLOWED_TOOL = "draw"
+_WHITEBOARD_COLOR_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
+_WHITEBOARD_SESSION_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9-]{7,63}$")
+_WHITEBOARD_MIN_BRUSH_SIZE = 1
+_WHITEBOARD_MAX_BRUSH_SIZE = 48
+_WHITEBOARD_MAX_POINTS = 4096
+_WHITEBOARD_MAX_COORDINATE = 1_000_000
 
 _PAGE_INTROS = {
     "index": "I'm a software engineer passionate about building useful and/or interesting things for the web. You can explore my projects and work experience here.",
     "positions": "Professional work, responsibilities, and the tools I have spent the most time working with.",
     "education": "Formal education and the technical foundation behind the way I approach software work.",
     "projects": "Selected side projects, experiments, and longer-running ideas.",
+    "whiteboard": "Shared freehand drawing space.",
     "posts": "Short notes, worklog entries, and small observations.",
     "bookshelf": "An incomplete list of books I've read. Not in a chronological order.",
 }
@@ -122,6 +135,116 @@ def _get_media_for_projects(projects):
         )
 
     return result
+
+
+def _whiteboard_error(message, status):
+    """Return a JSON error response for whiteboard endpoints."""
+    return {"error": message}, status
+
+
+def _can_manage_whiteboard():
+    """Return True when the current user can moderate destructive whiteboard actions."""
+    return current_user.is_authenticated
+
+
+def _format_whiteboard_timestamp(timestamp):
+    """Serialize a naive UTC timestamp to an ISO string."""
+    return (
+        timestamp.astimezone(UTC)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
+
+
+def _serialize_whiteboard_stroke(stroke):
+    """Convert a WhiteboardStroke model into the public API shape."""
+    return {
+        "id": stroke.id,
+        "tool": stroke.tool,
+        "color": stroke.color,
+        "brushSize": stroke.brush_size,
+        "points": json.loads(stroke.points_json),
+        "createdAt": _format_whiteboard_timestamp(stroke.created_at),
+    }
+
+
+def _parse_whiteboard_payload():
+    """Return the request JSON payload dict or a 400 response."""
+    payload = request.get_json(silent=True)
+
+    if not isinstance(payload, dict):
+        return None, _whiteboard_error("Request body must be valid JSON.", 400)
+
+    return payload, None
+
+
+def _validate_client_session_id(raw_value):
+    """Validate the client session identifier used for same-session erase."""
+    if not isinstance(raw_value, str) or not _WHITEBOARD_SESSION_ID_RE.fullmatch(
+        raw_value
+    ):
+        raise ValueError("clientSessionId must be a valid session identifier.")
+
+    return raw_value
+
+
+def _validate_brush_size(raw_value):
+    """Validate and clamp the brush size to an allowed range."""
+    if isinstance(raw_value, bool) or not isinstance(raw_value, (int, float)):
+        raise ValueError("brushSize must be a number.")
+
+    if not math.isfinite(raw_value):
+        raise ValueError("brushSize must be finite.")
+
+    brush_size = int(round(raw_value))
+
+    return max(_WHITEBOARD_MIN_BRUSH_SIZE, min(_WHITEBOARD_MAX_BRUSH_SIZE, brush_size))
+
+
+def _validate_color(raw_value):
+    """Validate a safe hex color string."""
+    if not isinstance(raw_value, str) or not _WHITEBOARD_COLOR_RE.fullmatch(raw_value):
+        raise ValueError("color must be a six-digit hex value.")
+
+    return raw_value.lower()
+
+
+def _validate_whiteboard_points(raw_value):
+    """Validate and normalize a stroke point list."""
+    if not isinstance(raw_value, list):
+        raise ValueError("points must be an array of coordinates.")
+
+    if not raw_value:
+        raise ValueError("points must not be empty.")
+
+    if len(raw_value) > _WHITEBOARD_MAX_POINTS:
+        raise ValueError("points contains too many coordinates.")
+
+    points = []
+
+    for point in raw_value:
+        if not isinstance(point, dict):
+            raise ValueError("Each point must be an object with x and y.")
+
+        x = point.get("x")
+        y = point.get("y")
+
+        if isinstance(x, bool) or isinstance(y, bool):
+            raise ValueError("Point coordinates must be numeric.")
+
+        if not isinstance(x, (int, float)) or not isinstance(y, (int, float)):
+            raise ValueError("Point coordinates must be numeric.")
+
+        if not math.isfinite(x) or not math.isfinite(y):
+            raise ValueError("Point coordinates must be finite.")
+
+        if abs(x) > _WHITEBOARD_MAX_COORDINATE or abs(y) > _WHITEBOARD_MAX_COORDINATE:
+            raise ValueError("Point coordinates are out of bounds.")
+
+        points.append({"x": float(x), "y": float(y)})
+
+    return points
 
 
 @bp.route("/")
@@ -322,6 +445,120 @@ def login():
             ctx.update(errors=["Invalid username or password"])
 
     return render_mako("pages/login.html", **ctx)
+
+
+@bp.route("/whiteboard/strokes")
+def whiteboard_strokes():
+    """Return all persisted strokes for the shared whiteboard."""
+    strokes = (
+        WhiteboardStroke.select()
+        .where(WhiteboardStroke.board_slug == _WHITEBOARD_BOARD_SLUG)
+        .order_by(WhiteboardStroke.id)
+    )
+
+    return {"strokes": [_serialize_whiteboard_stroke(stroke) for stroke in strokes]}
+
+
+@bp.route("/whiteboard/strokes", methods=["DELETE"])
+@limiter.limit("10 per minute")
+def clear_whiteboard_strokes():
+    """Clear the shared whiteboard for authenticated moderators."""
+    if not _can_manage_whiteboard():
+        return _whiteboard_error("Login required to clear the whiteboard.", 403)
+
+    (
+        WhiteboardStroke.delete()
+        .where(WhiteboardStroke.board_slug == _WHITEBOARD_BOARD_SLUG)
+        .execute()
+    )
+
+    return "", 204
+
+
+@bp.route("/whiteboard/strokes", methods=["POST"])
+@limiter.limit("60 per minute")
+def create_whiteboard_stroke():
+    """Persist a completed freehand stroke for the shared whiteboard."""
+    payload, error = _parse_whiteboard_payload()
+
+    if error is not None:
+        return error
+
+    if payload.get("tool") != _WHITEBOARD_ALLOWED_TOOL:
+        return _whiteboard_error("Only draw strokes can be persisted.", 400)
+
+    try:
+        client_session_id = _validate_client_session_id(payload.get("clientSessionId"))
+        color = _validate_color(payload.get("color"))
+        brush_size = _validate_brush_size(payload.get("brushSize"))
+        points = _validate_whiteboard_points(payload.get("points"))
+    except ValueError as exc:
+        return _whiteboard_error(str(exc), 400)
+
+    stroke = WhiteboardStroke.create(
+        board_slug=_WHITEBOARD_BOARD_SLUG,
+        client_session_id=client_session_id,
+        tool=_WHITEBOARD_ALLOWED_TOOL,
+        color=color,
+        brush_size=brush_size,
+        points_json=json.dumps(points),
+    )
+
+    return {
+        "id": stroke.id,
+        "createdAt": _format_whiteboard_timestamp(stroke.created_at),
+    }, 201
+
+
+@bp.route("/whiteboard/strokes/<int:stroke_id>", methods=["DELETE"])
+@limiter.limit("60 per minute")
+def delete_whiteboard_stroke(stroke_id):
+    """Delete a stroke if it belongs to the current page session."""
+    payload, error = _parse_whiteboard_payload()
+
+    if error is not None:
+        return error
+
+    try:
+        client_session_id = _validate_client_session_id(payload.get("clientSessionId"))
+    except ValueError as exc:
+        return _whiteboard_error(str(exc), 400)
+
+    try:
+        stroke = WhiteboardStroke.get(
+            (WhiteboardStroke.id == stroke_id)
+            & (WhiteboardStroke.board_slug == _WHITEBOARD_BOARD_SLUG)
+        )
+    except WhiteboardStroke.DoesNotExist:
+        return _whiteboard_error("Stroke not found.", 404)
+
+    if not _can_manage_whiteboard() and stroke.client_session_id != client_session_id:
+        return _whiteboard_error(
+            "This stroke can no longer be erased from this session.",
+            403,
+        )
+
+    stroke.delete_instance()
+    return "", 204
+
+
+@bp.route("/whiteboard")
+def whiteboard():
+    """Render the whiteboard page."""
+    ctx = get_common_context("whiteboard")
+    ctx.update(
+        page_head_scripts=[
+            {
+                "src": "https://kit.fontawesome.com/ad3b985a78.js",
+                "crossorigin": "anonymous",
+            }
+        ],
+        page_styles=["whiteboard"],
+        whiteboard_can_manage=_can_manage_whiteboard(),
+        page_scripts=["whiteboard"],
+        page_intro=_PAGE_INTROS["whiteboard"],
+    )
+    return render_mako("pages/whiteboard.html", **ctx)
 
 
 @bp.route("/logout")

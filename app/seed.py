@@ -47,25 +47,32 @@ PAGES = [
         "sort_order": 3,
     },
     {
+        "slug": "whiteboard",
+        "title": "Whiteboard",
+        "description": "",
+        "url": "/whiteboard",
+        "sort_order": 4,
+    },
+    {
         "slug": "posts",
         "title": "Posts",
         "description": "Read short notes, engineering updates, and journal-style posts from Karolis Strazdas.",
         "url": "/posts",
-        "sort_order": 4,
+        "sort_order": 5,
     },
     {
         "slug": "bookshelf",
         "title": "Bookshelf",
         "description": "An incomplete list of books I've read. Not in a chronological order.",
         "url": "/bookshelf",
-        "sort_order": 5,
+        "sort_order": 6,
     },
     {
         "slug": "login",
         "title": "Login",
         "description": "",
         "url": "/login",
-        "sort_order": 6,
+        "sort_order": 7,
         "hidden": 1,
     },
 ]
@@ -227,7 +234,7 @@ ABOUT = [
 
 POSTS = [
     {
-        "title": "#1",
+        "title": "First post",
         "published_on": date(2026, 4, 11),
         "body": "I existed and this it proof.",
         "sort_order": 0,

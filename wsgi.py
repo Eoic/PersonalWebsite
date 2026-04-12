@@ -1,7 +1,7 @@
 """WSGI entry point for Gunicorn.
 
 Usage:
-    gunicorn wsgi:app --bind 127.0.0.1:8000 --workers 2
+    gunicorn wsgi:app --bind 0.0.0.0:8000 --workers 2
 """
 
 from app import create_app

@@ -1,8 +1,11 @@
+from datetime import UTC, datetime
+
 from flask_login import UserMixin
 from peewee import (
     AutoField,
     CharField,
     DateField,
+    DateTimeField,
     ForeignKeyField,
     IntegerField,
     Model,
@@ -125,6 +128,17 @@ class Book(BaseModel):
     cover = CharField()
 
 
+class WhiteboardStroke(BaseModel):
+    id = AutoField()
+    board_slug = CharField(index=True)
+    client_session_id = CharField(index=True)
+    tool = CharField()
+    color = CharField()
+    brush_size = IntegerField()
+    points_json = TextField()
+    created_at = DateTimeField(default=lambda: datetime.now(UTC))
+
+
 ALL_MODELS = [
     Page,
     Position,
@@ -138,5 +152,6 @@ ALL_MODELS = [
     About,
     Post,
     Book,
+    WhiteboardStroke,
     User,
 ]
