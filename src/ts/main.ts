@@ -48,7 +48,11 @@ function formatDuration(months: number): string {
     parts.push(`${remainingMonths} month${remainingMonths > 1 ? "s" : ""}`);
   }
 
-  return `(${parts.join(", ")})`;
+  if (parts.length > 0) {
+    return `(${parts.join(", ")})`;
+  }
+
+  return "";
 }
 
 function computeEntryTimespans(): void {
