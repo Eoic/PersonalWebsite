@@ -14,6 +14,36 @@
         page_path = "~/about" if page == "index" else f"~/{page}"
         vite_url = vite_dev_server_url.rstrip("/") if vite_dev_server_url else None
     %>
+    <script>
+        (() => {
+            const root = document.documentElement;
+            const meta = document.getElementById('theme-color-meta');
+            let theme = 'light';
+
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+                    ? 'dark'
+                    : 'light';
+
+                theme = storedTheme === 'dark' || storedTheme === 'light'
+                    ? storedTheme
+                    : preferredTheme;
+            } catch {
+                theme = 'light';
+            }
+
+            root.classList.add(theme);
+            root.style.colorScheme = theme;
+
+            if (meta) {
+                meta.setAttribute('content', theme === 'dark' ? '#111111' : '#f3f3ef');
+            }
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
     % if debug and vite_url:
         <script type="module" src="${vite_url}/@vite/client"></script>
         <link rel="stylesheet" type="text/css" href="${vite_url}/src/scss/main.scss">
@@ -102,24 +132,6 @@
                 "@id": "https://karolis-strazdas.lt${'' if page == 'index' else '/' + page}"
             }
         }
-    </script>
-
-    <script>
-        (() => {
-            const storedTheme = localStorage.getItem('theme');
-            const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-                ? 'dark'
-                : 'light';
-            const theme = storedTheme || preferredTheme;
-            const themeColor = theme === 'dark' ? '#111111' : '#f3f3ef';
-
-            document.documentElement.classList.add(theme);
-            const meta = document.getElementById('theme-color-meta');
-
-            if (meta) {
-                meta.setAttribute('content', themeColor);
-            }
-        })();
     </script>
 
     % for script in page_head_scripts:

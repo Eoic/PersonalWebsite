@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap");
-
 :root {
   color-scheme: light dark;
 }
@@ -417,6 +415,14 @@ a:focus-visible {
   &:hover {
     background-color: var(--color-surface-muted);
   }
+}
+
+#theme-switcher::after {
+  content: "theme: light";
+}
+
+.theme.dark #theme-switcher::after {
+  content: "theme: dark";
 }
 
 form {

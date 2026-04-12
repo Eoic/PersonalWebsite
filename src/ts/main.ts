@@ -19,7 +19,6 @@ function applyTheme(theme: Theme): void {
   }
 
   if (switcher) {
-    switcher.textContent = `theme: ${theme}`;
     switcher.setAttribute("aria-pressed", String(theme === "dark"));
   }
 }

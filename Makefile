@@ -6,8 +6,12 @@ SERVE_PORT := 8000
 DEV_APP_URL := http://$(LAN_IP):$(DEV_APP_PORT)
 DEV_ASSET_URL := http://$(LAN_IP):$(DEV_ASSET_PORT)
 SERVE_URL := http://$(LAN_IP):$(SERVE_PORT)
+DB_SYNC_REMOTE ?=
+DB_SYNC_DEST_DIR ?= /opt/website/data
+DB_SYNC_FILE ?= site.db
+DB_SYNC_OWNER ?= website:website
 
-.PHONY: dev dev-assets seed build-assets serve createuser typecheck
+.PHONY: dev dev-assets seed build-assets serve createuser typecheck sync-db
 
 dev:
 	@printf "Flask: %s\nVite:  %s\n" "$(DEV_APP_URL)" "$(DEV_ASSET_URL)"
@@ -31,3 +35,8 @@ createuser:
 
 typecheck:
 	npm run typecheck
+
+sync-db:
+	@test -n "$(DB_SYNC_REMOTE)" || (echo "Set DB_SYNC_REMOTE, e.g. make sync-db DB_SYNC_REMOTE=website@server"; exit 1)
+	rsync -rtv --progress --chmod=F644 --no-owner --no-group "data/$(DB_SYNC_FILE)" "$(DB_SYNC_REMOTE):$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)"
+	ssh "$(DB_SYNC_REMOTE)" "if [ \"\$$(id -un)\" = \"website\" ]; then chmod 644 '$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)'; else chown $(DB_SYNC_OWNER) '$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)' && chmod 644 '$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)'; fi"
