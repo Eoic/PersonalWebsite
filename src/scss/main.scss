@@ -232,13 +232,33 @@ a:focus-visible {
 .page-header {
   max-width: 44rem;
   margin-bottom: 2rem;
+  width: 100%;
 }
 
 .page-header h1 {
-  margin-bottom: 0.75rem;
   font-size: clamp(2rem, 4vw, 3rem);
   line-height: 1.05;
   letter-spacing: -0.04em;
+  flex-grow: 1;
+}
+
+.page-header .title {
+  gap: 0.5em;
+  display: flex;
+  margin-bottom: 0.75em;
+  flex-wrap: wrap;
+
+  h1 {
+    margin-bottom: 0;
+    display: inline-block;
+  }
+
+  a {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  align-items: end;
 }
 
 .page-intro {
@@ -431,15 +451,23 @@ form {
     display: block;
   }
 
-  input {
+  input,
+  textarea {
     margin-bottom: 1em;
     padding: 0.5em;
+    display: block;
     border: 1px solid var(--color-border);
     background: var(--color-surface);
     border-radius: 0;
     width: 100%;
     max-width: 30ch;
     color: var(--color-text);
+  }
+
+  textarea {
+    width: 100%;
+    min-width: 30ch;
+    max-width: 100ch;
   }
 
   button[type="submit"] {
@@ -466,4 +494,11 @@ form {
     margin: 0;
     padding: 0;
   }
+}
+
+.actions {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1em;
+  gap: 0.85em;
 }

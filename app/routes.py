@@ -2,7 +2,7 @@ import json
 import math
 import os
 import re
-from datetime import UTC
+from datetime import UTC, datetime
 from urllib.parse import urlparse
 
 import bcrypt
@@ -10,7 +10,7 @@ from flask import Blueprint, redirect, request, send_from_directory, session, ur
 from flask_login import login_required, login_user, logout_user
 from flask_login import current_user
 
-from app.forms import LoginForm
+from app.forms import LoginForm, PostForm
 
 from . import limiter, render_mako
 from .context import get_common_context
@@ -370,6 +370,7 @@ def posts():
     for post in Post.select().order_by(Post.published_on.desc(), Post.sort_order):
         items.append(
             {
+                "id": post.id,
                 "title": post.title,
                 "published_on": post.published_on,
                 "body": post.body,
@@ -379,9 +380,105 @@ def posts():
     ctx.update(
         page_intro=_PAGE_INTROS["posts"],
         items=items,
+        page_actions=[
+            url_for("main.new_post"),
+        ],
     )
 
     return render_mako("pages/posts.html", **ctx)
+
+
+@bp.route("/posts/new", methods=["GET", "POST"])
+@login_required
+def new_post():
+    """Render the editor page for creating a new post."""
+    action_path = url_for("main.new_post")
+    cancel_path = url_for("main.posts")
+    ctx = get_common_context("posts")
+
+    ctx.update(
+        action_path=action_path,
+        cancel_path=cancel_path,
+    )
+
+    if request.method == "GET":
+        form = PostForm(meta={"csrf_context": session})
+        ctx.update(form=form)
+        return render_mako("pages/post_form.html", **ctx)
+    elif request.method == "POST":
+        form = PostForm(request.form, meta={"csrf_context": session})
+
+        if form.validate():
+            Post.create(
+                title=form.title.data,
+                body=form.body.data,
+                published_on=datetime.now(UTC),
+                sort_order=0,
+            )
+
+            return redirect(url_for("main.posts"))
+        else:
+            ctx = get_common_context("posts")
+            ctx.update(form=form)
+            return render_mako("pages/post_form.html", **ctx), 400
+
+
+@bp.route("/posts/edit/<int:post_id>", methods=["GET", "POST"])
+@login_required
+def edit_post(post_id):
+    """Render the editor page for a specific post."""
+    action_path = url_for("main.edit_post", post_id=post_id)
+    cancel_path = url_for("main.posts")
+    ctx = get_common_context("posts")
+
+    ctx.update(
+        post_id=post_id,
+        action_path=action_path,
+        cancel_path=cancel_path,
+    )
+
+    if request.method == "GET":
+        post = Post.get(Post.id == post_id)
+        form = PostForm(meta={"csrf_context": session}, obj=post)
+        ctx.update(form=form)
+        return render_mako("pages/post_form.html", **ctx)
+    elif request.method == "POST":
+        form = PostForm(request.form, meta={"csrf_context": session})
+
+        if form.validate():
+            post = Post.get(Post.id == post_id)
+            post.title = form.title.data
+            post.body = form.body.data
+            post.save()
+            return redirect(url_for("main.posts"))
+        else:
+            ctx = get_common_context("posts")
+            ctx.update(form=form)
+            return render_mako("pages/post_form.html", **ctx), 400
+
+
+@bp.route("/posts/delete/<int:post_id>", methods=["GET", "POST"])
+@login_required
+def delete_post(post_id):
+    """Render the confirmation page for deleting a specific post."""
+    ctx = get_common_context("posts")
+
+    if request.method == "GET":
+        ctx.update(
+            message="Are you sure you want to delete this post? This action cannot be undone.",
+            action_path=url_for("main.delete_post", post_id=post_id),
+            cancel_path=url_for("main.posts"),
+        )
+
+        return render_mako("pages/delete_confirm.html", **ctx)
+    elif request.method == "POST":
+        try:
+            post = Post.get(Post.id == post_id)
+            post.delete_instance()
+        except Post.DoesNotExist:
+            print(f"Post with id {post_id} does not exist.")
+
+        return redirect(url_for("main.posts"))
 
 
 @bp.route("/bookshelf")
@@ -445,6 +542,13 @@ def login():
             ctx.update(errors=["Invalid username or password"])
 
     return render_mako("pages/login.html", **ctx)
+
+
+@bp.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("main.index"))
 
 
 @bp.route("/whiteboard/strokes")
@@ -546,6 +650,7 @@ def delete_whiteboard_stroke(stroke_id):
 def whiteboard():
     """Render the whiteboard page."""
     ctx = get_common_context("whiteboard")
+
     ctx.update(
         page_head_scripts=[
             {
@@ -558,14 +663,8 @@ def whiteboard():
         page_scripts=["whiteboard"],
         page_intro=_PAGE_INTROS["whiteboard"],
     )
+
     return render_mako("pages/whiteboard.html", **ctx)
-
-
-@bp.route("/logout")
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for("main.index"))
 
 
 @bp.route("/robots.txt")

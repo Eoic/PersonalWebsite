@@ -7,6 +7,13 @@
             </header>
 
             <div class="entry-copy">${item["body"]}</div>
+
+            % if current_user.is_authenticated:
+                <div class="actions">
+                    <a href="/posts/edit/${item['id']}"> Edit </a>
+                    <a href="/posts/delete/${item['id']}"> Delete </a>
+                </div>
+            % endif
         </article>
     % endfor
 

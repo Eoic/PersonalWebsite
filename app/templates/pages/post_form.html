@@ -1,0 +1,18 @@
+<%inherit file="../partials/layout.html" />
+
+<form method="post" action="${action_path}">
+    % if errors:
+        <div class="messages">
+            % for error in errors:
+                <p> ${error} </p>
+            % endfor
+        </div>
+    % endif
+
+    ${form.csrf_token}
+    ${form.title.label} ${form.title}
+    ${form.body.label} ${form.body(rows="10")}
+
+    <button class="btn" type="submit"> Save </button>
+    <a href="${cancel_path}" class="btn"> Cancel </a>
+</form>
