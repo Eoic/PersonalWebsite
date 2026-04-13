@@ -1,9 +1,54 @@
 <%inherit file="../partials/layout.html" />
 
-<section>
-    <article>
-        %if not items:
-            <p>Nothing here yet.</p>
-        % endif:
-    </article>
-</section>
+<div class="bookshelf">
+    <input
+        type="text"
+        class="bookshelf-search"
+        placeholder="filter by title or author"
+        aria-label="Filter books by title or author"
+    >
+
+    % if books:
+        <div class="bookshelf-body">
+            <div class="bookshelf-grid">
+                % for book in books:
+                    % if book.url:
+                        <a
+                            href="${book.url}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="bookshelf-item"
+                            data-title="${book.title}"
+                            data-author="${book.author}"
+                        >
+                            <img
+                                src="/assets/images/books/${book.cover}"
+                                alt="${book.title} by ${book.author}"
+                                loading="lazy"
+                            >
+                        </a>
+                    % else:
+                        <div
+                            class="bookshelf-item"
+                            data-title="${book.title}"
+                            data-author="${book.author}"
+                        >
+                            <img
+                                src="/assets/images/books/${book.cover}"
+                                alt="${book.title} by ${book.author}"
+                                loading="lazy"
+                            >
+                        </div>
+                    % endif
+                % endfor
+            </div>
+
+            <aside class="bookshelf-detail" aria-live="polite">
+                <p class="bookshelf-detail-title"></p>
+                <p class="bookshelf-detail-author"></p>
+            </aside>
+        </div>
+    % else:
+        <p>Nothing here yet.</p>
+    % endif
+</div>
