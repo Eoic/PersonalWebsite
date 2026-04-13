@@ -48,7 +48,7 @@ _PAGE_INTROS = {
     "education": "Formal education and the technical foundation behind the way I approach software work.",
     "projects": "Selected side projects, experiments, and longer-running ideas.",
     "whiteboard": "Shared freehand drawing space.",
-    "posts": "Short notes, worklog entries, and small observations.",
+    "posts": "Short notes and other ramblings. Nothing intelligent or insightful here.",
     "bookshelf": "An incomplete list of books I've read. Not in a chronological order.",
 }
 

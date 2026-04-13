@@ -107,4 +107,9 @@ def create_app():
     from .routes import bp as main_bp
 
     app.register_blueprint(main_bp)
+
+    from .admin import init_admin
+
+    init_admin(app)
+
     return app

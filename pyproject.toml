@@ -7,6 +7,7 @@ requires-python = ">=3.14"
 dependencies = [
     "bcrypt>=5.0.0",
     "flask>=3.1.1",
+    "flask-admin[peewee]>=1.6.1",
     "flask-limiter>=3.5.0",
     "flask-login>=0.6.3",
     "gunicorn>=23.0.0",
