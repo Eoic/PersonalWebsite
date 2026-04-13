@@ -31,3 +31,11 @@ make serve
 ```
 
 `make serve` also prints the LAN URL to visit from another device.
+
+## Bookshelf Covers
+
+```bash
+npm run build:book-covers
+```
+
+Drop original cover art into `assets/images/books/source/`, run `npm run build:book-covers`, and commit both the source image and generated `-128.webp` / `-256.webp` variants.

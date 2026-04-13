@@ -63,7 +63,7 @@ PAGES = [
     {
         "slug": "bookshelf",
         "title": "Bookshelf",
-        "description": "An incomplete list of books I've read. Not in a chronological order.",
+        "description": "An incomplete list of books I've read. Not in any particular order, chronological or otherwise.",
         "url": "/bookshelf",
         "sort_order": 6,
     },

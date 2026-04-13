@@ -122,6 +122,26 @@ function initBookshelfSearch(): void {
   });
 }
 
+function initBookshelfCovers(): void {
+  const items = document.querySelectorAll<HTMLElement>(".bookshelf-item");
+
+  items.forEach((item) => {
+    const image = item.querySelector<HTMLImageElement>("img");
+
+    if (!image) return;
+
+    const markLoaded = () => item.classList.add("is-loaded");
+
+    if (image.complete) {
+      markLoaded();
+      return;
+    }
+
+    image.addEventListener("load", markLoaded, { once: true });
+    image.addEventListener("error", markLoaded, { once: true });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const switcher = document.getElementById("theme-switcher");
   const initialTheme: Theme = document.documentElement.classList.contains("dark")
@@ -130,6 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   applyTheme(initialTheme);
   computeEntryTimespans();
+  initBookshelfCovers();
   initBookshelfDetail();
   initBookshelfSearch();
 

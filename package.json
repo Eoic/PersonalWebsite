@@ -7,8 +7,9 @@
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5173 --strictPort",
-    "build": "npm run build:css && npm run build:js",
-    "build:debug": "npm run build:css:debug && npm run build:js:debug",
+    "build": "npm run build:book-covers && npm run build:css && npm run build:js",
+    "build:debug": "npm run build:book-covers && npm run build:css:debug && npm run build:js:debug",
+    "build:book-covers": "node scripts/build-book-covers.mjs",
     "build:css": "sass --no-source-map --style=compressed src/scss/main.scss:assets/css/main.min.css src/scss/whiteboard.scss:assets/css/whiteboard.min.css",
     "build:css:debug": "sass --no-source-map --style=expanded src/scss/main.scss:assets/css/main.css src/scss/whiteboard.scss:assets/css/whiteboard.css",
     "build:js": "vite build",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@types/node": "^25.6.0",
     "concurrently": "^9.2.1",
+    "sharp": "^0.34.4",
     "sass": "^1.99.0",
     "typescript": "^6.0.2",
     "vite": "^5.4.21"

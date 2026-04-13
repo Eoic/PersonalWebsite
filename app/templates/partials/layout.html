@@ -133,6 +133,9 @@
     % for script in page_head_scripts:
         <script src="${script['src']}" crossorigin="${script.get('crossorigin', 'anonymous')}"></script>
     % endfor
+    % for style in page_head_styles:
+        <style>${style}</style>
+    % endfor
 
     <title>Karolis Strazdas${' • ' + title if title != 'About' else ''}</title>
 </head>

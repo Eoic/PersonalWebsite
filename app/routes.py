@@ -50,7 +50,7 @@ _PAGE_INTROS = {
     "projects": "Selected side projects, experiments, and longer-running ideas.",
     "whiteboard": "Shared freehand drawing space.",
     "posts": "Short notes and other ramblings. Nothing intelligent or insightful here.",
-    "bookshelf": "An incomplete list of books I've read. Not in a chronological order.",
+    "bookshelf": "An incomplete list of books I've read. Not in any particular order, chronological or otherwise.",
 }
 
 
@@ -487,6 +487,14 @@ def bookshelf():
     """Render the bookshelf page."""
     ctx = get_common_context("bookshelf")
     books = list(Book.select().order_by(Book.title))
+    ctx["page_head_styles"].append(
+        ".bookshelf-item{display:block;position:relative;aspect-ratio:2/3;"
+        "overflow:hidden;opacity:.85;background:var(--color-surface-muted)}"
+        "a.bookshelf-item::after{display:none;content:none}"
+        ".bookshelf-item img{position:absolute;inset:0;display:block;width:100%;"
+        "height:100%;object-fit:cover;opacity:0}"
+        ".bookshelf-item.is-loaded img{opacity:1}"
+    )
 
     ctx.update(
         page_intro=_PAGE_INTROS["bookshelf"],

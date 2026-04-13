@@ -64,6 +64,7 @@ def get_common_context(page_slug):
         "current_user": current_user,
         "debug": debug,
         "vite_dev_server_url": os.environ.get("VITE_DEV_SERVER_URL") if debug else None,
+        "page_head_styles": [],
         "page_head_scripts": [],
         "page_styles": [],
         "page_scripts": [],

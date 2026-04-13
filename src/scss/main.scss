@@ -535,25 +535,33 @@ form {
 
 .bookshelf-item {
   display: block;
-  text-decoration: none;
+  position: relative;
   aspect-ratio: 2 / 3;
   overflow: hidden;
   opacity: 0.85;
-  transition: opacity 0.15s ease;
+  background: var(--color-surface-muted);
 }
 
 .bookshelf-item:hover {
   opacity: 1;
 }
 
-.bookshelf-item::after {
+a.bookshelf-item::after {
   display: none;
+  content: none;
 }
 
 .bookshelf-item img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0;
+}
+
+.bookshelf-item.is-loaded img {
+  opacity: 1;
 }
 
 .bookshelf-detail {

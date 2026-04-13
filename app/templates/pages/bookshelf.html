@@ -12,6 +12,7 @@
         <div class="bookshelf-body">
             <div class="bookshelf-grid">
                 % for book in books:
+                    <% cover_stem = book.cover.rsplit(".", 1)[0] %>
                     % if book.url:
                         <a
                             href="${book.url | h}"
@@ -22,7 +23,7 @@
                             data-author="${book.author | h}"
                         >
                             <img
-                                src="/assets/images/books/${book.cover | h}"
+                                src="/assets/images/books/${cover_stem | h}-256.webp"
                                 alt="${book.title | h} by ${book.author | h}"
                                 loading="lazy"
                             >
@@ -34,7 +35,7 @@
                             data-author="${book.author | h}"
                         >
                             <img
-                                src="/assets/images/books/${book.cover | h}"
+                                src="/assets/images/books/${cover_stem | h}-256.webp"
                                 alt="${book.title | h} by ${book.author | h}"
                                 loading="lazy"
                             >
