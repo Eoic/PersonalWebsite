@@ -126,6 +126,7 @@ class Book(BaseModel):
     title = CharField()
     author = CharField()
     cover = CharField()
+    url = CharField(null=True)
 
 
 class WhiteboardStroke(BaseModel):
