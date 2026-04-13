@@ -79,6 +79,49 @@ function computeEntryTimespans(): void {
   });
 }
 
+function initBookshelfDetail(): void {
+  const grid = document.querySelector<HTMLElement>(".bookshelf-grid");
+  const titleEl = document.querySelector<HTMLElement>(".bookshelf-detail-title");
+  const authorEl = document.querySelector<HTMLElement>(".bookshelf-detail-author");
+
+  if (!grid || !titleEl || !authorEl) return;
+
+  grid.addEventListener("mouseover", (e) => {
+    const item = (e.target as HTMLElement).closest<HTMLElement>(".bookshelf-item");
+
+    if (!item) return;
+
+    titleEl.textContent = item.dataset.title ?? "";
+    authorEl.textContent = item.dataset.author ?? "";
+  });
+
+  grid.addEventListener("mouseleave", () => {
+    titleEl.textContent = "";
+    authorEl.textContent = "";
+  });
+}
+
+function initBookshelfSearch(): void {
+  const input = document.querySelector<HTMLInputElement>(".bookshelf-search");
+  const grid = document.querySelector<HTMLElement>(".bookshelf-grid");
+
+  if (!input || !grid) return;
+
+  const items = grid.querySelectorAll<HTMLElement>(".bookshelf-item");
+
+  input.addEventListener("input", () => {
+    const query = input.value.toLowerCase().trim();
+
+    items.forEach((item) => {
+      const title = (item.dataset.title ?? "").toLowerCase();
+      const author = (item.dataset.author ?? "").toLowerCase();
+      const match = !query || title.includes(query) || author.includes(query);
+
+      item.hidden = !match;
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const switcher = document.getElementById("theme-switcher");
   const initialTheme: Theme = document.documentElement.classList.contains("dark")
@@ -87,6 +130,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   applyTheme(initialTheme);
   computeEntryTimespans();
+  initBookshelfDetail();
+  initBookshelfSearch();
 
   if (switcher) {
     switcher.addEventListener("click", handleThemeSwitch);
