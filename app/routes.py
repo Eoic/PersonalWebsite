@@ -16,6 +16,7 @@ from . import limiter, render_mako
 from .context import get_common_context
 from .models import (
     About,
+    Book,
     Education,
     EducationTag,
     Post,
@@ -485,10 +486,11 @@ def delete_post(post_id):
 def bookshelf():
     """Render the bookshelf page."""
     ctx = get_common_context("bookshelf")
+    books = list(Book.select().order_by(Book.title))
 
     ctx.update(
         page_intro=_PAGE_INTROS["bookshelf"],
-        items=[],
+        books=books,
     )
 
     return render_mako("pages/bookshelf.html", **ctx)
