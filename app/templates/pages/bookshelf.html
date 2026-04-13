@@ -1,41 +1,41 @@
 <%inherit file="../partials/layout.html" />
 
 <div class="bookshelf">
-    <input
-        type="text"
-        class="bookshelf-search"
-        placeholder="filter by title or author"
-        aria-label="Filter books by title or author"
-    >
-
     % if books:
+        <input
+            type="text"
+            class="bookshelf-search"
+            placeholder="filter by title or author"
+            aria-label="Filter books by title or author"
+        >
+
         <div class="bookshelf-body">
             <div class="bookshelf-grid">
                 % for book in books:
                     % if book.url:
                         <a
-                            href="${book.url}"
+                            href="${book.url | h}"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="bookshelf-item"
-                            data-title="${book.title}"
-                            data-author="${book.author}"
+                            data-title="${book.title | h}"
+                            data-author="${book.author | h}"
                         >
                             <img
-                                src="/assets/images/books/${book.cover}"
-                                alt="${book.title} by ${book.author}"
+                                src="/assets/images/books/${book.cover | h}"
+                                alt="${book.title | h} by ${book.author | h}"
                                 loading="lazy"
                             >
                         </a>
                     % else:
                         <div
                             class="bookshelf-item"
-                            data-title="${book.title}"
-                            data-author="${book.author}"
+                            data-title="${book.title | h}"
+                            data-author="${book.author | h}"
                         >
                             <img
-                                src="/assets/images/books/${book.cover}"
-                                alt="${book.title} by ${book.author}"
+                                src="/assets/images/books/${book.cover | h}"
+                                alt="${book.title | h} by ${book.author | h}"
                                 loading="lazy"
                             >
                         </div>
@@ -43,7 +43,7 @@
                 % endfor
             </div>
 
-            <aside class="bookshelf-detail" aria-live="polite">
+            <aside class="bookshelf-detail" aria-hidden="true">
                 <p class="bookshelf-detail-title"></p>
                 <p class="bookshelf-detail-author"></p>
             </aside>
