@@ -11,7 +11,7 @@ DB_SYNC_DEST_DIR ?= /opt/website/data
 DB_SYNC_FILE ?= site.db
 DB_SYNC_OWNER ?= website:website
 
-.PHONY: dev dev-assets seed build-assets serve createuser typecheck sync-db
+.PHONY: dev dev-assets seed build-assets serve createuser deleteusers typecheck db-push db-pull
 
 dev:
 	@printf "Flask: %s\nVite:  %s\n" "$(DEV_APP_URL)" "$(DEV_ASSET_URL)"
@@ -33,10 +33,17 @@ serve:
 createuser:
 	uv run python -m app.create_user
 
+deleteusers:
+	uv run python -m app.delete_users
+
 typecheck:
 	npm run typecheck
 
-sync-db:
-	@test -n "$(DB_SYNC_REMOTE)" || (echo "Set DB_SYNC_REMOTE, e.g. make sync-db DB_SYNC_REMOTE=website@server"; exit 1)
+db-push:
+	@test -n "$(DB_SYNC_REMOTE)" || (echo "Set DB_SYNC_REMOTE, e.g. make db-push DB_SYNC_REMOTE=website@server"; exit 1)
 	rsync -rtv --progress --chmod=F644 --no-owner --no-group "data/$(DB_SYNC_FILE)" "$(DB_SYNC_REMOTE):$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)"
 	ssh "$(DB_SYNC_REMOTE)" "if [ \"\$$(id -un)\" = \"website\" ]; then chmod 644 '$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)'; else chown $(DB_SYNC_OWNER) '$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)' && chmod 644 '$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)'; fi"
+
+db-pull:
+	@test -n "$(DB_SYNC_REMOTE)" || (echo "Set DB_SYNC_REMOTE, e.g. make db-pull DB_SYNC_REMOTE=website@server"; exit 1)
+	rsync -rtv --progress "$(DB_SYNC_REMOTE):$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)" "data/$(DB_SYNC_FILE)"
