@@ -368,7 +368,11 @@ def posts():
     ctx = get_common_context("posts")
     items = []
 
-    for post in Post.select().order_by(Post.published_on.desc(), Post.sort_order):
+    for post in (
+        Post.select()
+        .where(Post.hidden == 0)
+        .order_by(Post.published_on.desc(), Post.sort_order)
+    ):
         items.append(
             {
                 "id": post.id,

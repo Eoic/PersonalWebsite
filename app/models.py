@@ -118,6 +118,7 @@ class Post(BaseModel):
     title = CharField()
     published_on = DateField()
     body = TextField()
+    hidden = IntegerField(default=0)
     sort_order = IntegerField()
 
 
