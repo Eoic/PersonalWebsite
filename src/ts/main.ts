@@ -23,12 +23,30 @@ function applyTheme(theme: Theme): void {
   }
 }
 
+function applyView(view: "wide" | "narrow"): void {
+  const root = document.documentElement;
+  const switcher = document.getElementById("view-switcher");
+
+  root.classList.remove("wide", "narrow");
+  root.classList.add(view);
+  localStorage.setItem("view", view);
+
+  if (switcher) {
+    switcher.setAttribute("aria-pressed", String(view === "wide"));
+  }
+}
+
 function handleThemeSwitch(): void {
   const nextTheme: Theme = document.documentElement.classList.contains("dark")
     ? "light"
     : "dark";
 
   applyTheme(nextTheme);
+}
+
+function handleViewSwitch(): void {
+  const nextView = document.documentElement.classList.contains("wide") ? "narrow" : "wide";
+  applyView(nextView);
 }
 
 function formatDuration(months: number): string {
@@ -86,10 +104,12 @@ function initBookshelfDetail(): void {
 
   if (!grid || !titleEl || !authorEl) return;
 
-  grid.addEventListener("mouseover", (e) => {
-    const item = (e.target as HTMLElement).closest<HTMLElement>(".bookshelf-item");
+  grid.addEventListener("mouseover", (event) => {
+    const item = (event.target as HTMLElement).closest<HTMLElement>(".bookshelf-item");
 
-    if (!item) return;
+    if (!item) {
+      return;
+    }
 
     titleEl.textContent = item.dataset.title ?? "";
     authorEl.textContent = item.dataset.author ?? "";
@@ -143,18 +163,19 @@ function initBookshelfCovers(): void {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const switcher = document.getElementById("theme-switcher");
-  const initialTheme: Theme = document.documentElement.classList.contains("dark")
-    ? "dark"
-    : "light";
+  const themeSwitcher = document.getElementById("theme-switcher");
+  const viewSwitcher = document.getElementById("view-switcher");
 
-  applyTheme(initialTheme);
   computeEntryTimespans();
   initBookshelfCovers();
   initBookshelfDetail();
   initBookshelfSearch();
 
-  if (switcher) {
-    switcher.addEventListener("click", handleThemeSwitch);
+  if (themeSwitcher) {
+    themeSwitcher.addEventListener("click", handleThemeSwitch);
+  }
+
+  if (viewSwitcher) {
+    viewSwitcher.addEventListener("click", handleViewSwitch);
   }
 });

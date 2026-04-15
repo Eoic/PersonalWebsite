@@ -175,6 +175,10 @@ h3 {
 
 .rail-actions {
   margin-bottom: 1.5rem;
+
+  button:not(:first-child) {
+    margin-top: 0.5rem;
+  }
 }
 
 a:focus-visible {
@@ -230,9 +234,15 @@ a:focus-visible {
 }
 
 .page-header {
-  max-width: 44rem;
+  max-width: 46rem;
   margin-bottom: 2rem;
   width: 100%;
+}
+
+.view.wide {
+  .page-header {
+    max-width: 100%;
+  }
 }
 
 .page-header h1 {
@@ -262,14 +272,27 @@ a:focus-visible {
 }
 
 .page-intro {
-  max-width: 40rem;
+  max-width: 46rem;
   margin-bottom: 0;
   color: var(--color-muted);
+}
+
+.view.wide {
+  .page-intro {
+    max-width: 100%;
+  }
 }
 
 .document-section,
 .entry-list {
   max-width: 46rem;
+}
+
+.view.wide {
+  .document-section,
+  .entry-list {
+    max-width: 100%;
+  }
 }
 
 .document-section {
@@ -365,7 +388,13 @@ a:focus-visible {
 }
 
 .entry-note .entry-copy {
-  max-width: 42rem;
+  max-width: 46rem;
+}
+
+.view.wide {
+  .entry-note .entry-copy {
+    max-width: 100%;
+  }
 }
 
 .project-media {
@@ -380,7 +409,13 @@ a:focus-visible {
 }
 
 .entry-post .entry-copy {
-  max-width: 40rem;
+  max-width: 46rem;
+}
+
+.view.wide {
+  .entry-post .entry-copy {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 72rem) {
@@ -445,6 +480,14 @@ a:focus-visible {
   content: "theme: dark";
 }
 
+#view-switcher::after {
+  content: "view: narrow";
+}
+
+.view.wide #view-switcher::after {
+  content: "view: wide";
+}
+
 form {
   label,
   input {
@@ -505,6 +548,12 @@ form {
 
 .bookshelf {
   max-width: 46rem;
+}
+
+.view.wide {
+  .bookshelf {
+    max-width: 100%;
+  }
 }
 
 .bookshelf-search {

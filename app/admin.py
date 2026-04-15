@@ -61,8 +61,12 @@ def init_admin(app):
     admin.add_view(SecuredModelView(Post, name="Posts"))
     admin.add_view(SecuredModelView(Book, name="Books"))
     admin.add_view(UserModelView(User, name="Users"))
+
     admin.add_view(
-        WhiteboardStrokeModelView(WhiteboardStroke, name="Whiteboard Strokes")
+        WhiteboardStrokeModelView(
+            WhiteboardStroke,
+            name="Whiteboard Strokes",
+        )
     )
 
     return admin
