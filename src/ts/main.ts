@@ -175,6 +175,13 @@ document.addEventListener("DOMContentLoaded", () => {
   initBookshelfDetail();
   initBookshelfSearch();
 
+  const root = document.documentElement;
+  const initialTheme: Theme = root.classList.contains("dark") ? "dark" : "light";
+  const initialView = root.classList.contains("wide") ? "wide" : "narrow";
+
+  applyTheme(initialTheme);
+  applyView(initialView);
+
   if (themeSwitcher) {
     themeSwitcher.addEventListener("click", handleThemeSwitch);
   }
