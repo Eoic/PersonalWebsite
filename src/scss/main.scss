@@ -174,11 +174,11 @@ h3 {
 }
 
 .rail-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
   margin-bottom: 1.5rem;
-
-  button:not(:first-child) {
-    margin-top: 0.5rem;
-  }
 }
 
 a:focus-visible {
