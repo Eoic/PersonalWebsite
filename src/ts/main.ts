@@ -53,54 +53,6 @@ function handleViewSwitch(): void {
   applyView(nextView);
 }
 
-function formatDuration(months: number): string {
-  if (months < 1) {
-    return "(Less than a month)";
-  }
-
-  const years = Math.floor(months / 12);
-  const remainingMonths = months % 12;
-  const parts: string[] = [];
-
-  if (years > 0) {
-    parts.push(`${years} year${years > 1 ? "s" : ""}`);
-  }
-
-  if (remainingMonths > 0) {
-    parts.push(`${remainingMonths} month${remainingMonths > 1 ? "s" : ""}`);
-  }
-
-  if (parts.length > 0) {
-    return `(${parts.join(", ")})`;
-  }
-
-  return "";
-}
-
-function computeEntryTimespans(): void {
-  const timespans = document.querySelectorAll<HTMLElement>("[data-timespan]");
-
-  timespans.forEach((timespan) => {
-    const durationElement = timespan.querySelector<HTMLElement>("[data-duration]");
-    const dateFromRaw = durationElement?.getAttribute("data-date-from");
-    const dateUntilRaw =
-      durationElement?.getAttribute("data-date-until") ?? new Date().toDateString();
-
-    if (!durationElement || !dateFromRaw) {
-      return;
-    }
-
-    const dateFrom = new Date(dateFromRaw);
-    const dateUntil = new Date(dateUntilRaw);
-    let months = (dateUntil.getFullYear() - dateFrom.getFullYear()) * 12;
-
-    months -= dateFrom.getMonth();
-    months += dateUntil.getMonth();
-    months = Math.max(months, 0);
-    durationElement.textContent = formatDuration(months);
-  });
-}
-
 function initBookshelfDetail(): void {
   const grid = document.querySelector<HTMLElement>(".bookshelf-grid");
   const titleEl = document.querySelector<HTMLElement>(".bookshelf-detail-title");
@@ -170,7 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const themeSwitcher = document.getElementById("theme-switcher");
   const viewSwitcher = document.getElementById("view-switcher");
 
-  computeEntryTimespans();
   initBookshelfCovers();
   initBookshelfDetail();
   initBookshelfSearch();

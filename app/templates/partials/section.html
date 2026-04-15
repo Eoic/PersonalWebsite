@@ -6,12 +6,7 @@
 
                 %if "from" in item:
                     &bull; <span>${item["from"].strftime("%B, %Y")}</span> - <span>${item["until"].strftime("%B, %Y") if item["until"] else "Now"}</span>
-
-                    <span 
-                        data-date-from="${item['from'].strftime('%Y-%m-%d') if item['from'] else ''}"
-                        data-date-until="${item['until'].strftime('%Y-%m-%d') if item['until'] else ''}"
-                        data-duration
-                    ></span>
+                    <span>(${item["duration"]})</span>
                 %endif
             </div>
 

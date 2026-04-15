@@ -248,6 +248,37 @@ def _validate_whiteboard_points(raw_value):
     return points
 
 
+def _compute_duration(from_date: datetime, until_date: datetime | None) -> str:
+    until_date = until_date or datetime.now(UTC)
+
+    months = max(
+        0,
+        (
+            until_date.year * 12
+            + until_date.month
+            - (from_date.year * 12 + from_date.month)
+        ),
+    )
+
+    if months < 1:
+        return "Less than a month"
+
+    parts = []
+    years = math.floor(months / 12)
+    remaining_months = months % 12
+
+    if years > 0:
+        parts.append(f"{years} year{'s' if years > 1 else ''}")
+
+    if remaining_months > 0:
+        parts.append(f"{remaining_months} month{'s' if remaining_months > 1 else ''}")
+
+    if len(parts) > 0:
+        return ", ".join(parts)
+
+    return ""
+
+
 @bp.route("/")
 def index():
     """Render the About (index) page."""
@@ -271,16 +302,17 @@ def index():
 @bp.route("/positions")
 def positions():
     """Render the Positions page."""
+    items = []
     ctx = get_common_context("positions")
     position_models = list(Position.select().order_by(Position.sort_order))
     tags_map = _get_tags_for_positions(position_models)
-    items = []
 
     for position in position_models:
         items.append(
             {
                 "from": position.date_from,
                 "until": position.date_until,
+                "duration": _compute_duration(position.date_from, position.date_until),
                 "title": f"{position.title} &bull; {position.company}",
                 "description": position.description,
                 "tags": tags_map.get(position.id, []),
@@ -299,16 +331,20 @@ def positions():
 @bp.route("/education")
 def education():
     """Render the Education page."""
+    items = []
     ctx = get_common_context("education")
     education_models = list(Education.select().order_by(Education.sort_order))
     tags_map = _get_tags_for_education(education_models)
-    items = []
 
     for education in education_models:
         items.append(
             {
                 "from": education.date_from,
                 "until": education.date_until,
+                "duration": _compute_duration(
+                    education.date_from,
+                    education.date_until,
+                ),
                 "title": f"{education.title} &bull; {education.institution}",
                 "description": education.description or "",
                 "tags": tags_map.get(education.id, []),

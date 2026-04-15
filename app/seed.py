@@ -55,7 +55,7 @@ PAGES = [
     },
     {
         "slug": "posts",
-        "title": "Posts",
+        "title": "Journal",
         "description": "Read short notes, engineering updates, and journal-style posts from Karolis Strazdas.",
         "url": "/posts",
         "sort_order": 5,
