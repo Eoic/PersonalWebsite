@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="theme">
+<html lang="en" class="theme view">
 
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,7 @@
     <meta name="keywords"
         content="software engineer, web development, Python, JavaScript, TypeScript, React, Django, full-stack developer, Kaunas, Lithuania">
     <meta name="theme-color" content="#f3f3ef" id="theme-color-meta">
+    <meta name="view-mode" content="narrow" id="view-mode-meta">
     <link rel="canonical" href="https://karolis-strazdas.lt">
     <%
         page_path = "~/about" if page == "index" else f"~/{page}"
@@ -16,12 +17,16 @@
     %>
     <script>
         (() => {
-            const root = document.documentElement;
-            const meta = document.getElementById('theme-color-meta');
             let theme = 'light';
+            let view = 'narrow';
+            const root = document.documentElement;
+            const themeMeta = document.getElementById('theme-color-meta');
+            const viewMeta = document.getElementById('view-mode-meta');
 
             try {
                 const storedTheme = localStorage.getItem('theme');
+                const storedView = localStorage.getItem('view');
+
                 const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
                     ? 'dark'
                     : 'light';
@@ -29,15 +34,23 @@
                 theme = storedTheme === 'dark' || storedTheme === 'light'
                     ? storedTheme
                     : preferredTheme;
+
+                view = storedView === 'narrow' || storedView === 'wide' ? storedView : 'narrow';
             } catch {
                 theme = 'light';
+                view = 'narrow';
             }
 
             root.classList.add(theme);
+            root.classList.add(view);
             root.style.colorScheme = theme;
 
-            if (meta) {
-                meta.setAttribute('content', theme === 'dark' ? '#111111' : '#f3f3ef');
+            if (themeMeta) {
+                themeMeta.setAttribute('content', theme === 'dark' ? '#111111' : '#f3f3ef');
+            }
+
+            if (viewMeta) {
+                viewMeta.setAttribute('content', view);
             }
         })();
     </script>
