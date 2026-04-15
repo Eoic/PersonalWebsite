@@ -5,12 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Module",
+            "name": "Python Debugger: Flask",
             "type": "debugpy",
             "request": "launch",
-            "module": "htmlgen.main",
-            "args": ["assets/"],
-            "cwd": "${workspaceFolder}"
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "app/__init__.py",
+                "FLASK_DEBUG": "1"
+            },
+            "args": [
+                "run",
+                "--no-debugger",
+                "--no-reload"
+            ],
+            "jinja": true,
+            "autoStartBrowser": false
         }
     ]
 }

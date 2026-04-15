@@ -11,5 +11,8 @@
     },
     "[json]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
     }
 }
