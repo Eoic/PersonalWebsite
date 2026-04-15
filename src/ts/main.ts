@@ -25,12 +25,16 @@ function applyTheme(theme: Theme): void {
 
 function applyView(view: "wide" | "narrow"): void {
   const root = document.documentElement;
+  const meta = document.getElementById("view-mode-meta");
   const switcher = document.getElementById("view-switcher");
 
   root.classList.remove("wide", "narrow");
   root.classList.add(view);
   localStorage.setItem("view", view);
 
+  if (meta) {
+    meta.setAttribute("content", view);
+  }
   if (switcher) {
     switcher.setAttribute("aria-pressed", String(view === "wide"));
   }
