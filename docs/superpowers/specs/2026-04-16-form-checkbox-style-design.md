@@ -19,15 +19,17 @@ No checkboxes exist in templates today. The user is mid-work on a "hidden posts"
 
 ## Visual behavior
 
-The checkbox uses inverted-fill on check (no glyph), matching the site's existing "active" treatment.
+The checkbox uses inverted-fill on check plus a CSS-drawn checkmark for state legibility.
 
 | State | Appearance |
 |---|---|
 | Default (unchecked) | 1em × 1em square, `1px solid var(--color-border)`, `background: var(--color-surface)` |
-| `:checked` | `background: var(--color-text)`, border kept |
+| `:checked` | `background: var(--color-text)`, border kept, plus a CSS-drawn checkmark in `--color-bg` rendered via `::after` |
 | `:hover` (unchecked) | `background: var(--color-surface-muted)` |
 | `:focus-visible` | `outline: 2px solid var(--color-text); outline-offset: 2px` |
 | `:disabled` | `opacity: 0.5; cursor: not-allowed` |
+
+The checkmark is a `::after` pseudo-element drawn from two borders (right + bottom) forming an L-shape rotated 45°. Color is `--color-bg` so it inverts cleanly against the filled box in both themes. Stroke width is 2px (visually distinct against the 1px box border). The base `input[type="checkbox"]` rule sets `position: relative` so the absolute-positioned pseudo-element anchors to the box. Browser support for pseudo-elements on `<input>` with `appearance: none` lines up with the `:has()` baseline already accepted (Chrome 84+, Safari 15.4+, Firefox 121+).
 
 All colors come from existing CSS custom properties — light/dark themes work automatically.
 
@@ -59,6 +61,5 @@ Standalone checkboxes (no wrapping label) get the box style but not the row layo
 ## Out of scope
 
 - Indeterminate state styling.
-- A custom checkmark glyph on `:checked` (rejected during brainstorming as visual noise).
 - Radio buttons.
 - Site-wide checkbox styling outside `form`.
