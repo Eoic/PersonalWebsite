@@ -417,6 +417,7 @@ def posts():
                 "id": post.id,
                 "title": post.title,
                 "body": post.body,
+                "slug": post.id,
                 "published_on": post.published_on,
             }
         )
@@ -456,6 +457,7 @@ def new_post():
             Post.create(
                 title=form.title.data,
                 body=form.body.data,
+                hidden=form.hidden.data,
                 published_on=datetime.now(UTC),
                 sort_order=0,
             )
@@ -493,6 +495,7 @@ def edit_post(post_id):
             post = Post.get(Post.id == post_id)
             post.title = form.title.data
             post.body = form.body.data
+            post.hidden = form.hidden.data
             post.save()
             return redirect(url_for("main.posts"))
         else:

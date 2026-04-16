@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, validators, PasswordField
+from wtforms import Form, StringField, validators, PasswordField, BooleanField
 from wtforms.csrf.session import SessionCSRF
 from flask import current_app
 from wtforms.widgets import TextArea
@@ -71,6 +71,8 @@ class PostForm(Form):
         widget=TextArea(),
         name="body",
     )
+
+    hidden = BooleanField("Hidden", default=False, name="hidden")
 
     class Meta:
         csrf = True
