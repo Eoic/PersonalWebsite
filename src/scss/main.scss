@@ -409,12 +409,13 @@ a:focus-visible {
 }
 
 .entry-post.entry-hidden {
-  h2, p {
+  h2, div {
     color: var(--color-muted);
   }
 
   h2:after {
     content: " (hidden)";
+    font-style: italic;
   }
 }
 

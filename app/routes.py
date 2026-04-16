@@ -421,8 +421,7 @@ def posts():
             }
         )
 
-        if current_user.is_authenticated:
-            items[-1]["hidden"] = post.hidden
+        items[-1]["hidden"] = post.hidden if current_user.is_authenticated else 0
 
     ctx.update(
         page_intro=_PAGE_INTROS["posts"],

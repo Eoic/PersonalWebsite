@@ -12,3 +12,4 @@ DEPLOYMENT.md
 deploy/bootstrap.sh
 config.toml
 LOGIN.md
+docs/
