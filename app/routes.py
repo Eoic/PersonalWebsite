@@ -50,7 +50,7 @@ _PAGE_INTROS = {
     "projects": "Selected side projects, experiments, and longer-running ideas.",
     "whiteboard": "Shared freehand drawing space.",
     "posts": "Short notes and other ramblings. Nothing intelligent or insightful here.",
-    "bookshelf": "An incomplete list of books I've read. Not in any particular order, chronological or otherwise.",
+    "bookshelf": "Some of the books I've read. Not in any particular order, chronological or otherwise.",
 }
 
 
