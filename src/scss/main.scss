@@ -523,6 +523,45 @@ form {
     max-width: 100ch;
   }
 
+  input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin: 0;
+    padding: 0;
+    max-width: none;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+
+  input[type="checkbox"]:hover:not(:checked):not(:disabled) {
+    background: var(--color-surface-muted);
+  }
+
+  input[type="checkbox"]:checked {
+    background: var(--color-text);
+  }
+
+  input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--color-text);
+    outline-offset: 2px;
+  }
+
+  input[type="checkbox"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  label:has(> input[type="checkbox"]) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 1em;
+    cursor: pointer;
+  }
+
   button[type="submit"] {
     margin-top: 0.5em;
   }
