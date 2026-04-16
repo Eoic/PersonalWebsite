@@ -401,29 +401,33 @@ def projects():
 @bp.route("/posts")
 def posts():
     """Render the posts page."""
-    ctx = get_common_context("posts")
     items = []
+    ctx = get_common_context("posts")
 
-    for post in (
-        Post.select()
-        .where(Post.hidden == 0)
-        .order_by(Post.published_on.desc(), Post.sort_order)
-    ):
+    if current_user.is_authenticated:
+        posts = Post.select()
+    else:
+        posts = Post.select().where(Post.hidden == 0)
+
+    posts = posts.order_by(Post.published_on.desc(), Post.sort_order)
+
+    for post in posts:
         items.append(
             {
                 "id": post.id,
                 "title": post.title,
-                "published_on": post.published_on,
                 "body": post.body,
+                "published_on": post.published_on,
             }
         )
+
+        if current_user.is_authenticated:
+            items[-1]["hidden"] = post.hidden
 
     ctx.update(
         page_intro=_PAGE_INTROS["posts"],
         items=items,
-        page_actions=[
-            url_for("main.new_post"),
-        ],
+        page_actions=[url_for("main.new_post")],
     )
 
     return render_mako("pages/posts.html", **ctx)
