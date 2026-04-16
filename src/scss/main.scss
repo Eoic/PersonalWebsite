@@ -408,6 +408,16 @@ a:focus-visible {
   object-fit: cover;
 }
 
+.entry-post.entry-hidden {
+  h2, p {
+    color: var(--color-muted);
+  }
+
+  h2:after {
+    content: " (hidden)";
+  }
+}
+
 .entry-post .entry-copy {
   max-width: 46rem;
 }
