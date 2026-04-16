@@ -348,6 +348,16 @@ a:focus-visible {
   letter-spacing: -0.02em;
 }
 
+.entry-header {
+  a {
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
 .entry-separator {
   margin-inline: 0.55rem;
 }
@@ -415,7 +425,6 @@ a:focus-visible {
 
   h2:after {
     content: " (hidden)";
-    font-style: italic;
   }
 }
 
