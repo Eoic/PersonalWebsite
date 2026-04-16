@@ -526,6 +526,7 @@ form {
   input[type="checkbox"] {
     -webkit-appearance: none;
     appearance: none;
+    position: relative;
     display: inline-block;
     width: 1em;
     height: 1em;
@@ -542,6 +543,19 @@ form {
 
   input[type="checkbox"]:checked {
     background: var(--color-text);
+  }
+
+  input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.25em;
+    height: 0.5em;
+    border-right: 2px solid var(--color-bg);
+    border-bottom: 2px solid var(--color-bg);
+    transform: translate(-50%, -60%) rotate(45deg);
+    pointer-events: none;
   }
 
   input[type="checkbox"]:focus-visible {
