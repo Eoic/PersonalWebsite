@@ -51,6 +51,7 @@ _PAGE_INTROS = {
     "whiteboard": "Shared freehand drawing space.",
     "posts": "Short notes and other ramblings. Nothing intelligent or insightful here.",
     "bookshelf": "Some of the books I've read. Not in any particular order, chronological or otherwise.",
+    "garden": "A shared, persistent garden. Plant flowers, water them, prune what has wilted. Blooms pollinate neighbors over time, and the whole patch responds to weather and season.",
 }
 
 
@@ -721,6 +722,20 @@ def whiteboard():
     )
 
     return render_mako("pages/whiteboard.html", **ctx)
+
+
+@bp.route("/garden")
+def garden():
+    """Render the garden page."""
+    ctx = get_common_context("garden")
+
+    ctx.update(
+        page_intro=_PAGE_INTROS["garden"],
+        page_styles=["garden"],
+        page_scripts=["garden"],
+    )
+
+    return render_mako("pages/garden.html", **ctx)
 
 
 @bp.route("/robots.txt")

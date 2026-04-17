@@ -8,6 +8,7 @@ const devOrigin = devPublicUrl ? new URL(devPublicUrl) : null;
 const entryPoints = {
   main: path.resolve(rootDir, "src/ts/main.ts"),
   whiteboard: path.resolve(rootDir, "src/ts/whiteboard.ts"),
+  garden: path.resolve(rootDir, "src/ts/garden.ts"),
 };
 
 export default defineConfig(({ command, mode }) => {

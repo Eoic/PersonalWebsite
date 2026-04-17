@@ -1,0 +1,343 @@
+.garden-page {
+  display: grid;
+  gap: 1.75rem;
+  max-width: min(100%, 80rem);
+}
+
+.garden-toolbar {
+  display: flex;
+  gap: 1.75rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.garden-tool-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.garden-tool-group[hidden] {
+  display: none;
+}
+
+.garden-tool-label {
+  color: var(--color-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+
+.garden-btn-group {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.garden-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0.7rem 0.35rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-surface-muted);
+  }
+
+  &.is-active {
+    background: var(--color-text);
+    color: var(--color-bg);
+    border-color: var(--color-text);
+  }
+
+  &.is-active .garden-kbd {
+    color: var(--color-bg);
+    border-color: color-mix(in srgb, var(--color-bg) 25%, transparent);
+    opacity: 0.55;
+  }
+}
+
+.garden-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  padding: 0 0.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  color: var(--color-muted);
+  font-size: 0.62rem;
+  line-height: 1;
+}
+
+.garden-species-btn {
+  padding-left: 0.4rem;
+}
+
+.garden-species-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.garden-btn.is-active .garden-species-icon {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border-color: var(--color-bg);
+}
+
+.garden-grid-wrap {
+  position: relative;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.garden-grid {
+  position: relative;
+  width: 100%;
+  height: 560px;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  outline: none;
+}
+
+.garden-grid-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--color-text) 8%, transparent) 1px, transparent 1.4px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+.garden-axis {
+  position: absolute;
+  background: color-mix(in srgb, var(--color-text) 12%, transparent);
+  pointer-events: none;
+}
+
+.theme.light .garden-grid-dots {
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--color-text) 11%, transparent) 1px, transparent 1.4px);
+}
+
+.garden-axis-h {
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+.garden-axis-v {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.garden-flowers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.garden-flower {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  transition: transform 0.2s ease;
+}
+
+.garden-flower-wilt {
+  opacity: 0.55;
+}
+
+.garden-flower-seed {
+  opacity: 0.85;
+}
+
+.garden-cell-hover {
+  position: absolute;
+  border: 1px solid var(--color-text);
+  box-sizing: border-box;
+  pointer-events: none;
+
+  &.tool-water {
+    border-style: dotted;
+  }
+
+  &.tool-prune {
+    border-style: dashed;
+  }
+}
+
+.garden-ghost-flower {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.4;
+}
+
+.garden-cell-tip {
+  position: absolute;
+  z-index: 5;
+  min-width: 10rem;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.7rem;
+  line-height: 1.35;
+  pointer-events: none;
+}
+
+.garden-cell-tip .garden-dim {
+  display: block;
+  color: var(--color-muted);
+  font-size: 0.66rem;
+}
+
+.garden-coord-readout {
+  position: absolute;
+  left: 0.65rem;
+  bottom: 0.65rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  font-size: 0.7rem;
+}
+
+.garden-stats-panel {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1.3fr;
+  gap: 2.5rem;
+}
+
+.garden-stats-heading {
+  margin-bottom: 0.6rem;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.garden-stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem 0;
+  border-bottom: 1px dotted color-mix(in srgb, var(--color-text) 8%, transparent);
+  font-size: 0.76rem;
+}
+
+.garden-stat-k {
+  color: var(--color-muted);
+}
+
+.garden-stat-v {
+  font-weight: 600;
+}
+
+.garden-stats-col-season .garden-stat-row {
+  border-bottom: 0;
+}
+
+.garden-legend-row {
+  display: grid;
+  grid-template-columns: 1.5rem 1fr auto;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.2rem 0;
+  font-size: 0.76rem;
+}
+
+.garden-legend-sprite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+}
+
+.garden-legend-count {
+  color: var(--color-muted);
+}
+
+.garden-activity-log {
+  max-width: 42rem;
+}
+
+.garden-activity-row {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr auto;
+  gap: 0.8rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px dotted color-mix(in srgb, var(--color-text) 8%, transparent);
+  font-size: 0.76rem;
+}
+
+.garden-activity-type {
+  color: var(--color-muted);
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+}
+
+.garden-activity-msg {
+  color: var(--color-text);
+}
+
+.garden-activity-time {
+  color: var(--color-muted);
+  font-size: 0.7rem;
+}
+
+.garden-dim {
+  color: var(--color-muted);
+}
+
+.garden-grid[data-cursor="plant"] {
+  cursor: cell;
+}
+
+.garden-grid[data-cursor="water"] {
+  cursor: copy;
+}
+
+.garden-grid[data-cursor="prune"] {
+  cursor: crosshair;
+}
+
+.garden-grid[data-cursor="pan"] {
+  cursor: grab;
+}
+
+.garden-grid[data-cursor="panning"] {
+  cursor: grabbing;
+}
+
+@media (max-width: 72rem) {
+  .garden-stats-panel {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+}
+
+@media (max-width: 42rem) {
+  .garden-toolbar {
+    gap: 1rem;
+  }
+
+  .garden-grid {
+    height: 420px;
+  }
+}

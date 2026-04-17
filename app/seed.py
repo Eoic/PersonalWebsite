@@ -68,11 +68,18 @@ PAGES = [
         "sort_order": 6,
     },
     {
+        "slug": "garden",
+        "title": "Garden",
+        "description": "A shared, persistent garden. Plant flowers, water them, prune what has wilted. Blooms pollinate neighbors over time, and the whole patch responds to weather and season.",
+        "url": "/garden",
+        "sort_order": 7,
+    },
+    {
         "slug": "login",
         "title": "Login",
         "description": "",
         "url": "/login",
-        "sort_order": 7,
+        "sort_order": 8,
         "hidden": 1,
     },
 ]
