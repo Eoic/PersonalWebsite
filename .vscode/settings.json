@@ -1,7 +1,9 @@
 {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
-    "prettier.documentSelectors": ["**/*.{js,css,html,json,md}"],
+    "prettier.documentSelectors": [
+        "**/*.{js,css,html,json,md}"
+    ],
     "prettier.ignorePath": ".prettierignore",
     "[css]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -14,5 +16,8 @@
     },
     "[jsonc]": {
         "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
     }
 }

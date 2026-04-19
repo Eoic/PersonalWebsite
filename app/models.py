@@ -141,6 +141,39 @@ class WhiteboardStroke(BaseModel):
     created_at = DateTimeField(default=lambda: datetime.now(UTC))
 
 
+class GardenMeta(BaseModel):
+    id = AutoField()
+    board_slug = CharField(unique=True)
+    planted_total = IntegerField(default=0)
+    last_simulated_at = DateTimeField(default=lambda: datetime.now(UTC))
+    version = IntegerField(default=0)
+    created_at = DateTimeField(default=lambda: datetime.now(UTC))
+    updated_at = DateTimeField(default=lambda: datetime.now(UTC))
+
+
+class GardenCell(BaseModel):
+    id = AutoField()
+    board_slug = CharField(index=True)
+    x = IntegerField()
+    y = IntegerField()
+    species = CharField()
+    stage = CharField()
+    planted_at = DateTimeField()
+    last_water_at = DateTimeField()
+    author_label = CharField()
+
+    class Meta:
+        indexes = ((("board_slug", "x", "y"), True),)
+
+
+class GardenActivity(BaseModel):
+    id = AutoField()
+    board_slug = CharField(index=True)
+    type = CharField()
+    msg = TextField()
+    created_at = DateTimeField(default=lambda: datetime.now(UTC))
+
+
 ALL_MODELS = [
     Page,
     Position,
@@ -155,5 +188,8 @@ ALL_MODELS = [
     Post,
     Book,
     WhiteboardStroke,
+    GardenMeta,
+    GardenCell,
+    GardenActivity,
     User,
 ]

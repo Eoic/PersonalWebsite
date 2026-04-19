@@ -11,6 +11,11 @@ from flask_login import login_required, login_user, logout_user
 from flask_login import current_user
 
 from app.forms import LoginForm, PostForm
+from app.garden_state import (
+    GardenConflictError,
+    apply_garden_action,
+    get_garden_snapshot,
+)
 
 from . import limiter, render_mako
 from .context import get_common_context
@@ -42,6 +47,9 @@ _WHITEBOARD_MIN_BRUSH_SIZE = 1
 _WHITEBOARD_MAX_BRUSH_SIZE = 48
 _WHITEBOARD_MAX_POINTS = 4096
 _WHITEBOARD_MAX_COORDINATE = 1_000_000
+_GARDEN_ALLOWED_TOOLS = {"plant", "water", "prune"}
+_GARDEN_ALLOWED_SPECIES = {"daisy", "tulip", "poppy", "fern"}
+_GARDEN_MAX_COORDINATE = 1_000_000
 
 _PAGE_INTROS = {
     "index": "I'm a software engineer passionate about building useful and/or interesting things for the web. You can explore my projects and work experience here.",
@@ -179,6 +187,56 @@ def _parse_whiteboard_payload():
         return None, _whiteboard_error("Request body must be valid JSON.", 400)
 
     return payload, None
+
+
+def _garden_error(message, status):
+    """Return a JSON error response for garden endpoints."""
+    return {"error": message}, status
+
+
+def _parse_garden_payload():
+    """Return the request JSON payload dict or a 400 response."""
+    payload = request.get_json(silent=True)
+
+    if not isinstance(payload, dict):
+        return None, _garden_error("Request body must be valid JSON.", 400)
+
+    return payload, None
+
+
+def _validate_garden_tool(raw_value):
+    """Validate a garden action tool."""
+    if raw_value not in _GARDEN_ALLOWED_TOOLS:
+        raise ValueError("tool must be one of plant, water, or prune.")
+
+    return raw_value
+
+
+def _validate_garden_species(raw_value):
+    """Validate a garden species string."""
+    if raw_value not in _GARDEN_ALLOWED_SPECIES:
+        raise ValueError("species must be one of daisy, tulip, poppy, or fern.")
+
+    return raw_value
+
+
+def _validate_garden_coordinate(raw_value, label):
+    """Validate integer garden coordinates."""
+    if isinstance(raw_value, bool) or not isinstance(raw_value, (int, float)):
+        raise ValueError(f"{label} must be a number.")
+
+    if not math.isfinite(raw_value):
+        raise ValueError(f"{label} must be finite.")
+
+    if int(raw_value) != raw_value:
+        raise ValueError(f"{label} must be an integer.")
+
+    coordinate = int(raw_value)
+
+    if abs(coordinate) > _GARDEN_MAX_COORDINATE:
+        raise ValueError(f"{label} is out of bounds.")
+
+    return coordinate
 
 
 def _validate_client_session_id(raw_value):
@@ -736,6 +794,45 @@ def garden():
     )
 
     return render_mako("pages/garden.html", **ctx)
+
+
+@bp.route("/garden/state")
+def garden_state():
+    """Return the authoritative shared garden snapshot."""
+    try:
+        snapshot = get_garden_snapshot()
+    except GardenConflictError as exc:
+        return _garden_error(str(exc), 503)
+
+    return snapshot
+
+
+@bp.route("/garden/actions", methods=["POST"])
+def garden_actions():
+    """Apply an anonymous shared garden action and return the new snapshot."""
+    payload, error = _parse_garden_payload()
+
+    if error is not None:
+        return error
+
+    try:
+        tool = _validate_garden_tool(payload.get("tool"))
+        x = _validate_garden_coordinate(payload.get("x"), "x")
+        y = _validate_garden_coordinate(payload.get("y"), "y")
+        species = (
+            _validate_garden_species(payload.get("species"))
+            if tool == "plant"
+            else None
+        )
+    except ValueError as exc:
+        return _garden_error(str(exc), 400)
+
+    try:
+        snapshot = apply_garden_action(tool=tool, x=x, y=y, species=species)
+    except GardenConflictError as exc:
+        return _garden_error(str(exc), 503)
+
+    return snapshot
 
 
 @bp.route("/robots.txt")
