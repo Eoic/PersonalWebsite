@@ -79,9 +79,9 @@ export type WhiteboardRefs = {
     gridDots: HTMLElement;
     axisH: HTMLElement;
     axisV: HTMLElement;
+    ssrLayer: HTMLElement | null;
     committedCanvas: HTMLCanvasElement;
     overlayCanvas: HTMLCanvasElement;
-    statusElement: HTMLElement;
     brushColorInput: HTMLInputElement;
     brushSizeReadout: HTMLOutputElement;
     fullscreenButton: HTMLButtonElement;
@@ -112,10 +112,10 @@ export type WhiteboardState = {
     brushSize: number;
     tool: Tool;
     color: string;
-    statusTimer: number;
     nextTemporaryStrokeId: number;
     clientSessionId: string;
     isSpacePressed: boolean;
     hasInitializedView: boolean;
+    isBooting: boolean;
     canManageWhiteboard: boolean;
 };

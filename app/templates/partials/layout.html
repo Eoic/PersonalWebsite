@@ -44,6 +44,7 @@
             root.classList.add(theme);
             root.classList.add(view);
             root.style.colorScheme = theme;
+            root.dataset.initialBrushColor = theme === 'dark' ? '#e8e8e3' : '#1a1a1a';
 
             if (themeMeta) {
                 themeMeta.setAttribute('content', theme === 'dark' ? '#111111' : '#f3f3ef');

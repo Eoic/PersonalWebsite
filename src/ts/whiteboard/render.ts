@@ -69,11 +69,23 @@ function configureContext(context: CanvasRenderingContext2D): void {
 
 export function renderBackground(refs: WhiteboardRefs, state: WhiteboardState): void {
     const gridSize = GRID_PX * state.camera.zoom;
+    const centeredOriginX = state.viewportWidth / 2;
+    const centeredOriginY = state.viewportHeight / 2;
+    const isCentered =
+        Math.abs(state.camera.originX - centeredOriginX) < 0.01 &&
+        Math.abs(state.camera.originY - centeredOriginY) < 0.01;
 
-    refs.gridDots.style.backgroundPosition = `${state.camera.originX}px ${state.camera.originY}px`;
+    if (isCentered) {
+        refs.gridDots.style.backgroundPosition = '50% 50%';
+        refs.axisH.style.top = '50%';
+        refs.axisV.style.left = '50%';
+    } else {
+        refs.gridDots.style.backgroundPosition = `${state.camera.originX}px ${state.camera.originY}px`;
+        refs.axisH.style.top = `${state.camera.originY}px`;
+        refs.axisV.style.left = `${state.camera.originX}px`;
+    }
+
     refs.gridDots.style.backgroundSize = `${gridSize}px ${gridSize}px`;
-    refs.axisH.style.top = `${state.camera.originY}px`;
-    refs.axisV.style.left = `${state.camera.originX}px`;
 }
 
 export function resizeCanvases(

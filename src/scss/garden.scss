@@ -4,6 +4,11 @@
   max-width: min(100%, 80rem);
 }
 
+.garden-page[data-booting="true"] .garden-grid,
+.garden-page[data-booting="true"] .garden-toolbar button {
+  pointer-events: none;
+}
+
 .garden-toolbar {
   display: flex;
   gap: 1.75rem;
@@ -275,6 +280,20 @@
 
 .garden-activity-log {
   max-width: 42rem;
+}
+
+.garden-sync-status {
+  margin-bottom: 0.7rem;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+}
+
+.garden-sync-status[hidden] {
+  display: none;
+}
+
+.garden-sync-status.is-error {
+  color: var(--color-text);
 }
 
 .garden-activity-row {

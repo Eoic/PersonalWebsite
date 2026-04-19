@@ -4,7 +4,7 @@ import {
     deleteStrokeRequest,
     loadStrokesRequest
 } from './api';
-import { DEFAULT_BRUSH_SIZE, DEFAULT_STATUS_DURATION_MS } from './constants';
+import { DEFAULT_BRUSH_SIZE } from './constants';
 import {
     getScreenPoint,
     redraw,
@@ -31,9 +31,9 @@ export function initWhiteboard(root: HTMLElement): void {
     const gridDots = root.querySelector<HTMLElement>('[data-grid-dots]');
     const axisH = root.querySelector<HTMLElement>('[data-axis-h]');
     const axisV = root.querySelector<HTMLElement>('[data-axis-v]');
+    const ssrLayer = root.querySelector<HTMLElement>('[data-whiteboard-ssr]');
     const committedCanvas = root.querySelector<HTMLCanvasElement>('[data-whiteboard-committed]');
     const overlayCanvas = root.querySelector<HTMLCanvasElement>('[data-whiteboard-overlay]');
-    const statusElement = root.querySelector<HTMLElement>('[data-status]');
     const brushColorInput = root.querySelector<HTMLInputElement>('[data-brush-color]');
     const brushSizeReadout = root.querySelector<HTMLOutputElement>('[data-brush-size-readout]');
     const fullscreenButton = root.querySelector<HTMLButtonElement>('[data-fullscreen]');
@@ -54,7 +54,6 @@ export function initWhiteboard(root: HTMLElement): void {
         !axisV ||
         !committedCanvas ||
         !overlayCanvas ||
-        !statusElement ||
         !brushColorInput ||
         !brushSizeReadout ||
         !fullscreenButton ||
@@ -81,9 +80,9 @@ export function initWhiteboard(root: HTMLElement): void {
         gridDots,
         axisH,
         axisV,
+        ssrLayer,
         committedCanvas,
         overlayCanvas,
-        statusElement,
         brushColorInput,
         brushSizeReadout,
         fullscreenButton,
@@ -118,11 +117,11 @@ export function initWhiteboard(root: HTMLElement): void {
         brushSize: DEFAULT_BRUSH_SIZE,
         tool: 'draw',
         color: getWorldColorToken('--color-text') || '#1a1a1a',
-        statusTimer: 0,
         nextTemporaryStrokeId: -1,
         clientSessionId: generateClientSessionId(),
         isSpacePressed: false,
         hasInitializedView: false,
+        isBooting: root.dataset.booting === 'true',
         canManageWhiteboard,
     };
 
@@ -130,6 +129,13 @@ export function initWhiteboard(root: HTMLElement): void {
 
     const redrawAll = () => {
         redraw(refs, state, contexts, updateCursor);
+    };
+
+    const renderBootState = () => {
+        refs.root.dataset.booting = String(state.isBooting);
+
+        if (refs.ssrLayer)
+            refs.ssrLayer.hidden = !state.isBooting;
     };
 
     const renderOverlay = () => {
@@ -141,23 +147,6 @@ export function initWhiteboard(root: HTMLElement): void {
         refs.brushSizeReadout.textContent = `${state.brushSize} px`;
         refs.brushSizeDecrementButton.disabled = state.brushSize <= 1;
         refs.brushSizeIncrementButton.disabled = state.brushSize >= 48;
-    }
-
-    function setStatus(message: string, isError = false, durationMs = DEFAULT_STATUS_DURATION_MS): void {
-        refs.statusElement.textContent = message;
-        refs.statusElement.classList.toggle('is-error', isError);
-
-        if (state.statusTimer) {
-            window.clearTimeout(state.statusTimer);
-            state.statusTimer = 0;
-        }
-
-        if (message && durationMs > 0) {
-            state.statusTimer = window.setTimeout(() => {
-                refs.statusElement.textContent = '';
-                refs.statusElement.classList.remove('is-error');
-            }, durationMs);
-        }
     }
 
     function updateToolControls(): void {
@@ -181,6 +170,11 @@ export function initWhiteboard(root: HTMLElement): void {
     }
 
     function updateCursor(): void {
+        if (state.isBooting) {
+            refs.overlayCanvas.style.cursor = 'default';
+            return;
+        }
+
         if (state.interaction?.mode === 'pan' || state.interaction?.mode === 'gesture') {
             refs.overlayCanvas.style.cursor = 'grabbing';
             return;
@@ -195,12 +189,18 @@ export function initWhiteboard(root: HTMLElement): void {
     }
 
     function setTool(nextTool: Tool): void {
+        if (state.isBooting) 
+            return;
+
         state.tool = nextTool;
         updateToolControls();
         redrawAll();
     }
 
     function adjustBrushSize(delta: number): void {
+        if (state.isBooting) 
+            return;
+
         const nextBrushSize = Math.min(Math.max(state.brushSize + delta, 1), 48);
 
         if (nextBrushSize === state.brushSize) 
@@ -251,14 +251,10 @@ export function initWhiteboard(root: HTMLElement): void {
 
         try {
             await persistStroke(stroke);
-            setStatus('Stroke saved.');
         } catch (error) {
             state.strokes = state.strokes.filter((item) => item.id !== stroke.id);
             redrawAll();
-            setStatus(
-                error instanceof Error ? error.message : 'Failed to save the stroke.',
-                true
-            );
+            void error;
         }
     }
 
@@ -281,13 +277,9 @@ export function initWhiteboard(root: HTMLElement): void {
         try {
             await deleteStrokeRequest(refs.strokesEndpoint, strokeId, state.clientSessionId);
             state.createdStrokeIds.delete(strokeId);
-            setStatus('Stroke erased.');
         } catch (error) {
             state.strokes.splice(strokeIndex, 0, removedStroke);
-            setStatus(
-                error instanceof Error ? error.message : 'Failed to erase the stroke.',
-                true
-            );
+            void error;
         } finally {
             state.pendingDeleteIds.delete(strokeId);
             redrawAll();
@@ -299,23 +291,16 @@ export function initWhiteboard(root: HTMLElement): void {
     }
 
     async function loadStrokes(): Promise<void> {
-        setStatus('Loading whiteboard…', false, 0);
-
         try {
             const data = await loadStrokesRequest(refs.strokesEndpoint);
             state.strokes = data.strokes.map((stroke) => ({
                 ...stroke,
                 localOnly: false,
             }));
+            state.isBooting = false;
+            renderBootState();
             redrawAll();
-            setStatus(`Loaded ${state.strokes.length} stroke${state.strokes.length === 1 ? '' : 's'}.`);
-        } catch (error) {
-            setStatus(
-                error instanceof Error ? error.message : 'Failed to load the whiteboard.',
-                true,
-                0
-            );
-        }
+        } catch {}
     }
 
     const interactions = createInteractions({
@@ -325,7 +310,6 @@ export function initWhiteboard(root: HTMLElement): void {
         updateCursor,
         setTool,
         adjustBrushSize,
-        setStatus,
         saveStroke,
         deleteStroke,
         clearWhiteboard,
@@ -423,6 +407,7 @@ export function initWhiteboard(root: HTMLElement): void {
     updateToolControls();
     updateBrushSizeReadout();
     updateFullscreenButton();
+    renderBootState();
     updateCursor();
     resizeCanvases(refs, state, contexts);
     redrawAll();

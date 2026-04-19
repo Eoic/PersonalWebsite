@@ -101,6 +101,7 @@ export type GardenRefs = {
   statWind: HTMLElement;
   statTime: HTMLElement;
   legend: HTMLElement;
+  activityStatus: HTMLElement;
   activity: HTMLElement;
 };
 
@@ -121,6 +122,7 @@ export type Config = {
         | null;
     isSpacePressed: boolean;
     centered: boolean;
+    isBooting: boolean;
     isLoaded: boolean;
     loadError: string;
     serverTimeOffsetMs: number;

@@ -16,6 +16,9 @@ from app.garden_state import (
     apply_garden_action,
     get_garden_snapshot,
 )
+from app.garden_view import SPECIES_LIST as GARDEN_SPECIES_LIST
+from app.garden_view import build_garden_page_state
+from app.whiteboard_view import build_whiteboard_page_state
 
 from . import limiter, render_mako
 from .context import get_common_context
@@ -765,10 +768,19 @@ def delete_whiteboard_stroke(stroke_id):
 def whiteboard():
     """Render the whiteboard page."""
     ctx = get_common_context("whiteboard")
+    strokes = (
+        WhiteboardStroke.select()
+        .where(WhiteboardStroke.board_slug == _WHITEBOARD_BOARD_SLUG)
+        .order_by(WhiteboardStroke.id)
+    )
+    whiteboard_view = build_whiteboard_page_state(
+        [_serialize_whiteboard_stroke(stroke) for stroke in strokes]
+    )
 
     ctx.update(
         page_styles=["whiteboard"],
         whiteboard_can_manage=_can_manage_whiteboard(),
+        whiteboard_view=whiteboard_view,
         page_scripts=[
             {
                 "dev": "whiteboard/index",
@@ -785,8 +797,18 @@ def whiteboard():
 def garden():
     """Render the garden page."""
     ctx = get_common_context("garden")
+    garden_view = None
+    garden_boot_error = ""
+
+    try:
+        garden_view = build_garden_page_state(get_garden_snapshot())
+    except GardenConflictError as exc:
+        garden_boot_error = str(exc)
 
     ctx.update(
+        garden_boot_error=garden_boot_error,
+        garden_species_list=GARDEN_SPECIES_LIST,
+        garden_view=garden_view,
         page_intro=_PAGE_INTROS["garden"],
         page_styles=["garden"],
         page_scripts=[

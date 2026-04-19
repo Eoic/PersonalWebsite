@@ -1,6 +1,12 @@
 <%inherit file="../partials/layout.html" />
 
-<section class="garden-page" data-garden-root data-state-endpoint="/garden/state" data-actions-endpoint="/garden/actions">
+<section
+    class="garden-page"
+    data-garden-root
+    data-state-endpoint="/garden/state"
+    data-actions-endpoint="/garden/actions"
+    data-booting="true"
+>
     <div class="garden-toolbar" role="toolbar" aria-label="Garden tools">
         <div class="garden-tool-group">
             <span class="garden-tool-label">/tool</span>
@@ -22,19 +28,77 @@
 
         <div class="garden-tool-group" data-species-group>
             <span class="garden-tool-label">/species</span>
-            <div class="garden-btn-group" data-species-buttons></div>
+            <div class="garden-btn-group" data-species-buttons>
+                % for species in garden_species_list:
+                    <button
+                        class="garden-btn garden-species-btn${' is-active' if species == 'daisy' else ''}"
+                        type="button"
+                        data-species="${species}"
+                        aria-pressed="${'true' if species == 'daisy' else 'false'}"
+                    >
+                        <span class="garden-species-icon">
+                            % if garden_view:
+                                ${next(row["sprite_html"] for row in garden_view["species_buttons"] if row["species"] == species) | n}
+                            % endif
+                        </span>
+                        ${species}
+                    </button>
+                % endfor
+            </div>
         </div>
     </div>
 
     <div class="garden-grid-wrap">
-        <div class="garden-grid" data-garden-surface tabindex="0" role="application" aria-label="Garden grid">
-            <div class="garden-grid-dots" data-grid-dots></div>
-            <div class="garden-axis garden-axis-h" data-axis-h></div>
-            <div class="garden-axis garden-axis-v" data-axis-v></div>
-            <div class="garden-flowers" data-flowers></div>
+        <div
+            class="garden-grid"
+            data-garden-surface
+            tabindex="0"
+            role="application"
+            aria-label="Garden grid"
+            aria-disabled="true"
+        >
+            <div
+                class="garden-grid-dots"
+                data-grid-dots
+                % if garden_view:
+                    style="${garden_view['grid_style']}"
+                % endif
+            ></div>
+            <div
+                class="garden-axis garden-axis-h"
+                data-axis-h
+                % if garden_view:
+                    style="${garden_view['axis_h_style']}"
+                % endif
+            ></div>
+            <div
+                class="garden-axis garden-axis-v"
+                data-axis-v
+                % if garden_view:
+                    style="${garden_view['axis_v_style']}"
+                % endif
+            ></div>
+            <div class="garden-flowers" data-flowers>
+                % if garden_view:
+                    % for flower in garden_view["flowers"]:
+                        <div
+                            class="garden-flower garden-flower-${flower['stage']}"
+                            style="${flower['style']}"
+                            title="${flower['title']}"
+                        >
+                            ${flower["sprite_html"] | n}
+                        </div>
+                    % endfor
+                % endif
+            </div>
             <div class="garden-cell-hover" data-cell-hover hidden></div>
             <div class="garden-cell-tip" data-cell-tip hidden></div>
-            <div class="garden-coord-readout" data-coord-readout></div>
+            <div class="garden-coord-readout" data-coord-readout>
+                <span class="garden-dim">cursor:</span>
+                ${garden_view["coord_cursor"] if garden_view else "(0,0)"}
+                <span class="garden-dim">&middot; center:</span>
+                ${garden_view["coord_center"] if garden_view else "(0,0)"}
+            </div>
         </div>
     </div>
 
@@ -43,19 +107,19 @@
             <div class="garden-stats-heading">/planted</div>
             <div class="garden-stat-row">
                 <span class="garden-stat-k">total ever</span>
-                <span class="garden-stat-v" data-stat-total>0000</span>
+                <span class="garden-stat-v" data-stat-total>${garden_view["stats"]["planted_total"] if garden_view else "----"}</span>
             </div>
             <div class="garden-stat-row">
                 <span class="garden-stat-k">alive now</span>
-                <span class="garden-stat-v" data-stat-alive>0000</span>
+                <span class="garden-stat-v" data-stat-alive>${garden_view["stats"]["alive_now"] if garden_view else "----"}</span>
             </div>
             <div class="garden-stat-row">
                 <span class="garden-stat-k">health</span>
-                <span class="garden-stat-v" data-stat-health>dormant</span>
+                <span class="garden-stat-v" data-stat-health>${garden_view["stats"]["health"] if garden_view else "pending"}</span>
             </div>
             <div class="garden-stat-row">
                 <span class="garden-stat-k">in bloom</span>
-                <span class="garden-stat-v" data-stat-bloom>0%</span>
+                <span class="garden-stat-v" data-stat-bloom>${garden_view["stats"]["bloom_pct"] if garden_view else "--%"}</span>
             </div>
         </div>
 
@@ -63,30 +127,63 @@
             <div class="garden-stats-heading">/season</div>
             <div class="garden-stat-row">
                 <span class="garden-stat-k">season</span>
-                <span class="garden-stat-v" data-stat-season></span>
+                <span class="garden-stat-v" data-stat-season>${garden_view["environment"]["season"] if garden_view else "--"}</span>
             </div>
             <div class="garden-stat-row">
                 <span class="garden-stat-k">weather</span>
-                <span class="garden-stat-v" data-stat-weather></span>
+                <span class="garden-stat-v" data-stat-weather>${garden_view["environment"]["weather"] if garden_view else "--"}</span>
             </div>
             <div class="garden-stat-row">
                 <span class="garden-stat-k">wind</span>
-                <span class="garden-stat-v" data-stat-wind></span>
+                <span class="garden-stat-v" data-stat-wind>${garden_view["environment"]["wind"]["label"] if garden_view else "--"}</span>
             </div>
             <div class="garden-stat-row">
                 <span class="garden-stat-k">time</span>
-                <span class="garden-stat-v" data-stat-time></span>
+                <span class="garden-stat-v" data-stat-time>${garden_view["environment"]["time"] if garden_view else "--"}</span>
             </div>
         </div>
 
         <div class="garden-stats-col">
             <div class="garden-stats-heading">/legend</div>
-            <div data-legend></div>
+            <div data-legend>
+                % if garden_view:
+                    % for row in garden_view["legend_rows"]:
+                        <div class="garden-legend-row">
+                            <span class="garden-legend-sprite">${row["sprite_html"] | n}</span>
+                            <span class="garden-legend-name">${row["species"]}</span>
+                            <span class="garden-legend-count">&times; ${row["count"]}</span>
+                        </div>
+                    % endfor
+                % else:
+                    <div class="garden-dim">garden data unavailable</div>
+                % endif
+            </div>
         </div>
     </div>
 
     <div class="garden-activity-log">
         <div class="garden-stats-heading">/activity</div>
-        <div data-activity></div>
+        <div
+            class="garden-sync-status${' is-error' if garden_boot_error else ''}"
+            data-activity-status
+            ${'' if garden_boot_error else 'hidden'}
+        >${garden_boot_error}</div>
+        <div data-activity>
+            % if garden_view:
+                % if garden_view["activity_rows"]:
+                    % for entry in garden_view["activity_rows"]:
+                        <div class="garden-activity-row">
+                            <span class="garden-activity-type">${entry["type"]}</span>
+                            <span class="garden-activity-msg">${entry["msg"]}</span>
+                            <span class="garden-activity-time">${entry["time_ago"]}</span>
+                        </div>
+                    % endfor
+                % else:
+                    <div class="garden-dim">no activity yet</div>
+                % endif
+            % else:
+                <div class="garden-dim">waiting for the garden to sync</div>
+            % endif
+        </div>
     </div>
 </section>

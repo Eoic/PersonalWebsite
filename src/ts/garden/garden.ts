@@ -4,7 +4,7 @@ import {
     getAnchoredTransform,
     getCenteredOrigin,
     screenToWorld as transformScreenToWorld,
-    worldToScreen as transformWorldToScreen,
+    worldToScreen as transformWorldToScreen
 } from '../canvas';
 import { clamp } from '../utils';
 import { createSprite, formatAgo, getHydrationLabel, normalizeSnapshot } from './utils';
@@ -40,6 +40,7 @@ export function initGarden(root: HTMLElement): void {
         statWind: qs('[data-stat-wind]'),
         statTime: qs('[data-stat-time]'),
         legend: qs('[data-legend]'),
+        activityStatus: qs('[data-activity-status]'),
         activity: qs('[data-activity]'),
     };
 
@@ -55,8 +56,9 @@ export function initGarden(root: HTMLElement): void {
         pendingTouchAction: null,
         isSpacePressed: false,
         centered: false,
+        isBooting: root.dataset.booting === 'true',
         isLoaded: false,
-        loadError: '',
+        loadError: refs.activityStatus.textContent?.trim() ?? '',
         serverTimeOffsetMs: 0,
         activePointers: new Map<number, { clientX: number; clientY: number }>(),
     };
@@ -64,13 +66,29 @@ export function initGarden(root: HTMLElement): void {
     const getNow = (): number => Date.now() + config.serverTimeOffsetMs;
     const isPanning = (): boolean => config.panInteraction !== null;
     const getCellSize = (): number => C.CELL_PX * config.zoom;
+    const shouldPreserveServerRender = (): boolean => config.isBooting && config.world === null;
     const getTransform = () => ({
         originX: config.pan.x,
         originY: config.pan.y,
         scale: getCellSize(),
     });
 
+    const renderBootState = (): void => {
+        refs.root.dataset.booting = String(config.isBooting);
+        refs.surface.setAttribute('aria-disabled', String(config.isBooting));
+    };
+
+    const renderActivityStatus = (): void => {
+        const hasMessage = config.loadError.trim().length > 0;
+        refs.activityStatus.hidden = !hasMessage;
+        refs.activityStatus.classList.toggle('is-error', hasMessage);
+        refs.activityStatus.textContent = config.loadError;
+    };
+
     const renderStats = (): void => {
+        if (!config.world) 
+            return;
+
         refs.statTotal.textContent = String(config.world?.stats.plantedTotal ?? 0).padStart(4, '0');
         refs.statAlive.textContent = String(config.world?.stats.aliveNow ?? 0).padStart(4, '0');
         refs.statHealth.textContent = config.world?.stats.health ?? 'dormant';
@@ -107,25 +125,12 @@ export function initGarden(root: HTMLElement): void {
     };
 
     const renderActivity = (): void => {
+        if (!config.world) 
+            return;
+
         refs.activity.replaceChildren();
 
-        if (config.loadError) {
-            const error = document.createElement('div');
-            error.className = 'garden-dim';
-            error.textContent = config.loadError;
-            refs.activity.appendChild(error);
-            return;
-        }
-
-        if (!config.isLoaded) {
-            const loading = document.createElement('div');
-            loading.className = 'garden-dim';
-            loading.textContent = 'loading garden...';
-            refs.activity.appendChild(loading);
-            return;
-        }
-
-        if (!config.world || config.world.activity.length === 0) {
+        if (config.world.activity.length === 0) {
             const empty = document.createElement('div');
             empty.className = 'garden-dim';
             empty.textContent = 'no activity yet';
@@ -202,15 +207,67 @@ export function initGarden(root: HTMLElement): void {
         };
     };
 
+    const syncViewport = (): void => {
+        const rect = refs.surface.getBoundingClientRect();
+
+        if (rect.width <= 0 || rect.height <= 0) 
+            return;
+
+        const previousCenterWorld = config.centered && config.viewport.width > 0 && config.viewport.height > 0
+            ? screenToWorld(config.viewport.width / 2, config.viewport.height / 2)
+            : null;
+
+        config.viewport = { width: rect.width, height: rect.height };
+
+        if (!config.centered) {
+            resetView();
+            config.centered = true;
+            return;
+        }
+
+        if (!previousCenterWorld) 
+            return;
+
+        const nextOrigin = getCenteredOrigin(
+            previousCenterWorld,
+            { x: rect.width / 2, y: rect.height / 2 },
+            getCellSize()
+        );
+
+        config.pan = {
+            x: nextOrigin.x,
+            y: nextOrigin.y,
+        };
+    };
+
     const renderOriginMarker = (): void => {
+        if (shouldPreserveServerRender()) 
+            return;
+
         const cellSize = getCellSize();
-        refs.axisH.style.top = `${config.pan.y + cellSize / 2}px`;
-        refs.axisV.style.left = `${config.pan.x + cellSize / 2}px`;
-        refs.gridDots.style.backgroundPosition = `${config.pan.x}px ${config.pan.y}px`;
+        const centeredPanX = config.viewport.width / 2 - cellSize / 2;
+        const centeredPanY = config.viewport.height / 2 - cellSize / 2;
+        const isCentered =
+            Math.abs(config.pan.x - centeredPanX) < 0.01 &&
+            Math.abs(config.pan.y - centeredPanY) < 0.01;
+
+        if (isCentered) {
+            refs.axisH.style.top = '50%';
+            refs.axisV.style.left = '50%';
+            refs.gridDots.style.backgroundPosition = `calc(50% - ${cellSize / 2}px) calc(50% - ${cellSize / 2}px)`;
+        } else {
+            refs.axisH.style.top = `${config.pan.y + cellSize / 2}px`;
+            refs.axisV.style.left = `${config.pan.x + cellSize / 2}px`;
+            refs.gridDots.style.backgroundPosition = `${config.pan.x}px ${config.pan.y}px`;
+        }
+
         refs.gridDots.style.backgroundSize = `${cellSize}px ${cellSize}px`;
     };
 
     const renderFlowers = (): void => {
+        if (shouldPreserveServerRender()) 
+            return;
+
         const cellSize = getCellSize();
         const pad = 2;
         const y0 = Math.floor(-config.pan.y / cellSize) - pad;
@@ -258,6 +315,12 @@ export function initGarden(root: HTMLElement): void {
     };
 
     const renderHover = (): void => {
+        if (shouldPreserveServerRender()) {
+            refs.cellHover.hidden = true;
+            refs.cellTip.hidden = true;
+            return;
+        }
+
         if (!config.hover || isPanning()) {
             refs.cellHover.hidden = true;
             refs.cellTip.hidden = true;
@@ -315,6 +378,9 @@ export function initGarden(root: HTMLElement): void {
     };
 
     const renderCoord = (): void => {
+        if (shouldPreserveServerRender()) 
+            return;
+
         const center =
             config.viewport.width ? screenToCell(config.viewport.width / 2, config.viewport.height / 2) :
                 { x: 0, y: 0 };
@@ -354,6 +420,9 @@ export function initGarden(root: HTMLElement): void {
             btn.append(icon, document.createTextNode(species));
 
             btn.addEventListener('click', () => {
+                if (config.isBooting) 
+                    return;
+
                 config.species = species;
                 renderSpecies();
                 renderHover();
@@ -390,6 +459,9 @@ export function initGarden(root: HTMLElement): void {
     };
 
     const setTool = (next: T.Tool): void => {
+        if (config.isBooting) 
+            return;
+
         config.tool = next;
         renderTools();
         renderSpecies();
@@ -411,10 +483,13 @@ export function initGarden(root: HTMLElement): void {
             return;
     
         config.world = nextSnapshot;
+        config.isBooting = false;
         config.isLoaded = true;
         config.loadError = '';
         config.serverTimeOffsetMs = nextSnapshot.serverNow - Date.now();
 
+        renderBootState();
+        renderActivityStatus();
         renderViewportDependent();
         renderStats();
         renderActivity();
@@ -444,7 +519,7 @@ export function initGarden(root: HTMLElement): void {
     };
 
     const submitAction = async (x: number, y: number): Promise<void> => {
-        if (!config.isLoaded) 
+        if (!config.isLoaded || config.isBooting) 
             return;
 
         const payload: Record<string, string | number> = { tool: config.tool, x, y };
@@ -473,10 +548,18 @@ export function initGarden(root: HTMLElement): void {
     };
 
     refs.toolButtons.forEach((btn) => {
-        btn.addEventListener('click', () => setTool(btn.dataset.tool as T.Tool));
+        btn.addEventListener('click', () => {
+            if (config.isBooting) 
+                return;
+
+            setTool(btn.dataset.tool as T.Tool);
+        });
     });
 
     refs.originBtn.addEventListener('click', () => {
+        if (config.isBooting) 
+            return;
+
         resetView();
         renderViewportDependent();
     });
@@ -539,6 +622,9 @@ export function initGarden(root: HTMLElement): void {
     };
 
     refs.surface.addEventListener('pointerdown', (event: PointerEvent) => {
+        if (config.isBooting) 
+            return;
+
         if (event.pointerType === 'mouse' && event.button === 2) 
             return;
 
@@ -588,11 +674,14 @@ export function initGarden(root: HTMLElement): void {
 
         void submitAction(x, y).catch((error: unknown) => {
             config.loadError = error instanceof Error ? error.message : 'failed to update garden';
-            renderActivity();
+            renderActivityStatus();
         });
     });
 
     refs.surface.addEventListener('pointermove', (event: PointerEvent) => {
+        if (config.isBooting) 
+            return;
+
         if (config.activePointers.has(event.pointerId)) 
             config.activePointers.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
     
@@ -675,6 +764,9 @@ export function initGarden(root: HTMLElement): void {
     };
 
     const handlePointerRelease = (event: PointerEvent): void => {
+        if (config.isBooting) 
+            return;
+
         const rect = refs.surface.getBoundingClientRect();
         const px = event.clientX - rect.left;
         const py = event.clientY - rect.top;
@@ -695,7 +787,7 @@ export function initGarden(root: HTMLElement): void {
 
             void submitAction(x, y).catch((error: unknown) => {
                 config.loadError = error instanceof Error ? error.message : 'failed to update garden';
-                renderActivity();
+                renderActivityStatus();
             });
         }
 
@@ -706,6 +798,9 @@ export function initGarden(root: HTMLElement): void {
     refs.surface.addEventListener('pointerup', handlePointerRelease);
 
     refs.surface.addEventListener('pointercancel', (event: PointerEvent) => {
+        if (config.isBooting) 
+            return;
+
         config.activePointers.delete(event.pointerId);
 
         if (config.pendingTouchAction?.pointerId === event.pointerId) 
@@ -723,6 +818,9 @@ export function initGarden(root: HTMLElement): void {
     });
 
     refs.surface.addEventListener('pointerleave', (event: PointerEvent) => {
+        if (config.isBooting) 
+            return;
+
         if (event.pointerType === 'mouse') {
             config.hover = null;
             renderHover();
@@ -737,6 +835,9 @@ export function initGarden(root: HTMLElement): void {
     refs.surface.addEventListener(
         'wheel',
         (event: WheelEvent) => {
+            if (config.isBooting) 
+                return;
+
             event.preventDefault();
 
             const rect = refs.surface.getBoundingClientRect();
@@ -749,6 +850,9 @@ export function initGarden(root: HTMLElement): void {
     );
 
     window.addEventListener('keydown', (event: KeyboardEvent) => {
+        if (config.isBooting) 
+            return;
+
         const target = event.target as HTMLElement | null;
 
         const isFormField =
@@ -804,6 +908,9 @@ export function initGarden(root: HTMLElement): void {
     });
 
     window.addEventListener('keyup', (event: KeyboardEvent) => {
+        if (config.isBooting) 
+            return;
+
         if (event.code === 'Space' && config.isSpacePressed) {
             config.isSpacePressed = false;
             updateCursor();
@@ -811,55 +918,35 @@ export function initGarden(root: HTMLElement): void {
     });
 
     const observer = new ResizeObserver(() => {
-        const rect = refs.surface.getBoundingClientRect();
-
-        const previousCenterWorld = config.centered && config.viewport.width > 0 && config.viewport.height > 0
-            ? screenToWorld(config.viewport.width / 2, config.viewport.height / 2)
-            : null;
-
-        config.viewport = { width: rect.width, height: rect.height };
-
-        if (!config.centered && rect.width > 0) {
-            resetView();
-            config.centered = true;
-        } else if (previousCenterWorld) {
-            const nextOrigin = getCenteredOrigin(
-                previousCenterWorld,
-                { x: rect.width / 2, y: rect.height / 2 },
-                getCellSize()
-            );
-
-            config.pan = {
-                x: nextOrigin.x,
-                y: nextOrigin.y,
-            };
-        }
-
+        syncViewport();
         renderViewportDependent();
     });
 
+    syncViewport();
     observer.observe(refs.surface);
 
     setInterval(() => {
         void fetchSnapshot().catch((error: unknown) => {
             config.loadError = error instanceof Error ? error.message : 'failed to load garden';
-            renderActivity();
+            renderActivityStatus();
         });
     }, C.SNAPSHOT_FETCH_INTERVAL_MS);
 
     setInterval(() => {
         renderHover();
         renderActivity();
+        renderActivityStatus();
     }, C.ACTIVITY_RENDER_INTERVAL_MS);
 
     renderTools();
     renderSpecies();
+    renderBootState();
+    renderActivityStatus();
     renderStats();
     renderActivity();
 
     void fetchSnapshot().catch((error: unknown) => {
-        config.isLoaded = true;
         config.loadError = error instanceof Error ? error.message : 'failed to load garden';
-        renderActivity();
+        renderActivityStatus();
     });
 }

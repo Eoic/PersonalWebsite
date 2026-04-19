@@ -1,6 +1,12 @@
 <%inherit file="../partials/layout.html" />
 
-<section class="whiteboard-page" data-whiteboard-root data-strokes-endpoint="/whiteboard/strokes" data-can-manage-whiteboard="${'true' if whiteboard_can_manage else 'false'}">
+<section
+    class="whiteboard-page"
+    data-whiteboard-root
+    data-strokes-endpoint="/whiteboard/strokes"
+    data-can-manage-whiteboard="${'true' if whiteboard_can_manage else 'false'}"
+    data-booting="true"
+>
     <div class="whiteboard-shell" data-whiteboard-shell>
         <div class="whiteboard-toolbar" role="toolbar" aria-label="Whiteboard tools">
             <div class="whiteboard-tool-group">
@@ -29,6 +35,16 @@
                         <span class="whiteboard-color-label">color</span>
                         <input type="color" value="#1a1a1a" data-brush-color aria-label="Brush color">
                     </label>
+                    <script>
+                        (() => {
+                            const colorInput = document.currentScript?.previousElementSibling?.querySelector('[data-brush-color]');
+                            const initialBrushColor = document.documentElement.dataset.initialBrushColor;
+
+                            if (colorInput instanceof HTMLInputElement && initialBrushColor) {
+                                colorInput.value = initialBrushColor;
+                            }
+                        })();
+                    </script>
                 </div>
             </div>
 
@@ -52,17 +68,20 @@
 
         <div class="whiteboard-grid-wrap">
             <div class="whiteboard-canvas-stack" data-canvas-shell>
-                <div class="whiteboard-grid-dots" data-grid-dots></div>
-                <div class="whiteboard-axis whiteboard-axis-h" data-axis-h></div>
-                <div class="whiteboard-axis whiteboard-axis-v" data-axis-v></div>
+                <div class="whiteboard-grid-dots" data-grid-dots style="${whiteboard_view['grid_style']}"></div>
+                <div class="whiteboard-axis whiteboard-axis-h" data-axis-h style="${whiteboard_view['axis_h_style']}"></div>
+                <div class="whiteboard-axis whiteboard-axis-v" data-axis-v style="${whiteboard_view['axis_v_style']}"></div>
+                <div class="whiteboard-ssr-layer" data-whiteboard-ssr>
+                    % for stroke in whiteboard_view["stroke_svgs"]:
+                        <div class="whiteboard-ssr-stroke" style="${stroke['style']}">
+                            ${stroke["svg"] | n}
+                        </div>
+                    % endfor
+                </div>
                 <canvas class="whiteboard-canvas" data-whiteboard-committed aria-label="Shared whiteboard"></canvas>
                 <canvas class="whiteboard-canvas" data-whiteboard-overlay></canvas>
             </div>
         </div>
     </div>
 
-    <p class="whiteboard-help">
-        Draw with mouse, pen, or one-finger touch. Pan with middle mouse or <kbd>Space</kbd> + drag, or with two fingers. Zoom with the wheel, trackpad, or pinch. Hotkeys: <kbd>D</kbd>, <kbd>E</kbd>, <kbd>[</kbd>, <kbd>]</kbd>, <kbd>O</kbd>, <kbd>F</kbd>.
-    </p>
-    <p class="whiteboard-status" data-status role="status" aria-live="polite"></p>
 </section>

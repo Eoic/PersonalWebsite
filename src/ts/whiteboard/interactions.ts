@@ -9,7 +9,6 @@ type InteractionDeps = {
     updateCursor: () => void;
     setTool: (tool: 'draw' | 'erase') => void;
     adjustBrushSize: (delta: number) => void;
-    setStatus: (message: string, isError?: boolean, durationMs?: number) => void;
     saveStroke: (points: Point[]) => Promise<void>;
     deleteStroke: (strokeId: number) => Promise<void>;
     clearWhiteboard: () => Promise<void>;
@@ -224,6 +223,9 @@ export function createInteractions(deps: InteractionDeps) {
     };
 
     const handlePointerDown = (event: PointerEvent): void => {
+        if (deps.state.isBooting) 
+            return;
+
         if (event.pointerType === 'mouse' && event.button === 2) 
             return;
 
@@ -275,6 +277,9 @@ export function createInteractions(deps: InteractionDeps) {
     };
 
     const handlePointerMove = (event: PointerEvent): void => {
+        if (deps.state.isBooting) 
+            return;
+
         if (deps.state.activePointers.has(event.pointerId)) {
             deps.state.activePointers.set(event.pointerId, {
                 clientX: event.clientX,
@@ -326,6 +331,9 @@ export function createInteractions(deps: InteractionDeps) {
     };
 
     const handlePointerUp = (event: PointerEvent): void => {
+        if (deps.state.isBooting) 
+            return;
+
         deps.state.activePointers.delete(event.pointerId);
 
         if (
@@ -349,11 +357,17 @@ export function createInteractions(deps: InteractionDeps) {
     };
 
     const handlePointerCancel = (event: PointerEvent): void => {
+        if (deps.state.isBooting) 
+            return;
+
         deps.state.activePointers.delete(event.pointerId);
         clearInteraction();
     };
 
     const handleWheel = (event: WheelEvent): void => {
+        if (deps.state.isBooting) 
+            return;
+
         event.preventDefault();
 
         const screenPoint = deps.getScreenPoint(event.clientX, event.clientY);
@@ -364,12 +378,17 @@ export function createInteractions(deps: InteractionDeps) {
     };
 
     const handleResetOrigin = (): void => {
+        if (deps.state.isBooting) 
+            return;
+
         deps.resetCamera();
         deps.redraw();
-        deps.setStatus('Returned to origin.');
     };
 
     const handleClearRequest = (): void => {
+        if (deps.state.isBooting) 
+            return;
+
         if (!deps.state.canManageWhiteboard) 
             return;
 
@@ -386,17 +405,16 @@ export function createInteractions(deps: InteractionDeps) {
                 deps.state.pendingDeleteIds.clear();
                 deps.state.hoverEraseStrokeId = null;
                 deps.redraw();
-                deps.setStatus('Whiteboard cleared.');
-            } catch (error) {
-                deps.setStatus(
-                    error instanceof Error ? error.message : 'Failed to clear the whiteboard.',
-                    true
-                );
+            } catch {
+                // Keep the current board state if clearing fails.
             }
         })();
     };
 
     const handleKeyDown = (event: KeyboardEvent): void => {
+        if (deps.state.isBooting) 
+            return;
+
         const isEditable = isEditableTarget(event.target);
 
         if (event.code === 'Space' && !isEditable) {
@@ -451,6 +469,9 @@ export function createInteractions(deps: InteractionDeps) {
     };
 
     const handleKeyUp = (event: KeyboardEvent): void => {
+        if (deps.state.isBooting) 
+            return;
+
         if (event.code === 'Space') {
             deps.state.isSpacePressed = false;
             deps.updateCursor();
