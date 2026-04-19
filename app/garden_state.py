@@ -18,7 +18,9 @@ WILT_MS = 1000 * 60 * 60 * 24 * 14
 NATURAL_WILT_MS = 1000 * 60 * 60 * 24 * 30
 RETURN_TO_SOIL_MS = 1000 * 60 * 60 * 24 * 45
 GROW_INTERVAL_MS = 1000 * 60 * 60 * 8
-POPULATION_CAP_MSG = "garden is at capacity; prune or wait for flowers to return to soil"
+POPULATION_CAP_MSG = (
+    "garden is at capacity; prune or wait for flowers to return to soil"
+)
 RETRY_ATTEMPTS = 3
 RETRY_DELAY_SECONDS = 0.05
 
@@ -56,26 +58,29 @@ def _coerce_utc(timestamp: datetime) -> datetime:
 
 def _format_timestamp(timestamp: datetime) -> str:
     return (
-        _coerce_utc(timestamp)
-        .replace(microsecond=0)
-        .isoformat()
-        .replace("+00:00", "Z")
+        _coerce_utc(timestamp).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     )
 
 
-def _prepend_activity(activities: list[dict], type_: str, msg: str, created_at: datetime) -> None:
+def _prepend_activity(
+    activities: list[dict], type_: str, msg: str, created_at: datetime
+) -> None:
     activities.insert(0, {"type": type_, "msg": msg, "created_at": created_at})
     del activities[ACTIVITY_LIMIT:]
 
 
 def _get_season(date: datetime) -> str:
     month = date.month
+
     if month in (12, 1, 2):
         return "winter"
+
     if month <= 5:
         return "spring"
+
     if month <= 8:
         return "summer"
+
     return "autumn"
 
 
@@ -86,18 +91,23 @@ def _get_weather(date: datetime) -> str:
 
     if value < 0.4:
         return "clear"
+
     if value < 0.65:
         return "cloudy"
+
     if value < 0.85:
         return "rain"
+
     if value < 0.95:
         return "fog"
+
     return "snow"
 
 
 def _get_wind(date: datetime) -> dict:
     slot = int(date.timestamp() // (60 * 60 * 6))
     directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+
     vectors = {
         "N": {"dx": 0, "dy": -1},
         "NE": {"dx": 1, "dy": -1},
@@ -108,7 +118,11 @@ def _get_wind(date: datetime) -> dict:
         "W": {"dx": -1, "dy": 0},
         "NW": {"dx": -1, "dy": -1},
     }
-    direction = directions[((slot * 17 + 5) % len(directions) + len(directions)) % len(directions)]
+
+    direction = directions[
+        ((slot * 17 + 5) % len(directions) + len(directions)) % len(directions)
+    ]
+
     strength_roll = ((slot * 48271 + 12820163) % 1000) / 1000
 
     if strength_roll < 0.18:
@@ -137,22 +151,29 @@ def _get_health(stage_counts: dict[str, int], total_cells: int) -> str:
 
     if stage_counts["wilt"] > total_cells / 2:
         return "struggling"
+
     if bloom_pct > 60:
         return "thriving"
+
     if bloom_pct > 35:
         return "healthy"
+
     if bloom_pct > 15:
         return "steady"
+
     return "dormant"
 
 
 def _wind_strength_weight(strength: str) -> float:
     if strength == "calm":
         return 0.15
+
     if strength == "light":
         return 0.45
+
     if strength == "steady":
         return 0.9
+
     return 1.35
 
 
@@ -168,8 +189,10 @@ def _choose_neighbor(candidates: list[tuple[int, int]], wind: dict) -> tuple[int
         total += score
 
     roll = random.random() * total
+
     for cell, score in weighted:
         roll -= score
+
         if roll <= 0:
             return cell
 
@@ -325,7 +348,12 @@ def _run_with_retry(operation, error_message: str):
     raise GardenConflictError(error_message) from last_error
 
 
-def _simulate(meta: GardenMeta, cells: dict[tuple[int, int], dict], activities: list[dict], now_utc: datetime) -> bool:
+def _simulate(
+    meta: GardenMeta,
+    cells: dict[tuple[int, int], dict],
+    activities: list[dict],
+    now_utc: datetime,
+) -> bool:
     changed = False
     current = _coerce_utc(meta.last_simulated_at)
 
@@ -337,11 +365,17 @@ def _simulate(meta: GardenMeta, cells: dict[tuple[int, int], dict], activities: 
         if weather == "rain" and cells:
             for cell in cells.values():
                 cell["last_water_at"] = step_end
+
             changed = True
 
         for position, cell in list(cells.items()):
             age_ms = int((step_end - cell["planted_at"]).total_seconds() * 1000)
-            dryness_ms = int((step_end - (cell["last_water_at"] or cell["planted_at"])).total_seconds() * 1000)
+            dryness_ms = int(
+                (
+                    step_end - (cell["last_water_at"] or cell["planted_at"])
+                ).total_seconds()
+                * 1000
+            )
             idx = STAGE_ORDER.index(cell["stage"])
             coord = f"{position[0]},{position[1]}"
 
@@ -350,11 +384,15 @@ def _simulate(meta: GardenMeta, cells: dict[tuple[int, int], dict], activities: 
                 _prepend_activity(
                     activities,
                     "cycle",
-                    f'{cell["species"]} at ({coord}) returned to soil',
+                    f"{cell['species']} at ({coord}) returned to soil",
                     step_end,
                 )
                 changed = True
-            elif idx < 3 and age_ms > GROW_INTERVAL_MS * (idx + 1) and dryness_ms < WILT_MS:
+            elif (
+                idx < 3
+                and age_ms > GROW_INTERVAL_MS * (idx + 1)
+                and dryness_ms < WILT_MS
+            ):
                 cell["stage"] = STAGE_ORDER[idx + 1]
                 changed = True
             elif cell["stage"] != "wilt" and age_ms > NATURAL_WILT_MS:
@@ -362,7 +400,7 @@ def _simulate(meta: GardenMeta, cells: dict[tuple[int, int], dict], activities: 
                 _prepend_activity(
                     activities,
                     "cycle",
-                    f'{cell["species"]} at ({coord}) reached the end of its cycle',
+                    f"{cell['species']} at ({coord}) reached the end of its cycle",
                     step_end,
                 )
                 changed = True
@@ -371,7 +409,7 @@ def _simulate(meta: GardenMeta, cells: dict[tuple[int, int], dict], activities: 
                 _prepend_activity(
                     activities,
                     "wilt",
-                    f'{cell["species"]} at ({coord}) wilted',
+                    f"{cell['species']} at ({coord}) wilted",
                     step_end,
                 )
                 changed = True
@@ -389,8 +427,10 @@ def _simulate(meta: GardenMeta, cells: dict[tuple[int, int], dict], activities: 
         for (x, y), cell in list(cells.items()):
             if cell["stage"] != "bloom":
                 continue
+
             if random.random() > bloom_rate:
                 continue
+
             if len(cells) >= MAX_CELLS:
                 continue
 
@@ -404,6 +444,7 @@ def _simulate(meta: GardenMeta, cells: dict[tuple[int, int], dict], activities: 
                 (x + 1, y - 1),
                 (x - 1, y + 1),
             ]
+
             free = [(nx, ny) for nx, ny in neighbors if (nx, ny) not in cells]
 
             if not free:
@@ -412,6 +453,7 @@ def _simulate(meta: GardenMeta, cells: dict[tuple[int, int], dict], activities: 
             offsets = [(nx - x, ny - y) for nx, ny in free]
             dx, dy = _choose_neighbor(offsets, wind)
             nx, ny = x + dx, y + dy
+
             cells[(nx, ny)] = {
                 "species": cell["species"],
                 "stage": "seed",
@@ -419,11 +461,13 @@ def _simulate(meta: GardenMeta, cells: dict[tuple[int, int], dict], activities: 
                 "last_water_at": step_end,
                 "author_label": "pollen",
             }
+
             meta.planted_total += 1
+
             _prepend_activity(
                 activities,
                 "pollen",
-                f'{cell["species"]} seeded at ({nx},{ny})',
+                f"{cell['species']} seeded at ({nx},{ny})",
                 step_end,
             )
             changed = True
@@ -431,6 +475,7 @@ def _simulate(meta: GardenMeta, cells: dict[tuple[int, int], dict], activities: 
         current = step_end
 
     meta.last_simulated_at = now_utc
+
     if changed:
         meta.version += 1
         meta.updated_at = now_utc
@@ -468,7 +513,9 @@ def _apply_action(
             "author_label": "visitor",
         }
         meta.planted_total += 1
-        _prepend_activity(activities, "plant", f"planted {species} at ({x},{y})", now_utc)
+        _prepend_activity(
+            activities, "plant", f"planted {species} at ({x},{y})", now_utc
+        )
         return True
 
     if cell is None:
@@ -478,14 +525,19 @@ def _apply_action(
         age_ms = int((now_utc - cell["planted_at"]).total_seconds() * 1000)
         revived = cell["stage"] == "wilt" and age_ms < NATURAL_WILT_MS
         cell["last_water_at"] = now_utc
+
         if revived:
             cell["stage"] = "bud"
+
         _prepend_activity(
             activities,
             "water",
-            f"watered ({x},{y}) and revived it to bud" if revived else f"watered ({x},{y})",
+            f"watered ({x},{y}) and revived it to bud"
+            if revived
+            else f"watered ({x},{y})",
             now_utc,
         )
+
         return True
 
     if tool == "prune":
@@ -493,7 +545,7 @@ def _apply_action(
         _prepend_activity(
             activities,
             "prune",
-            f'pruned {cell["species"]} at ({x},{y})',
+            f"pruned {cell['species']} at ({x},{y})",
             now_utc,
         )
         return True
@@ -562,7 +614,10 @@ def _serialize_snapshot(
     }
 
 
-def get_garden_snapshot(board_slug: str = BOARD_SLUG, now_utc: datetime | None = None) -> dict:
+def get_garden_snapshot(
+    board_slug: str = BOARD_SLUG,
+    now_utc: datetime | None = None,
+) -> dict:
     now_utc = _coerce_utc(now_utc or datetime.now(UTC))
 
     def operation() -> dict:
@@ -601,6 +656,7 @@ def apply_garden_action(
             cells = _load_cells(board_slug)
             activities = _load_activities(board_slug)
             changed = _simulate(meta, cells, activities, now_utc)
+
             action_changed = _apply_action(
                 meta,
                 cells,

@@ -59,7 +59,7 @@ _PAGE_INTROS = {
     "whiteboard": "Shared freehand drawing space.",
     "posts": "Short notes and other ramblings. Nothing intelligent or insightful here.",
     "bookshelf": "Some of the books I've read. Not in any particular order, chronological or otherwise.",
-    "garden": "A shared, persistent garden. Plant flowers, water them, prune what has wilted. Blooms pollinate neighbors over time, and the whole patch responds to weather and season.",
+    "garden": "A shared, persistent garden. Plant flowers, water them, and prune what has wilted. Growth follows a simple cycle: seeds become sprouts after 8 hours, buds after 16 hours, and blooms after 24 hours. Flowers wilt after 14 days without water or 30 days total, and wilted plants return to soil after 45 days. Blooms can also spread pollen to nearby cells over time, with weather and season shaping the whole patch.",
 }
 
 
@@ -767,15 +767,14 @@ def whiteboard():
     ctx = get_common_context("whiteboard")
 
     ctx.update(
-        page_head_scripts=[
-            {
-                "src": "https://kit.fontawesome.com/ad3b985a78.js",
-                "crossorigin": "anonymous",
-            }
-        ],
         page_styles=["whiteboard"],
         whiteboard_can_manage=_can_manage_whiteboard(),
-        page_scripts=["whiteboard"],
+        page_scripts=[
+            {
+                "dev": "whiteboard/index",
+                "asset": "whiteboard",
+            }
+        ],
         page_intro=_PAGE_INTROS["whiteboard"],
     )
 
@@ -790,7 +789,12 @@ def garden():
     ctx.update(
         page_intro=_PAGE_INTROS["garden"],
         page_styles=["garden"],
-        page_scripts=["garden"],
+        page_scripts=[
+            {
+                "dev": "garden/index",
+                "asset": "garden",
+            }
+        ],
     )
 
     return render_mako("pages/garden.html", **ctx)
@@ -819,6 +823,7 @@ def garden_actions():
         tool = _validate_garden_tool(payload.get("tool"))
         x = _validate_garden_coordinate(payload.get("x"), "x")
         y = _validate_garden_coordinate(payload.get("y"), "y")
+
         species = (
             _validate_garden_species(payload.get("species"))
             if tool == "plant"

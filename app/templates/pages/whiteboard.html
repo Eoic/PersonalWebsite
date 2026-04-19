@@ -3,54 +3,66 @@
 <section class="whiteboard-page" data-whiteboard-root data-strokes-endpoint="/whiteboard/strokes" data-can-manage-whiteboard="${'true' if whiteboard_can_manage else 'false'}">
     <div class="whiteboard-shell" data-whiteboard-shell>
         <div class="whiteboard-toolbar" role="toolbar" aria-label="Whiteboard tools">
-            <div class="whiteboard-tool-group" role="group" aria-label="Tools">
-                <button class="btn whiteboard-icon-button whiteboard-tool is-active" type="button" data-tool="draw" aria-label="Brush" aria-pressed="true" title="Brush">
-                    <i class="fa-solid fa-paintbrush" aria-hidden="true"></i>
-                </button>
-                <button class="btn whiteboard-icon-button whiteboard-tool" type="button" data-tool="erase" aria-label="Erase" aria-pressed="false" title="Erase">
-                    <i class="fa-solid fa-eraser" aria-hidden="true"></i>
-                </button>
-            </div>
-
-            <div class="whiteboard-tool-group whiteboard-size-group" role="group" aria-label="Brush size">
-                <button class="btn whiteboard-icon-button whiteboard-size-step" type="button" data-brush-size-decrement aria-label="Decrease brush size" title="Decrease brush size">
-                    <i class="fa-solid fa-minus" aria-hidden="true"></i>
-                </button>
-                <output class="whiteboard-size-readout" data-brush-size-readout aria-live="polite">4 px</output>
-                <button class="btn whiteboard-icon-button whiteboard-size-step" type="button" data-brush-size-increment aria-label="Increase brush size" title="Increase brush size">
-                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
-                </button>
-            </div>
-
-            <div class="whiteboard-tool-group whiteboard-color-group" role="group" aria-label="Brush color">
-                <label class="btn whiteboard-color-picker" aria-label="Brush color" title="Brush color">
-                    <input type="color" value="#1a1a1a" data-brush-color aria-label="Brush color">
-                </label>
-            </div>
-
-            <div class="whiteboard-tool-group whiteboard-tool-group-secondary" role="group" aria-label="View controls">
-                % if whiteboard_can_manage:
-                    <button class="btn whiteboard-icon-button whiteboard-clear-button" type="button" data-clear-whiteboard aria-label="Clear whiteboard" title="Clear whiteboard">
-                        <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+            <div class="whiteboard-tool-group">
+                <span class="whiteboard-tool-label">/tool</span>
+                <div class="whiteboard-btn-group" role="group" aria-label="Drawing tools">
+                    <button class="whiteboard-btn whiteboard-tool is-active" type="button" data-tool="draw" aria-pressed="true">
+                        draw<span class="whiteboard-kbd">D</span>
                     </button>
-                % endif
-                <button class="btn whiteboard-icon-button" type="button" data-reset-origin aria-label="Return to origin" title="Return to origin">
-                    <i class="fa-solid fa-crosshairs" aria-hidden="true"></i>
-                </button>
-                <button class="btn whiteboard-icon-button" type="button" data-fullscreen aria-label="Fullscreen" title="Fullscreen">
-                    <i class="fa-solid fa-expand" aria-hidden="true"></i>
-                </button>
+                    <button class="whiteboard-btn whiteboard-tool" type="button" data-tool="erase" aria-pressed="false">
+                        erase<span class="whiteboard-kbd">E</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="whiteboard-tool-group">
+                <span class="whiteboard-tool-label">/brush</span>
+                <div class="whiteboard-btn-group" role="group" aria-label="Brush controls">
+                    <button class="whiteboard-btn whiteboard-btn-compact" type="button" data-brush-size-decrement>
+                        size -<span class="whiteboard-kbd">[</span>
+                    </button>
+                    <output class="whiteboard-readout" data-brush-size-readout aria-live="polite">4 px</output>
+                    <button class="whiteboard-btn whiteboard-btn-compact" type="button" data-brush-size-increment>
+                        size +<span class="whiteboard-kbd">]</span>
+                    </button>
+                    <label class="whiteboard-color-control">
+                        <span class="whiteboard-color-label">color</span>
+                        <input type="color" value="#1a1a1a" data-brush-color aria-label="Brush color">
+                    </label>
+                </div>
+            </div>
+
+            <div class="whiteboard-tool-group">
+                <span class="whiteboard-tool-label">/view</span>
+                <div class="whiteboard-btn-group" role="group" aria-label="View controls">
+                    <button class="whiteboard-btn" type="button" data-reset-origin>
+                        origin<span class="whiteboard-kbd">O</span>
+                    </button>
+                    <button class="whiteboard-btn" type="button" data-fullscreen>
+                        <span data-fullscreen-label>fullscreen</span><span class="whiteboard-kbd">F</span>
+                    </button>
+                    % if whiteboard_can_manage:
+                        <button class="whiteboard-btn" type="button" data-clear-whiteboard>
+                            clear<span class="whiteboard-kbd">Del</span>
+                        </button>
+                    % endif
+                </div>
             </div>
         </div>
 
-        <div class="whiteboard-canvas-stack" data-canvas-shell>
-            <canvas class="whiteboard-canvas" data-whiteboard-committed aria-label="Shared whiteboard"></canvas>
-            <canvas class="whiteboard-canvas" data-whiteboard-overlay></canvas>
+        <div class="whiteboard-grid-wrap">
+            <div class="whiteboard-canvas-stack" data-canvas-shell>
+                <div class="whiteboard-grid-dots" data-grid-dots></div>
+                <div class="whiteboard-axis whiteboard-axis-h" data-axis-h></div>
+                <div class="whiteboard-axis whiteboard-axis-v" data-axis-v></div>
+                <canvas class="whiteboard-canvas" data-whiteboard-committed aria-label="Shared whiteboard"></canvas>
+                <canvas class="whiteboard-canvas" data-whiteboard-overlay></canvas>
+            </div>
         </div>
     </div>
 
     <p class="whiteboard-help">
-        Draw with mouse, pen, or one-finger touch. Pan with middle mouse or <kbd>Space</kbd> + drag, or with two fingers. Zoom with the wheel, trackpad, or pinch.
+        Draw with mouse, pen, or one-finger touch. Pan with middle mouse or <kbd>Space</kbd> + drag, or with two fingers. Zoom with the wheel, trackpad, or pinch. Hotkeys: <kbd>D</kbd>, <kbd>E</kbd>, <kbd>[</kbd>, <kbd>]</kbd>, <kbd>O</kbd>, <kbd>F</kbd>.
     </p>
     <p class="whiteboard-status" data-status role="status" aria-live="polite"></p>
 </section>
