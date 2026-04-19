@@ -196,13 +196,13 @@
         <%
             js_file = "main.js" if debug else "main.min.js"
         %>
-        <script src="/assets/js/${js_file}?v=${build['version']}"></script>
+        <script type="module" src="/assets/js/${js_file}?v=${build['version']}"></script>
         % for script_name in page_scripts:
             <%
                 asset_script_name = script_name["asset"] if isinstance(script_name, dict) else script_name
                 page_js_file = f"{asset_script_name}.js" if debug else f"{asset_script_name}.min.js"
             %>
-            <script src="/assets/js/${page_js_file}?v=${build['version']}"></script>
+            <script type="module" src="/assets/js/${page_js_file}?v=${build['version']}"></script>
         % endfor
     % endif
 </body>

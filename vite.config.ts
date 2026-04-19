@@ -51,6 +51,10 @@ export default defineConfig(({ command, mode }) => {
                         const suffix = isDebugBuild ? '' : '.min';
                         return `js/${name}${suffix}.js`;
                     },
+                    chunkFileNames: () => {
+                        const suffix = isDebugBuild ? '' : '.min';
+                        return `js/[name]-[hash]${suffix}.js`;
+                    },
                 },
             },
             target: 'es2020',
