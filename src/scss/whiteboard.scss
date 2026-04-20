@@ -14,6 +14,18 @@
 .whiteboard-shell {
   display: grid;
   gap: 1.75rem;
+
+  &.no-keys {
+    .whiteboard-btn .whiteboard-kbd {
+      display: none;
+    }
+  }
+
+  @media (pointer:none), (pointer:coarse) {
+    .whiteboard-btn .whiteboard-kbd {
+      display: none;
+    }
+  }
 }
 
 .whiteboard-shell:fullscreen {

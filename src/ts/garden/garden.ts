@@ -6,7 +6,7 @@ import {
     screenToWorld as transformScreenToWorld,
     worldToScreen as transformWorldToScreen
 } from '../canvas';
-import { clamp } from '../utils';
+import { clamp, isMobile } from '../utils';
 import { createSprite, formatAgo, getHydrationLabel, normalizeSnapshot } from './utils';
 
 export function initGarden(root: HTMLElement): void {
@@ -920,6 +920,7 @@ export function initGarden(root: HTMLElement): void {
     });
 
     const observer = new ResizeObserver(() => {
+        refs.root.classList.toggle('no-keys', isMobile());
         syncViewport();
         renderViewportDependent();
     });

@@ -1,11 +1,23 @@
-.garden-page {
+.garden-shell {
   display: grid;
   gap: 1.75rem;
   max-width: min(100%, 80rem);
+
+  &.no-keys {
+    .garden-btn .garden-kbd {
+      display: none;
+    }
+  }
+
+  @media (pointer:none), (pointer:coarse) {
+    .garden-btn .garden-kbd {
+      display: none;
+    }
+  }
 }
 
-.garden-page[data-booting="true"] .garden-grid,
-.garden-page[data-booting="true"] .garden-toolbar button {
+.garden-shell[data-booting="true"] .garden-grid,
+.garden-shell[data-booting="true"] .garden-toolbar button {
   pointer-events: none;
 }
 

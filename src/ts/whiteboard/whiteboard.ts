@@ -24,6 +24,7 @@ import type {
     WhiteboardState
 } from './types';
 import { generateClientSessionId, getWorldColorToken } from './utils';
+import { isMobile } from '../utils';
 
 export function initWhiteboard(root: HTMLElement): void {
     const shell = root.querySelector<HTMLElement>('[data-whiteboard-shell]');
@@ -396,6 +397,7 @@ export function initWhiteboard(root: HTMLElement): void {
     });
 
     const resizeObserver = new ResizeObserver(() => {
+        shell.classList.toggle('no-keys', isMobile()); 
         resizeCanvases(refs, state, contexts);
         redrawAll();
     });
