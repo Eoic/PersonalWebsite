@@ -165,10 +165,7 @@ export function drawStroke(
     context.restore();
 }
 
-export function renderCommittedCanvas(
-    state: WhiteboardState,
-    contexts: WhiteboardContexts
-): void {
+export function renderCommittedCanvas(state: WhiteboardState, contexts: WhiteboardContexts): void {
     contexts.committed.clearRect(0, 0, state.viewportWidth, state.viewportHeight);
 
     state.strokes.forEach((stroke) => {
@@ -176,10 +173,7 @@ export function renderCommittedCanvas(
     });
 }
 
-export function renderOverlayCanvas(
-    state: WhiteboardState,
-    contexts: WhiteboardContexts
-): void {
+export function renderOverlayCanvas(state: WhiteboardState, contexts: WhiteboardContexts): void {
     contexts.overlay.clearRect(0, 0, state.viewportWidth, state.viewportHeight);
 
     if (state.hoverEraseStrokeId !== null) {

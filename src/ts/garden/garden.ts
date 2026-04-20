@@ -47,6 +47,7 @@ export function initGarden(root: HTMLElement): void {
     const config: T.Config = {
         world: null,
         tool: 'plant',
+        prevTool: 'plant',
         species: 'daisy',
         pan: { x: 0, y: 0 },
         zoom: 1,
@@ -462,6 +463,7 @@ export function initGarden(root: HTMLElement): void {
         if (config.isBooting) 
             return;
 
+        config.prevTool = config.tool;
         config.tool = next;
         renderTools();
         renderSpecies();

@@ -1,6 +1,6 @@
 import type { CanvasPoint } from '../canvas';
 
-export type Tool = 'draw' | 'erase';
+export type Tool = 'pan' | 'draw' | 'erase';
 export type Point = CanvasPoint;
 
 export type Stroke = {
@@ -111,6 +111,8 @@ export type WhiteboardState = {
     viewportHeight: number;
     brushSize: number;
     tool: Tool;
+    prevTool: Tool;
+    toolIsTransient: boolean;
     color: string;
     nextTemporaryStrokeId: number;
     clientSessionId: string;

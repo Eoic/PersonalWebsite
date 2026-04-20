@@ -1,6 +1,6 @@
 export type Species = 'daisy' | 'tulip' | 'poppy' | 'fern';
 export type Stage = 'seed' | 'sprout' | 'bud' | 'bloom' | 'wilt';
-export type Tool = 'plant' | 'water' | 'prune';
+export type Tool = 'pan' | 'plant' | 'water' | 'prune';
 export type Weather = 'clear' | 'cloudy' | 'rain' | 'fog' | 'snow';
 export type Season = 'winter' | 'spring' | 'summer' | 'autumn';
 export type Health = 'thriving' | 'healthy' | 'steady' | 'struggling' | 'dormant';
@@ -108,6 +108,7 @@ export type GardenRefs = {
 export type Config = {
     world: GardenWorldState | null;
     tool: Tool;
+    prevTool: Tool;
     species: Species;
     pan: { x: number; y: number };
     zoom: number;

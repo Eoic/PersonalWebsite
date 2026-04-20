@@ -4,7 +4,7 @@ import {
     deleteStrokeRequest,
     loadStrokesRequest
 } from './api';
-import { DEFAULT_BRUSH_SIZE } from './constants';
+import { DEFAULT_BRUSH_SIZE, MIN_BRUSH_SIZE, MAX_BRUSH_SIZE } from './constants';
 import {
     getScreenPoint,
     redraw,
@@ -114,7 +114,9 @@ export function initWhiteboard(root: HTMLElement): void {
         viewportWidth: 0,
         viewportHeight: 0,
         brushSize: DEFAULT_BRUSH_SIZE,
-        tool: 'draw',
+        tool: 'pan',
+        prevTool: 'pan',
+        toolIsTransient: false,
         color: getWorldColorToken('--color-text') || '#1a1a1a',
         nextTemporaryStrokeId: -1,
         clientSessionId: generateClientSessionId(),
@@ -158,7 +160,6 @@ export function initWhiteboard(root: HTMLElement): void {
 
     function updateFullscreenButton(): void {
         const isFullscreen = document.fullscreenElement === refs.shell;
-
         refs.fullscreenLabel.textContent = isFullscreen ? 'windowed' : 'fullscreen';
 
         refs.fullscreenButton.setAttribute(
@@ -185,14 +186,24 @@ export function initWhiteboard(root: HTMLElement): void {
             return;
         }
 
+        if (state.tool === 'pan') {
+            refs.overlayCanvas.style.cursor = 'grab';
+            return;
+        }
+
         refs.overlayCanvas.style.cursor = state.isSpacePressed ? 'grab' : 'crosshair';
     }
 
-    function setTool(nextTool: Tool): void {
+    function setTool(nextTool: Tool, isTransient: boolean = false): void {
         if (state.isBooting) 
             return;
 
+        if (state.tool === nextTool)
+            return;
+
+        state.prevTool = state.tool;
         state.tool = nextTool;
+        state.toolIsTransient = isTransient;
         updateToolControls();
         redrawAll();
     }
@@ -201,7 +212,7 @@ export function initWhiteboard(root: HTMLElement): void {
         if (state.isBooting) 
             return;
 
-        const nextBrushSize = Math.min(Math.max(state.brushSize + delta, 1), 48);
+        const nextBrushSize = Math.min(Math.max(state.brushSize + delta, MIN_BRUSH_SIZE), MAX_BRUSH_SIZE);
 
         if (nextBrushSize === state.brushSize) 
             return;
@@ -329,7 +340,7 @@ export function initWhiteboard(root: HTMLElement): void {
 
     refs.toolButtons.forEach((button) => {
         button.addEventListener('click', () => {
-            setTool(button.dataset.tool === 'erase' ? 'erase' : 'draw');
+            setTool(button.dataset.tool as Tool);
         });
     });
 

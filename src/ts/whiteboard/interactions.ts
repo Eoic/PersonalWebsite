@@ -7,7 +7,7 @@ type InteractionDeps = {
     redraw: () => void;
     renderOverlay: () => void;
     updateCursor: () => void;
-    setTool: (tool: 'draw' | 'erase') => void;
+    setTool: (tool: 'pan' | 'draw' | 'erase', isTransient?: boolean) => void;
     adjustBrushSize: (delta: number) => void;
     saveStroke: (points: Point[]) => Promise<void>;
     deleteStroke: (strokeId: number) => Promise<void>;
@@ -243,6 +243,8 @@ export function createInteractions(deps: InteractionDeps) {
             if (deps.state.activePointers.size === 1) {
                 if (deps.state.tool === 'erase') 
                     beginErase(event.pointerId, screenPoint);
+                else if (deps.state.tool === 'pan')
+                    beginPan(event.pointerId, screenPoint);
                 else beginDraw(event.pointerId, screenPoint);
                 return;
             }
@@ -268,6 +270,11 @@ export function createInteractions(deps: InteractionDeps) {
 
         if (deps.state.tool === 'erase') {
             beginErase(event.pointerId, screenPoint);
+            return;
+        }
+
+        if (deps.state.tool === 'pan') {
+            beginPan(event.pointerId, screenPoint);
             return;
         }
 
@@ -397,10 +404,11 @@ export function createInteractions(deps: InteractionDeps) {
 
         const isEditable = isEditableTarget(event.target);
 
-        if (event.code === 'Space' && !isEditable) {
+        if (event.code === 'Space' && !isEditable && (deps.state.tool !== 'pan')) {
             deps.state.isSpacePressed = true;
             event.preventDefault();
             deps.updateCursor();
+            deps.setTool('pan', true);
             return;
         }
 
@@ -408,6 +416,10 @@ export function createInteractions(deps: InteractionDeps) {
             return;
 
         switch (event.code) {
+            case 'Space':
+                event.preventDefault();
+                deps.setTool('pan');
+                break;
             case 'KeyD':
                 event.preventDefault();
                 deps.setTool('draw');
@@ -454,6 +466,10 @@ export function createInteractions(deps: InteractionDeps) {
 
         if (event.code === 'Space') {
             deps.state.isSpacePressed = false;
+
+            if (deps.state.toolIsTransient)
+                deps.setTool(deps.state.prevTool);
+
             deps.updateCursor();
         }
     };

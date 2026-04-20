@@ -14,7 +14,7 @@ function applyTheme(theme: Theme): void {
     root.classList.add(theme);
     localStorage.setItem('theme', theme);
 
-    if (meta) 
+    if (meta)
         meta.setAttribute('content', THEME_COLORS[theme]);
   
     if (switcher) 

@@ -176,14 +176,6 @@
   border: 1px solid var(--color-text);
   box-sizing: border-box;
   pointer-events: none;
-
-  &.tool-water {
-    border-style: dotted;
-  }
-
-  &.tool-prune {
-    border-style: dashed;
-  }
 }
 
 .garden-ghost-flower {
