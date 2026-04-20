@@ -1,4 +1,5 @@
 import type { CanvasPoint } from '../canvas';
+import { WhiteboardHistory } from './history';
 
 export type Tool = 'pan' | 'draw' | 'erase';
 export type Point = CanvasPoint;
@@ -101,6 +102,7 @@ export type WhiteboardContexts = {
 
 export type WhiteboardState = {
     strokes: Stroke[];
+    history: WhiteboardHistory; 
     createdStrokeIds: Set<number>;
     pendingDeleteIds: Set<number>;
     activePointers: Map<number, PointerSnapshot>;

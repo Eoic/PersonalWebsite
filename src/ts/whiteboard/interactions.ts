@@ -1,5 +1,5 @@
 import { MIN_POINT_DISTANCE, ZOOM_SENSITIVITY } from './constants';
-import type { Point, WhiteboardState } from './types';
+import type { Point, Stroke, WhiteboardState } from './types';
 import { distance, distanceToSegment, isEditableTarget } from './utils';
 
 type InteractionDeps = {
@@ -9,8 +9,9 @@ type InteractionDeps = {
     updateCursor: () => void;
     setTool: (tool: 'pan' | 'draw' | 'erase', isTransient?: boolean) => void;
     adjustBrushSize: (delta: number) => void;
-    saveStroke: (points: Point[]) => Promise<void>;
-    deleteStroke: (strokeId: number) => Promise<void>;
+    saveStroke: (points: Point[]) => Promise<Stroke | null>;
+    restoreStroke: (stroke: Stroke) => Promise<Stroke | null>;
+    deleteStroke: (strokeId: number) => Promise<Stroke | null>;
     clearWhiteboard: () => Promise<void>;
     resetCamera: () => void;
     handleFullscreenToggle: () => void;
@@ -100,7 +101,14 @@ export function createInteractions(deps: InteractionDeps) {
         if (points.length === 0) 
             return;
 
-        void deps.saveStroke(points);
+        deps.saveStroke(points)
+            .then((stroke) => {
+                if (!stroke)
+                    return;
+
+                deps.state.history.record({ action: 'draw', stroke });
+            })
+            .catch(() => { /* keep the stroke on the board even if saving fails */ });
     };
 
     const beginErase = (pointerId: number, screenPoint: Point): void => {
@@ -117,8 +125,16 @@ export function createInteractions(deps: InteractionDeps) {
         deps.state.hoverEraseStrokeId = strokeId;
         deps.renderOverlay();
 
-        if (strokeId !== null) 
-            await deps.deleteStroke(strokeId);
+        if (strokeId !== null) {
+            const stroke = await deps.deleteStroke(strokeId);
+
+            if (stroke) {
+                deps.state.history.record({
+                    action: 'erase',
+                    stroke,
+                });
+            }
+        }
     };
 
     const beginPan = (pointerId: number, screenPoint: Point): void => {
@@ -411,6 +427,7 @@ export function createInteractions(deps: InteractionDeps) {
             try {
                 await deps.clearWhiteboard();
                 deps.state.strokes = [];
+                deps.state.history.clear();
                 deps.state.createdStrokeIds.clear();
                 deps.state.pendingDeleteIds.clear();
                 deps.state.hoverEraseStrokeId = null;
@@ -467,6 +484,70 @@ export function createInteractions(deps: InteractionDeps) {
                 if (!event.repeat) {
                     event.preventDefault();
                     deps.handleFullscreenToggle();
+                }
+                break;
+            case 'KeyZ':
+                if (event.ctrlKey && !event.repeat) {
+                    if (deps.state.interaction !== null)
+                        return;
+
+                    const undoAction = deps.state.history.undo();
+
+                    if (!undoAction)
+                        return;
+
+                    switch (undoAction.action) {
+                        case 'draw':
+                            deps.deleteStroke(undoAction.stroke.id)
+                                .then((result) => {
+                                    if (!result)
+                                        deps.state.history.redo();
+                                })
+                                .catch(() => { deps.state.history.redo(); });
+                            break;
+                        case 'erase':
+                            deps.restoreStroke(undoAction.stroke)
+                                .then((stroke) => {
+                                    if (stroke) undoAction.stroke = stroke;
+                                    else deps.state.history.redo();
+                                })
+                                .catch(() => { deps.state.history.redo(); });
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            case 'KeyY':
+                if (event.ctrlKey && !event.repeat) {
+                    if (deps.state.interaction !== null)
+                        return;
+
+                    const redoAction = deps.state.history.redo();
+
+                    if (!redoAction)
+                        return;
+
+                    switch (redoAction.action) {
+                        case 'draw':
+                            deps.restoreStroke(redoAction.stroke)
+                                .then((stroke) => {
+                                    if (stroke) redoAction.stroke = stroke;
+                                    else deps.state.history.undo();
+                                })
+                                .catch(() => { deps.state.history.undo(); });
+                            break;
+                        case 'erase':
+                            deps.deleteStroke(redoAction.stroke.id)
+                                .then((result) => {
+                                    if (!result)
+                                        deps.state.history.undo();
+                                })
+                                .catch(() => { deps.state.history.undo(); });
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 break;
             case 'Delete':

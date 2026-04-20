@@ -25,6 +25,7 @@ import type {
 } from './types';
 import { generateClientSessionId, getWorldColorToken } from './utils';
 import { isMobile } from '../utils';
+import { createHistory } from './history';
 
 export function initWhiteboard(root: HTMLElement): void {
     const shell = root.querySelector<HTMLElement>('[data-whiteboard-shell]');
@@ -102,6 +103,7 @@ export function initWhiteboard(root: HTMLElement): void {
 
     const state: WhiteboardState = {
         strokes: [],
+        history: createHistory(),
         createdStrokeIds: new Set<number>(),
         pendingDeleteIds: new Set<number>(),
         activePointers: new Map(),
@@ -223,7 +225,7 @@ export function initWhiteboard(root: HTMLElement): void {
         renderOverlay();
     }
 
-    async function persistStroke(stroke: Stroke): Promise<void> {
+    async function persistStroke(stroke: Stroke): Promise<Stroke | null> {
         const data = await createStrokeRequest(
             refs.strokesEndpoint,
             state.clientSessionId,
@@ -233,7 +235,7 @@ export function initWhiteboard(root: HTMLElement): void {
         const strokeIndex = state.strokes.findIndex((item) => item.id === stroke.id);
 
         if (strokeIndex === -1) 
-            return;
+            return null;
 
         state.strokes[strokeIndex] = {
             ...stroke,
@@ -244,10 +246,11 @@ export function initWhiteboard(root: HTMLElement): void {
 
         state.createdStrokeIds.add(data.id);
         redrawAll();
+        return state.strokes[strokeIndex];
     }
 
-    async function saveStroke(points: Point[]): Promise<void> {
-        const stroke: Stroke = {
+    async function saveStroke(points: Point[]): Promise<Stroke | null> {
+        return addStroke({
             id: state.nextTemporaryStrokeId,
             tool: 'draw',
             color: state.color,
@@ -255,30 +258,45 @@ export function initWhiteboard(root: HTMLElement): void {
             points,
             createdAt: new Date().toISOString(),
             localOnly: true,
-        };
+        });
+    }
 
+    async function restoreStroke(original: Stroke): Promise<Stroke | null> {
+        return addStroke({
+            id: state.nextTemporaryStrokeId,
+            tool: 'draw',
+            color: original.color,
+            brushSize: original.brushSize,
+            points: original.points,
+            createdAt: new Date().toISOString(),
+            localOnly: true,
+        });
+    }
+
+    async function addStroke(stroke: Stroke): Promise<Stroke | null> {
         state.nextTemporaryStrokeId -= 1;
         state.strokes.push(stroke);
         redrawAll();
 
         try {
-            await persistStroke(stroke);
+            return await persistStroke(stroke);
         } catch (error) {
             state.strokes = state.strokes.filter((item) => item.id !== stroke.id);
             redrawAll();
-            void error;
+            throw error;
         }
     }
 
-    async function deleteStroke(strokeId: number): Promise<void> {
+    async function deleteStroke(strokeId: number): Promise<Stroke | null> {
         if (state.pendingDeleteIds.has(strokeId)) 
-            return;
-        
+            return null;
+
         const strokeIndex = state.strokes.findIndex((stroke) => stroke.id === strokeId);
 
         if (strokeIndex === -1) 
-            return;
+            return null;
 
+        let errorObj: Error | null = null;
         const [removedStroke] = state.strokes.splice(strokeIndex, 1);
         state.pendingDeleteIds.add(strokeId);
         state.hoverEraseStrokeId = null;
@@ -289,11 +307,16 @@ export function initWhiteboard(root: HTMLElement): void {
             state.createdStrokeIds.delete(strokeId);
         } catch (error) {
             state.strokes.splice(strokeIndex, 0, removedStroke);
-            void error;
+            errorObj = error instanceof Error ? error : new Error(String(error));
         } finally {
             state.pendingDeleteIds.delete(strokeId);
             redrawAll();
         }
+
+        if (errorObj)
+            throw errorObj;
+
+        return removedStroke;
     }
 
     async function clearWhiteboard(): Promise<void> {
@@ -323,6 +346,7 @@ export function initWhiteboard(root: HTMLElement): void {
         setTool,
         adjustBrushSize,
         saveStroke,
+        restoreStroke,
         deleteStroke,
         clearWhiteboard,
         resetCamera: () => resetCamera(state),
