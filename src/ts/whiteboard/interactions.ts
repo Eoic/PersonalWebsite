@@ -259,26 +259,28 @@ export function createInteractions(deps: InteractionDeps) {
 
         if (event.button === 1 || (event.button === 0 && deps.state.isSpacePressed)) {
             event.preventDefault();
+            deps.setTool('pan', true);
             beginPan(event.pointerId, screenPoint);
             return;
         }
 
-        if (event.button !== 0) 
-            return;
+        if (event.button === 0) {
+            event.preventDefault();
 
-        event.preventDefault();
-
-        if (deps.state.tool === 'erase') {
-            beginErase(event.pointerId, screenPoint);
-            return;
+            switch (deps.state.tool) {
+                case 'erase':
+                    beginErase(event.pointerId, screenPoint);
+                    break;
+                case 'draw':
+                    beginDraw(event.pointerId, screenPoint);
+                    break;
+                case 'pan':
+                    beginPan(event.pointerId, screenPoint);
+                    break;
+                default:
+                    break;
+            }
         }
-
-        if (deps.state.tool === 'pan') {
-            beginPan(event.pointerId, screenPoint);
-            return;
-        }
-
-        beginDraw(event.pointerId, screenPoint);
     };
 
     const handlePointerMove = (event: PointerEvent): void => {
@@ -335,11 +337,14 @@ export function createInteractions(deps: InteractionDeps) {
 
         if (interaction?.mode === 'draw' && interaction.pointerId === event.pointerId) 
             finishDraw();
-        else if (
-            (interaction?.mode === 'erase' || interaction?.mode === 'pan') &&
-            interaction.pointerId === event.pointerId
-        ) 
+        else if ((interaction?.mode === 'erase') && interaction.pointerId === event.pointerId)
             clearInteraction();
+        else if (interaction?.mode === 'pan' && interaction.pointerId === event.pointerId) {
+            clearInteraction();
+
+            if (!deps.state.isSpacePressed && deps.state.toolIsTransient)
+                deps.setTool(deps.state.prevTool, false);
+        }
         else if (interaction?.mode === 'gesture' && deps.state.activePointers.size < 2) 
             clearInteraction();
 
