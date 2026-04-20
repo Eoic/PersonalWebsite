@@ -6,12 +6,14 @@ SERVE_PORT := 8000
 DEV_APP_URL := http://$(LAN_IP):$(DEV_APP_PORT)
 DEV_ASSET_URL := http://$(LAN_IP):$(DEV_ASSET_PORT)
 SERVE_URL := http://$(LAN_IP):$(SERVE_PORT)
-DB_SYNC_REMOTE ?=
+SYNC_REMOTE ?=
 DB_SYNC_DEST_DIR ?= /opt/website/data
 DB_SYNC_FILE ?= site.db
 DB_SYNC_OWNER ?= website:website
+BOOKS_SYNC_REMOTE_DIR ?= /opt/website/assets/images/books/source
+BOOKS_SYNC_LOCAL_DIR ?= assets/images/books/source
 
-.PHONY: dev dev-assets seed build-assets serve createuser deleteusers typecheck db-push db-pull
+.PHONY: dev dev-assets seed build-assets serve createuser deleteusers typecheck db-push db-pull books-pull
 
 dev:
 	@printf "Flask: %s\nVite:  %s\n" "$(DEV_APP_URL)" "$(DEV_ASSET_URL)"
@@ -40,10 +42,15 @@ typecheck:
 	npm run typecheck
 
 db-push:
-	@test -n "$(DB_SYNC_REMOTE)" || (echo "Set DB_SYNC_REMOTE, e.g. make db-push DB_SYNC_REMOTE=website@server"; exit 1)
-	rsync -rtv --progress --chmod=F644 --no-owner --no-group "data/$(DB_SYNC_FILE)" "$(DB_SYNC_REMOTE):$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)"
-	ssh "$(DB_SYNC_REMOTE)" "if [ \"\$$(id -un)\" = \"website\" ]; then chmod 644 '$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)'; else chown $(DB_SYNC_OWNER) '$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)' && chmod 644 '$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)'; fi"
+	@test -n "$(SYNC_REMOTE)" || (echo "Set SYNC_REMOTE, e.g. make db-push SYNC_REMOTE=website@server"; exit 1)
+	rsync -rtv --progress --chmod=F644 --no-owner --no-group "data/$(DB_SYNC_FILE)" "$(SYNC_REMOTE):$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)"
+	ssh "$(SYNC_REMOTE)" "if [ \"\$$(id -un)\" = \"website\" ]; then chmod 644 '$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)'; else chown $(DB_SYNC_OWNER) '$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)' && chmod 644 '$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)'; fi"
 
 db-pull:
-	@test -n "$(DB_SYNC_REMOTE)" || (echo "Set DB_SYNC_REMOTE, e.g. make db-pull DB_SYNC_REMOTE=website@server"; exit 1)
-	rsync -rtv --progress "$(DB_SYNC_REMOTE):$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)" "data/$(DB_SYNC_FILE)"
+	@test -n "$(SYNC_REMOTE)" || (echo "Set SYNC_REMOTE, e.g. make db-pull SYNC_REMOTE=website@server"; exit 1)
+	rsync -rtv --progress "$(SYNC_REMOTE):$(DB_SYNC_DEST_DIR)/$(DB_SYNC_FILE)" "data/$(DB_SYNC_FILE)"
+
+books-pull:
+	@test -n "$(SYNC_REMOTE)" || (echo "Set SYNC_REMOTE, e.g. make books-pull SYNC_REMOTE=website@server"; exit 1)
+	mkdir -p "$(BOOKS_SYNC_LOCAL_DIR)"
+	rsync -rtv --progress "$(SYNC_REMOTE):$(BOOKS_SYNC_REMOTE_DIR)/" "$(BOOKS_SYNC_LOCAL_DIR)/"
