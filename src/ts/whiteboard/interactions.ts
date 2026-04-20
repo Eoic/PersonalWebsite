@@ -1,4 +1,4 @@
-import { MIN_POINT_DISTANCE } from './constants';
+import { MIN_POINT_DISTANCE, ZOOM_SENSITIVITY } from './constants';
 import type { Point, WhiteboardState } from './types';
 import { distance, distanceToSegment, isEditableTarget } from './utils';
 
@@ -351,6 +351,22 @@ export function createInteractions(deps: InteractionDeps) {
         deps.updateCursor();
     };
 
+    const handlePointerLeave = (event: PointerEvent): void => {
+        if (deps.state.isBooting) 
+            return;
+
+        if (deps.state.tool === 'draw') 
+            finishDraw();
+
+        if (deps.state.tool === 'erase' && deps.state.interaction === null) {
+            deps.state.hoverEraseStrokeId = null;
+            deps.renderOverlay();
+        }
+
+        deps.state.activePointers.delete(event.pointerId);
+        clearInteraction();
+    };
+
     const handlePointerCancel = (event: PointerEvent): void => {
         if (deps.state.isBooting) 
             return;
@@ -366,7 +382,7 @@ export function createInteractions(deps: InteractionDeps) {
         event.preventDefault();
 
         const screenPoint = deps.getScreenPoint(event.clientX, event.clientY);
-        const scale = Math.exp(-event.deltaY * 0.0015);
+        const scale = Math.exp(-event.deltaY * ZOOM_SENSITIVITY);
         deps.zoomAt(screenPoint, deps.state.camera.zoom * scale);
         deps.redraw();
     };
@@ -484,6 +500,7 @@ export function createInteractions(deps: InteractionDeps) {
         handlePointerMove,
         handlePointerUp,
         handlePointerCancel,
+        handlePointerLeave,
         handleWheel,
         handleKeyDown,
         handleKeyUp,

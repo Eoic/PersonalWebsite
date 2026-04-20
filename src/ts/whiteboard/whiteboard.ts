@@ -380,14 +380,7 @@ export function initWhiteboard(root: HTMLElement): void {
     refs.overlayCanvas.addEventListener('pointermove', interactions.handlePointerMove);
     refs.overlayCanvas.addEventListener('pointerup', interactions.handlePointerUp);
     refs.overlayCanvas.addEventListener('pointercancel', interactions.handlePointerCancel);
-
-    refs.overlayCanvas.addEventListener('pointerleave', () => {
-        if (state.tool === 'erase' && state.interaction === null) {
-            state.hoverEraseStrokeId = null;
-            renderOverlay();
-        }
-    });
-
+    refs.overlayCanvas.addEventListener('pointerleave', interactions.handlePointerLeave);
     refs.overlayCanvas.addEventListener('wheel', interactions.handleWheel, { passive: false });
 
     refs.overlayCanvas.addEventListener('contextmenu', (event) => {
