@@ -1,6 +1,8 @@
 import json
 import math
 import os
+import subprocess
+from pathlib import Path
 import re
 from datetime import UTC, datetime
 from urllib.parse import urlparse
@@ -10,7 +12,7 @@ from flask import Blueprint, redirect, request, send_from_directory, session, ur
 from flask_login import login_required, login_user, logout_user
 from flask_login import current_user
 
-from app.forms import LoginForm, PostForm
+from app.forms import BookForm, LoginForm, PostForm
 from app.garden_state import (
     GardenConflictError,
     apply_garden_action,
@@ -489,7 +491,12 @@ def posts():
     ctx.update(
         page_intro=_PAGE_INTROS["posts"],
         items=items,
-        page_actions=[url_for("main.new_post")],
+        page_actions=[
+            {
+                "label": "New post",
+                "url": url_for("main.new_post"),
+            },
+        ],
     )
 
     return render_mako("pages/posts.html", **ctx)
@@ -595,6 +602,7 @@ def bookshelf():
     """Render the bookshelf page."""
     ctx = get_common_context("bookshelf")
     books = list(Book.select().order_by(Book.title))
+
     ctx["page_head_styles"].append(
         ".bookshelf-item{display:block;position:relative;aspect-ratio:2/3;"
         "overflow:hidden;opacity:.85;background:var(--color-surface-muted)}"
@@ -607,9 +615,82 @@ def bookshelf():
     ctx.update(
         page_intro=_PAGE_INTROS["bookshelf"],
         books=books,
+        page_actions=[
+            {
+                "label": "Add book",
+                "url": url_for("main.new_book"),
+            }
+        ],
     )
 
     return render_mako("pages/bookshelf.html", **ctx)
+
+
+@bp.route("/bookshelf/new", methods=["GET", "POST"])
+@login_required
+def new_book():
+    action_path = url_for("main.new_book")
+    cancel_path = url_for("main.bookshelf")
+    ctx = get_common_context("bookshelf")
+
+    ctx.update(
+        action_path=action_path,
+        cancel_path=cancel_path,
+    )
+
+    if request.method == "GET":
+        form = BookForm(meta={"csrf_context": session})
+        ctx.update(form=form)
+        return render_mako("pages/book_form.html", **ctx)
+    elif request.method == "POST":
+        form = BookForm(request.form, meta={"csrf_context": session})
+
+        if form.validate():
+            cover_filename = None
+            cover_file = request.files.get(form.cover.name)
+
+            if cover_file and cover_file.filename:
+                cover_filename = f"images/books/source/{cover_file.filename}"
+                cover_path = os.path.join(_assets_dir, cover_filename)
+                cover_file.save(cover_path)
+
+                try:
+                    subprocess.run(
+                        ["npm", "run", "build:book-covers"],
+                        cwd=_project_root,
+                        check=True,
+                        capture_output=True,
+                        text=True,
+                    )
+                except subprocess.CalledProcessError as exc:
+                    os.remove(cover_path)
+                    ctx.update(
+                        form=form,
+                        errors=[
+                            "Failed to compile book cover. "
+                            f"{exc.stderr.strip() or exc.stdout.strip() or exc}"
+                        ],
+                    )
+                    return render_mako("pages/book_form.html", **ctx), 500
+
+            if cover_filename:
+                cover_basename = os.path.basename(Path(cover_filename))
+            else:
+                ctx.update(form=form, errors=["Cover image is required."])
+                return render_mako("pages/book_form.html", **ctx), 400
+
+            Book.create(
+                title=form.title.data,
+                author=form.author.data,
+                cover=cover_basename,
+                url=form.url.data,
+            )
+
+            return redirect(url_for("main.bookshelf"))
+        else:
+            ctx = get_common_context("bookshelf")
+            ctx.update(form=form)
+            return render_mako("pages/book_form.html", **ctx), 400
 
 
 def _safe_next_url(target):

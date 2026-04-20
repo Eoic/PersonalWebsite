@@ -1,0 +1,20 @@
+<%inherit file="../partials/layout.html" />
+
+<form method="post" action="${action_path}" enctype="multipart/form-data">
+    % if errors:
+        <div class="messages">
+            % for error in errors:
+                <p> ${error} </p>
+            % endfor
+        </div>
+    % endif
+
+    ${form.csrf_token}
+    ${form.title.label} ${form.title}
+    ${form.author.label} ${form.author}
+    ${form.cover.label} ${form.cover}
+    ${form.url.label} ${form.url}
+
+    <button class="btn" type="submit"> Save </button>
+    <a href="${cancel_path}" class="btn"> Cancel </a>
+</form>

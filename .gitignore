@@ -5,6 +5,8 @@ data/
 *.min.js
 assets/css/*.css
 assets/js/*.js
+assets/images/books/*-128.webp
+assets/images/books/*-256.webp
 node_modules/
 build/
 .ruff_cache/

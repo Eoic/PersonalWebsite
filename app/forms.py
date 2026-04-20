@@ -1,4 +1,11 @@
-from wtforms import Form, StringField, validators, PasswordField, BooleanField
+from wtforms import (
+    Form,
+    StringField,
+    validators,
+    PasswordField,
+    BooleanField,
+    FileField,
+)
 from wtforms.csrf.session import SessionCSRF
 from flask import current_app
 from wtforms.widgets import TextArea
@@ -73,6 +80,40 @@ class PostForm(Form):
     )
 
     hidden = BooleanField("Hidden", default=False, name="hidden")
+
+    class Meta:
+        csrf = True
+        csrf_class = SessionCSRF
+
+        @property
+        def csrf_secret(self):
+            return current_app.config["SECRET_KEY"].encode("utf-8")
+
+
+class BookForm(Form):
+    title = StringField(
+        "Title",
+        [validators.Length(min=1, max=255), validators.DataRequired()],
+        name="title",
+    )
+
+    author = StringField(
+        "Author",
+        [validators.Length(min=1, max=255), validators.DataRequired()],
+        name="author",
+    )
+
+    cover = FileField(
+        "Cover image",
+        name="cover",
+        render_kw={"accept": "image/*"},
+    )
+
+    url = StringField(
+        "URL",
+        [validators.URL()],
+        name="url",
+    )
 
     class Meta:
         csrf = True
