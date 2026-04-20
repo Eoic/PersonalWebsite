@@ -71,6 +71,7 @@ export function renderBackground(refs: WhiteboardRefs, state: WhiteboardState): 
     const gridSize = GRID_PX * state.camera.zoom;
     const centeredOriginX = state.viewportWidth / 2;
     const centeredOriginY = state.viewportHeight / 2;
+
     const isCentered =
         Math.abs(state.camera.originX - centeredOriginX) < 0.01 &&
         Math.abs(state.camera.originY - centeredOriginY) < 0.01;
@@ -95,13 +96,12 @@ export function resizeCanvases(
 ): void {
     const rect = refs.canvasShell.getBoundingClientRect();
     const devicePixelRatio = window.devicePixelRatio || 1;
+
     const previousCenterWorld =
-        state.viewportWidth > 0 && state.viewportHeight > 0
-            ? screenToWorld(state, {
-                x: state.viewportWidth / 2,
-                y: state.viewportHeight / 2,
-            })
-            : null;
+        state.viewportWidth > 0 && state.viewportHeight > 0 ? screenToWorld(state, {
+            x: state.viewportWidth / 2,
+            y: state.viewportHeight / 2,
+        }) : null;
 
     state.viewportWidth = rect.width;
     state.viewportHeight = rect.height;

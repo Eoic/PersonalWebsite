@@ -12,8 +12,7 @@ export function distanceToSegment(point: Point, start: Point, end: Point): numbe
     if (dx === 0 && dy === 0) 
         return distance(point, start);
 
-    const projection =
-        ((point.x - start.x) * dx + (point.y - start.y) * dy) / (dx * dx + dy * dy);
+    const projection = ((point.x - start.x) * dx + (point.y - start.y) * dy) / (dx * dx + dy * dy);
     const t = clamp(projection, 0, 1);
 
     return distance(point, {

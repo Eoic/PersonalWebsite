@@ -22,19 +22,20 @@ type InteractionDeps = {
 export function createInteractions(deps: InteractionDeps) {
     const getGesturePointers = () => Array.from(deps.state.activePointers.values()).slice(0, 2);
 
-    const findErasableStrokeId = (worldPoint: Point): number | null => {
-        for (
-            let strokeIndex = deps.state.strokes.length - 1;
-            strokeIndex >= 0;
-            strokeIndex -= 1
-        ) {
-            const stroke = deps.state.strokes[strokeIndex];
+    const isEraseInvalid = (deps: InteractionDeps, strokeId: number): boolean => {
+        return (
+            (!deps.state.canManageWhiteboard && !deps.state.createdStrokeIds.has(strokeId)) || 
+            deps.state.pendingDeleteIds.has(strokeId)
+        ); 
+    };
 
-            if (
-                (!deps.state.canManageWhiteboard &&
-                    !deps.state.createdStrokeIds.has(stroke.id)) ||
-                deps.state.pendingDeleteIds.has(stroke.id)
-            ) 
+    const findErasableStrokeId = (worldPoint: Point): number | null => {
+        const strokeCount = deps.state.strokes.length;
+
+        for (let i = strokeCount - 1; i >= 0; i -= 1) {
+            const stroke = deps.state.strokes[i];
+
+            if (isEraseInvalid(deps, stroke.id))
                 continue;
 
             const threshold = stroke.brushSize / 2 + 10 / deps.state.camera.zoom;
@@ -77,9 +78,9 @@ export function createInteractions(deps: InteractionDeps) {
         if (deps.state.interaction?.mode !== 'draw') 
             return;
 
+        const pointCount = deps.state.interaction.points.length;
         const worldPoint = deps.screenToWorld(screenPoint);
-        const previousPoint =
-            deps.state.interaction.points[deps.state.interaction.points.length - 1];
+        const previousPoint = deps.state.interaction.points[pointCount - 1];
 
         if (distance(worldPoint, previousPoint) < MIN_POINT_DISTANCE / deps.state.camera.zoom) 
             return;
@@ -242,10 +243,7 @@ export function createInteractions(deps: InteractionDeps) {
             if (deps.state.activePointers.size === 1) {
                 if (deps.state.tool === 'erase') 
                     beginErase(event.pointerId, screenPoint);
-                else 
-                    beginDraw(event.pointerId, screenPoint);
-                
-
+                else beginDraw(event.pointerId, screenPoint);
                 return;
             }
 
@@ -288,44 +286,34 @@ export function createInteractions(deps: InteractionDeps) {
         }
 
         const screenPoint = deps.getScreenPoint(event.clientX, event.clientY);
+        const interaction = deps.state.interaction;
 
-        if (
-            deps.state.interaction?.mode === 'draw' &&
-            deps.state.interaction.pointerId === event.pointerId
-        ) {
+        if (interaction?.mode === 'draw' && interaction.pointerId === event.pointerId) {
             event.preventDefault();
             extendDraw(screenPoint);
             return;
         }
 
-        if (
-            deps.state.interaction?.mode === 'erase' &&
-            deps.state.interaction.pointerId === event.pointerId
-        ) {
+        if (interaction?.mode === 'erase' && interaction.pointerId === event.pointerId) {
             event.preventDefault();
             void eraseAt(screenPoint);
             return;
         }
 
-        if (
-            deps.state.interaction?.mode === 'pan' &&
-            deps.state.interaction.pointerId === event.pointerId
-        ) {
+        if (interaction?.mode === 'pan' && interaction.pointerId === event.pointerId) {
             event.preventDefault();
             updatePan(screenPoint);
             return;
         }
 
-        if (deps.state.interaction?.mode === 'gesture') {
+        if (interaction?.mode === 'gesture') {
             event.preventDefault();
             updateGesture();
             return;
         }
 
         if (deps.state.tool === 'erase' && event.pointerType === 'mouse') {
-            deps.state.hoverEraseStrokeId = findErasableStrokeId(
-                deps.screenToWorld(screenPoint)
-            );
+            deps.state.hoverEraseStrokeId = findErasableStrokeId(deps.screenToWorld(screenPoint));
             deps.renderOverlay();
         }
     };
@@ -336,21 +324,16 @@ export function createInteractions(deps: InteractionDeps) {
 
         deps.state.activePointers.delete(event.pointerId);
 
-        if (
-            deps.state.interaction?.mode === 'draw' &&
-            deps.state.interaction.pointerId === event.pointerId
-        ) 
+        const interaction = deps.state.interaction;
+
+        if (interaction?.mode === 'draw' && interaction.pointerId === event.pointerId) 
             finishDraw();
         else if (
-            (deps.state.interaction?.mode === 'erase' ||
-                deps.state.interaction?.mode === 'pan') &&
-            deps.state.interaction.pointerId === event.pointerId
+            (interaction?.mode === 'erase' || interaction?.mode === 'pan') &&
+            interaction.pointerId === event.pointerId
         ) 
             clearInteraction();
-        else if (
-            deps.state.interaction?.mode === 'gesture' &&
-            deps.state.activePointers.size < 2
-        ) 
+        else if (interaction?.mode === 'gesture' && deps.state.activePointers.size < 2) 
             clearInteraction();
 
         deps.updateCursor();
@@ -372,7 +355,6 @@ export function createInteractions(deps: InteractionDeps) {
 
         const screenPoint = deps.getScreenPoint(event.clientX, event.clientY);
         const scale = Math.exp(-event.deltaY * 0.0015);
-
         deps.zoomAt(screenPoint, deps.state.camera.zoom * scale);
         deps.redraw();
     };
@@ -405,9 +387,7 @@ export function createInteractions(deps: InteractionDeps) {
                 deps.state.pendingDeleteIds.clear();
                 deps.state.hoverEraseStrokeId = null;
                 deps.redraw();
-            } catch {
-                // Keep the current board state if clearing fails.
-            }
+            } catch { /* keep the current board state if clearing fails */}
         })();
     };
 

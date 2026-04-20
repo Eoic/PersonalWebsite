@@ -72,7 +72,6 @@ export function initWhiteboard(root: HTMLElement): void {
     if (!committedContext || !overlayContext) 
         return;
     
-
     const refs: WhiteboardRefs = {
         root,
         shell,
@@ -152,7 +151,6 @@ export function initWhiteboard(root: HTMLElement): void {
     function updateToolControls(): void {
         refs.toolButtons.forEach((button) => {
             const isActive = button.dataset.tool === state.tool;
-
             button.classList.toggle('is-active', isActive);
             button.setAttribute('aria-pressed', String(isActive));
         });
@@ -162,10 +160,12 @@ export function initWhiteboard(root: HTMLElement): void {
         const isFullscreen = document.fullscreenElement === refs.shell;
 
         refs.fullscreenLabel.textContent = isFullscreen ? 'windowed' : 'fullscreen';
+
         refs.fullscreenButton.setAttribute(
             'aria-label',
             isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'
         );
+
         refs.fullscreenButton.title = isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen';
     }
 
@@ -205,7 +205,6 @@ export function initWhiteboard(root: HTMLElement): void {
 
         if (nextBrushSize === state.brushSize) 
             return;
-        
 
         state.brushSize = nextBrushSize;
         updateBrushSizeReadout();
@@ -218,11 +217,11 @@ export function initWhiteboard(root: HTMLElement): void {
             state.clientSessionId,
             stroke
         );
+
         const strokeIndex = state.strokes.findIndex((item) => item.id === stroke.id);
 
         if (strokeIndex === -1) 
             return;
-        
 
         state.strokes[strokeIndex] = {
             ...stroke,
@@ -230,6 +229,7 @@ export function initWhiteboard(root: HTMLElement): void {
             createdAt: data.createdAt,
             localOnly: false,
         };
+
         state.createdStrokeIds.add(data.id);
         redrawAll();
     }
@@ -262,12 +262,10 @@ export function initWhiteboard(root: HTMLElement): void {
         if (state.pendingDeleteIds.has(strokeId)) 
             return;
         
-
         const strokeIndex = state.strokes.findIndex((stroke) => stroke.id === strokeId);
 
         if (strokeIndex === -1) 
             return;
-        
 
         const [removedStroke] = state.strokes.splice(strokeIndex, 1);
         state.pendingDeleteIds.add(strokeId);
@@ -293,14 +291,16 @@ export function initWhiteboard(root: HTMLElement): void {
     async function loadStrokes(): Promise<void> {
         try {
             const data = await loadStrokesRequest(refs.strokesEndpoint);
+
             state.strokes = data.strokes.map((stroke) => ({
                 ...stroke,
                 localOnly: false,
             }));
+
             state.isBooting = false;
             renderBootState();
             redrawAll();
-        } catch {}
+        } catch { /* keep the boot state if loading fails */}
     }
 
     const interactions = createInteractions({
@@ -347,6 +347,7 @@ export function initWhiteboard(root: HTMLElement): void {
     });
 
     refs.originButton.addEventListener('click', interactions.handleResetOrigin);
+
     refs.fullscreenButton.addEventListener('click', () => {
         if (document.fullscreenElement === refs.shell) {
             void document.exitFullscreen();
@@ -355,6 +356,7 @@ export function initWhiteboard(root: HTMLElement): void {
 
         void refs.shell.requestFullscreen();
     });
+
     refs.clearWhiteboardButton?.addEventListener('click', interactions.handleClearRequest);
 
     document.addEventListener('fullscreenchange', () => {
@@ -383,6 +385,7 @@ export function initWhiteboard(root: HTMLElement): void {
 
     window.addEventListener('keydown', interactions.handleKeyDown);
     window.addEventListener('keyup', interactions.handleKeyUp);
+
     window.addEventListener('resize', () => {
         resizeCanvases(refs, state, contexts);
         redrawAll();
