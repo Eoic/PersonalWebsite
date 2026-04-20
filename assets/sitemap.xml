@@ -4,40 +4,44 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-
 <url>
   <loc>https://karolis-strazdas.lt/</loc>
-  <lastmod>2026-04-12T22:14:53+00:00</lastmod>
+  <lastmod>2026-04-20T11:36:00+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
   <loc>https://karolis-strazdas.lt/positions</loc>
-  <lastmod>2026-04-12T22:14:53+00:00</lastmod>
+  <lastmod>2026-04-20T11:36:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://karolis-strazdas.lt/education</loc>
-  <lastmod>2026-04-12T22:14:53+00:00</lastmod>
+  <lastmod>2026-04-20T11:36:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://karolis-strazdas.lt/projects</loc>
-  <lastmod>2026-04-12T22:14:53+00:00</lastmod>
+  <lastmod>2026-04-20T11:36:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://karolis-strazdas.lt/whiteboard</loc>
-  <lastmod>2026-04-12T22:14:53+00:00</lastmod>
+  <lastmod>2026-04-20T11:36:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://karolis-strazdas.lt/posts</loc>
-  <lastmod>2026-04-12T22:14:53+00:00</lastmod>
+  <lastmod>2026-04-20T11:36:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://karolis-strazdas.lt/bookshelf</loc>
-  <lastmod>2026-04-12T22:14:53+00:00</lastmod>
+  <lastmod>2026-04-20T11:36:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://karolis-strazdas.lt/garden</loc>
+  <lastmod>2026-04-20T11:36:00+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 
