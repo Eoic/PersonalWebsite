@@ -123,7 +123,6 @@ export function initWhiteboard(root: HTMLElement): void {
         color: getWorldColorToken('--color-text') || '#1a1a1a',
         nextTemporaryStrokeId: -1,
         clientSessionId: generateClientSessionId(),
-        isSpacePressed: false,
         hasInitializedView: false,
         isBooting: root.dataset.booting === 'true',
         canManageWhiteboard,
@@ -194,7 +193,7 @@ export function initWhiteboard(root: HTMLElement): void {
             return;
         }
 
-        refs.overlayCanvas.style.cursor = state.isSpacePressed ? 'grab' : 'crosshair';
+        refs.overlayCanvas.style.cursor = 'crosshair';
     }
 
     function setTool(nextTool: Tool, isTransient: boolean = false): void {
@@ -413,7 +412,6 @@ export function initWhiteboard(root: HTMLElement): void {
     });
 
     window.addEventListener('keydown', interactions.handleKeyDown);
-    window.addEventListener('keyup', interactions.handleKeyUp);
 
     window.addEventListener('resize', () => {
         resizeCanvases(refs, state, contexts);

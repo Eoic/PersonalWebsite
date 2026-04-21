@@ -105,10 +105,11 @@ export type GardenRefs = {
   activity: HTMLElement;
 };
 
-export type Config = {
+export type State = {
     world: GardenWorldState | null;
     tool: Tool;
     prevTool: Tool;
+    toolIsTransient: boolean;
     species: Species;
     pan: { x: number; y: number };
     zoom: number;
@@ -121,7 +122,6 @@ export type Config = {
     pendingTouchAction:
         | { pointerId: number; startX: number; startY: number; lastX: number; lastY: number; moved: boolean }
         | null;
-    isSpacePressed: boolean;
     centered: boolean;
     isBooting: boolean;
     isLoaded: boolean;

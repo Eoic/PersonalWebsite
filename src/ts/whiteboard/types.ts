@@ -118,7 +118,6 @@ export type WhiteboardState = {
     color: string;
     nextTemporaryStrokeId: number;
     clientSessionId: string;
-    isSpacePressed: boolean;
     hasInitializedView: boolean;
     isBooting: boolean;
     canManageWhiteboard: boolean;

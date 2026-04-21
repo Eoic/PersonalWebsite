@@ -273,16 +273,17 @@ export function createInteractions(deps: InteractionDeps) {
             return;
         }
 
-        if (event.button === 1 || (event.button === 0 && deps.state.isSpacePressed)) {
-            event.preventDefault();
-            deps.setTool('pan', true);
+        event.preventDefault();
+
+        if (event.button === 1) {
+            if (deps.state.tool !== 'pan')
+                deps.setTool('pan', true);
+
             beginPan(event.pointerId, screenPoint);
             return;
         }
 
         if (event.button === 0) {
-            event.preventDefault();
-
             switch (deps.state.tool) {
                 case 'erase':
                     beginErase(event.pointerId, screenPoint);
@@ -358,8 +359,8 @@ export function createInteractions(deps: InteractionDeps) {
         else if (interaction?.mode === 'pan' && interaction.pointerId === event.pointerId) {
             clearInteraction();
 
-            if (!deps.state.isSpacePressed && deps.state.toolIsTransient)
-                deps.setTool(deps.state.prevTool, false);
+            if (deps.state.toolIsTransient)
+                deps.setTool(deps.state.prevTool);
         }
         else if (interaction?.mode === 'gesture' && deps.state.activePointers.size < 2) 
             clearInteraction();
@@ -441,14 +442,6 @@ export function createInteractions(deps: InteractionDeps) {
             return;
 
         const isEditable = isEditableTarget(event.target);
-
-        if (event.code === 'Space' && !isEditable && (deps.state.tool !== 'pan')) {
-            deps.state.isSpacePressed = true;
-            event.preventDefault();
-            deps.updateCursor();
-            deps.setTool('pan', true);
-            return;
-        }
 
         if (isEditable) 
             return;
@@ -562,20 +555,6 @@ export function createInteractions(deps: InteractionDeps) {
         }
     };
 
-    const handleKeyUp = (event: KeyboardEvent): void => {
-        if (deps.state.isBooting) 
-            return;
-
-        if (event.code === 'Space') {
-            deps.state.isSpacePressed = false;
-
-            if (deps.state.toolIsTransient)
-                deps.setTool(deps.state.prevTool);
-
-            deps.updateCursor();
-        }
-    };
-
     return {
         handlePointerDown,
         handlePointerMove,
@@ -584,7 +563,6 @@ export function createInteractions(deps: InteractionDeps) {
         handlePointerLeave,
         handleWheel,
         handleKeyDown,
-        handleKeyUp,
         handleResetOrigin,
         handleClearRequest,
     };

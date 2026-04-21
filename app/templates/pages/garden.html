@@ -11,7 +11,10 @@
         <div class="garden-tool-group">
             <span class="garden-tool-label">/tool</span>
             <div class="garden-btn-group" data-tool-group>
-                <button class="garden-btn is-active" type="button" data-tool="plant" aria-pressed="true">
+                <button class="garden-btn is-active" type="button" data-tool="pan" aria-pressed="true">
+                    pan<span class="garden-kbd">Space</span>
+                </button>
+                <button class="garden-btn" type="button" data-tool="plant" aria-pressed="false">
                     plant<span class="garden-kbd">P</span>
                 </button>
                 <button class="garden-btn" type="button" data-tool="water" aria-pressed="false">
@@ -26,7 +29,7 @@
             </div>
         </div>
 
-        <div class="garden-tool-group" data-species-group>
+        <div class="garden-tool-group" data-species-group hidden>
             <span class="garden-tool-label">/species</span>
             <div class="garden-btn-group" data-species-buttons>
                 % for species in garden_species_list:

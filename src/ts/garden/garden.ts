@@ -44,10 +44,11 @@ export function initGarden(root: HTMLElement): void {
         activity: qs('[data-activity]'),
     };
 
-    const config: T.Config = {
+    const state: T.State = {
         world: null,
-        tool: 'plant',
-        prevTool: 'plant',
+        tool: 'pan',
+        prevTool: 'pan',
+        toolIsTransient: false,
         species: 'daisy',
         pan: { x: 0, y: 0 },
         zoom: 1,
@@ -55,7 +56,6 @@ export function initGarden(root: HTMLElement): void {
         hover: null,
         panInteraction: null,
         pendingTouchAction: null,
-        isSpacePressed: false,
         centered: false,
         isBooting: root.dataset.booting === 'true',
         isLoaded: false,
@@ -64,45 +64,46 @@ export function initGarden(root: HTMLElement): void {
         activePointers: new Map<number, { clientX: number; clientY: number }>(),
     };
 
-    const getNow = (): number => Date.now() + config.serverTimeOffsetMs;
-    const isPanning = (): boolean => config.panInteraction !== null;
-    const getCellSize = (): number => C.CELL_PX * config.zoom;
-    const shouldPreserveServerRender = (): boolean => config.isBooting && config.world === null;
+    const getNow = (): number => Date.now() + state.serverTimeOffsetMs;
+    const isPanning = (): boolean => state.panInteraction !== null;
+    const getCellSize = (): number => C.CELL_PX * state.zoom;
+    const shouldPreserveServerRender = (): boolean => state.isBooting && state.world === null;
+
     const getTransform = () => ({
-        originX: config.pan.x,
-        originY: config.pan.y,
+        originX: state.pan.x,
+        originY: state.pan.y,
         scale: getCellSize(),
     });
 
     const renderBootState = (): void => {
-        refs.root.dataset.booting = String(config.isBooting);
-        refs.surface.setAttribute('aria-disabled', String(config.isBooting));
+        refs.root.dataset.booting = String(state.isBooting);
+        refs.surface.setAttribute('aria-disabled', String(state.isBooting));
     };
 
     const renderActivityStatus = (): void => {
-        const hasMessage = config.loadError.trim().length > 0;
+        const hasMessage = state.loadError.trim().length > 0;
         refs.activityStatus.hidden = !hasMessage;
         refs.activityStatus.classList.toggle('is-error', hasMessage);
-        refs.activityStatus.textContent = config.loadError;
+        refs.activityStatus.textContent = state.loadError;
     };
 
     const renderStats = (): void => {
-        if (!config.world) 
+        if (!state.world) 
             return;
 
-        refs.statTotal.textContent = String(config.world?.stats.plantedTotal ?? 0).padStart(4, '0');
-        refs.statAlive.textContent = String(config.world?.stats.aliveNow ?? 0).padStart(4, '0');
-        refs.statHealth.textContent = config.world?.stats.health ?? 'dormant';
-        refs.statBloom.textContent = `${config.world?.stats.bloomPct ?? 0}%`;
-        refs.statSeason.textContent = config.world?.environment.season ?? '';
-        refs.statWeather.textContent = config.world?.environment.weather ?? '';
-        refs.statWind.textContent = config.world?.environment.wind.label ?? '';
-        refs.statTime.textContent = config.world?.environment.time ?? '';
+        refs.statTotal.textContent = String(state.world?.stats.plantedTotal ?? 0).padStart(4, '0');
+        refs.statAlive.textContent = String(state.world?.stats.aliveNow ?? 0).padStart(4, '0');
+        refs.statHealth.textContent = state.world?.stats.health ?? 'dormant';
+        refs.statBloom.textContent = `${state.world?.stats.bloomPct ?? 0}%`;
+        refs.statSeason.textContent = state.world?.environment.season ?? '';
+        refs.statWeather.textContent = state.world?.environment.weather ?? '';
+        refs.statWind.textContent = state.world?.environment.wind.label ?? '';
+        refs.statTime.textContent = state.world?.environment.time ?? '';
 
         const speciesCounts: Partial<Record<T.Species, number>> = {};
 
-        if (config.world) {
-            for (const [, cell] of config.world.cells) 
+        if (state.world) {
+            for (const [, cell] of state.world.cells) 
                 speciesCounts[cell.species] = (speciesCounts[cell.species] ?? 0) + 1;
         }
 
@@ -111,12 +112,15 @@ export function initGarden(root: HTMLElement): void {
         for (const species of C.SPECIES_LIST) {
             const row = document.createElement('div');
             row.className = 'garden-legend-row';
+
             const sprite = document.createElement('span');
             sprite.className = 'garden-legend-sprite';
             sprite.appendChild(createSprite(species, 'bloom', 20));
+
             const name = document.createElement('span');
             name.className = 'garden-legend-name';
             name.textContent = species;
+
             const count = document.createElement('span');
             count.className = 'garden-legend-count';
             count.textContent = `\u00d7 ${speciesCounts[species] ?? 0}`;
@@ -126,12 +130,12 @@ export function initGarden(root: HTMLElement): void {
     };
 
     const renderActivity = (): void => {
-        if (!config.world) 
+        if (!state.world) 
             return;
 
         refs.activity.replaceChildren();
 
-        if (config.world.activity.length === 0) {
+        if (state.world.activity.length === 0) {
             const empty = document.createElement('div');
             empty.className = 'garden-dim';
             empty.textContent = 'no activity yet';
@@ -139,15 +143,18 @@ export function initGarden(root: HTMLElement): void {
             return;
         }
 
-        for (const entry of config.world.activity.slice(0, 8)) {
+        for (const entry of state.world.activity.slice(0, 8)) {
             const row = document.createElement('div');
             row.className = 'garden-activity-row';
+
             const type = document.createElement('span');
             type.className = 'garden-activity-type';
             type.textContent = entry.type;
+
             const msg = document.createElement('span');
             msg.className = 'garden-activity-msg';
             msg.textContent = entry.msg;
+
             const time = document.createElement('span');
             time.className = 'garden-activity-time';
             time.textContent = formatAgo(entry.tick, getNow());
@@ -175,24 +182,25 @@ export function initGarden(root: HTMLElement): void {
 
     const centerOrigin = (): void => {
         const rect = refs.surface.getBoundingClientRect();
+
         const nextOrigin = getCenteredOrigin(
             { x: 0.5, y: 0.5 },
             { x: rect.width / 2, y: rect.height / 2 },
             getCellSize()
         );
 
-        config.pan = { x: nextOrigin.x, y: nextOrigin.y };
+        state.pan = { x: nextOrigin.x, y: nextOrigin.y };
     };
 
     const resetView = (): void => {
-        config.zoom = 1;
+        state.zoom = 1;
         centerOrigin();
     };
 
     const zoomAt = (sx: number, sy: number, targetZoom: number): void => {
         const nextZoom = clamp(targetZoom, C.MIN_ZOOM, C.MAX_ZOOM);
 
-        if (nextZoom === config.zoom) 
+        if (nextZoom === state.zoom) 
             return;
 
         const nextTransform = getAnchoredTransform(
@@ -201,8 +209,9 @@ export function initGarden(root: HTMLElement): void {
             C.CELL_PX * nextZoom
         );
 
-        config.zoom = nextTransform.scale / C.CELL_PX;
-        config.pan = {
+        state.zoom = nextTransform.scale / C.CELL_PX;
+
+        state.pan = {
             x: nextTransform.originX,
             y: nextTransform.originY,
         };
@@ -214,15 +223,15 @@ export function initGarden(root: HTMLElement): void {
         if (rect.width <= 0 || rect.height <= 0) 
             return;
 
-        const previousCenterWorld = config.centered && config.viewport.width > 0 && config.viewport.height > 0
-            ? screenToWorld(config.viewport.width / 2, config.viewport.height / 2)
+        const previousCenterWorld = state.centered && state.viewport.width > 0 && state.viewport.height > 0
+            ? screenToWorld(state.viewport.width / 2, state.viewport.height / 2)
             : null;
 
-        config.viewport = { width: rect.width, height: rect.height };
+        state.viewport = { width: rect.width, height: rect.height };
 
-        if (!config.centered) {
+        if (!state.centered) {
             resetView();
-            config.centered = true;
+            state.centered = true;
             return;
         }
 
@@ -235,7 +244,7 @@ export function initGarden(root: HTMLElement): void {
             getCellSize()
         );
 
-        config.pan = {
+        state.pan = {
             x: nextOrigin.x,
             y: nextOrigin.y,
         };
@@ -246,20 +255,21 @@ export function initGarden(root: HTMLElement): void {
             return;
 
         const cellSize = getCellSize();
-        const centeredPanX = config.viewport.width / 2 - cellSize / 2;
-        const centeredPanY = config.viewport.height / 2 - cellSize / 2;
+        const centeredPanX = state.viewport.width / 2 - cellSize / 2;
+        const centeredPanY = state.viewport.height / 2 - cellSize / 2;
+
         const isCentered =
-            Math.abs(config.pan.x - centeredPanX) < 0.01 &&
-            Math.abs(config.pan.y - centeredPanY) < 0.01;
+            Math.abs(state.pan.x - centeredPanX) < 0.01 &&
+            Math.abs(state.pan.y - centeredPanY) < 0.01;
 
         if (isCentered) {
             refs.axisH.style.top = '50%';
             refs.axisV.style.left = '50%';
             refs.gridDots.style.backgroundPosition = `calc(50% - ${cellSize / 2}px) calc(50% - ${cellSize / 2}px)`;
         } else {
-            refs.axisH.style.top = `${config.pan.y + cellSize / 2}px`;
-            refs.axisV.style.left = `${config.pan.x + cellSize / 2}px`;
-            refs.gridDots.style.backgroundPosition = `${config.pan.x}px ${config.pan.y}px`;
+            refs.axisH.style.top = `${state.pan.y + cellSize / 2}px`;
+            refs.axisV.style.left = `${state.pan.x + cellSize / 2}px`;
+            refs.gridDots.style.backgroundPosition = `${state.pan.x}px ${state.pan.y}px`;
         }
 
         refs.gridDots.style.backgroundSize = `${cellSize}px ${cellSize}px`;
@@ -271,17 +281,17 @@ export function initGarden(root: HTMLElement): void {
 
         const cellSize = getCellSize();
         const pad = 2;
-        const y0 = Math.floor(-config.pan.y / cellSize) - pad;
-        const x0 = Math.floor(-config.pan.x / cellSize) - pad;
-        const x1 = Math.ceil((config.viewport.width - config.pan.x) / cellSize) + pad;
-        const y1 = Math.ceil((config.viewport.height - config.pan.y) / cellSize) + pad;
+        const y0 = Math.floor(-state.pan.y / cellSize) - pad;
+        const x0 = Math.floor(-state.pan.x / cellSize) - pad;
+        const x1 = Math.ceil((state.viewport.width - state.pan.x) / cellSize) + pad;
+        const y1 = Math.ceil((state.viewport.height - state.pan.y) / cellSize) + pad;
 
         refs.flowers.replaceChildren();
 
-        if (!config.world) 
+        if (!state.world) 
             return;
 
-        for (const [k, cell] of config.world.cells) {
+        for (const [k, cell] of state.world.cells) {
             const [x, y] = k.split(',').map(Number);
 
             if (x < x0 || x > x1 || y < y0 || y > y1) 
@@ -300,7 +310,7 @@ export function initGarden(root: HTMLElement): void {
         }
     };
 
-    const getCoordinatesText = (config: T.Config, hoverCell: T.Cell): string => {
+    const getCoordinatesText = (config: T.State, hoverCell: T.Cell): string => {
         if (!config.hover)
             return '(0,0) \u00b7 no cell';
 
@@ -322,29 +332,29 @@ export function initGarden(root: HTMLElement): void {
             return;
         }
 
-        if (!config.hover || isPanning()) {
+        if (!state.hover || isPanning()) {
             refs.cellHover.hidden = true;
             refs.cellTip.hidden = true;
             return;
         }
 
         const cellSize = getCellSize();
-        const screen = cellToScreen(config.hover.x, config.hover.y);
+        const screen = cellToScreen(state.hover.x, state.hover.y);
 
         refs.cellHover.hidden = false;
-        refs.cellHover.className = `garden-cell-hover tool-${config.tool}`;
+        refs.cellHover.className = `garden-cell-hover tool-${state.tool}`;
         refs.cellHover.style.left = `${screen.x}px`;
         refs.cellHover.style.top = `${screen.y}px`;
         refs.cellHover.style.width = `${cellSize}px`;
         refs.cellHover.style.height = `${cellSize}px`;
         refs.cellHover.replaceChildren();
 
-        const hoverCell = config.world?.cells.get(`${config.hover.x},${config.hover.y}`) ?? null;
+        const hoverCell = state.world?.cells.get(`${state.hover.x},${state.hover.y}`) ?? null;
 
-        if (config.tool === 'plant' && !hoverCell) {
+        if (state.tool === 'plant' && !hoverCell) {
             const ghost = document.createElement('div');
             ghost.className = 'garden-ghost-flower';
-            ghost.appendChild(createSprite(config.species, 'seed', cellSize));
+            ghost.appendChild(createSprite(state.species, 'seed', cellSize));
             refs.cellHover.appendChild(ghost);
         }
 
@@ -361,7 +371,7 @@ export function initGarden(root: HTMLElement): void {
 
         const coord = document.createElement('div');
         coord.className = 'garden-dim';
-        coord.textContent = getCoordinatesText(config, hoverCell);
+        coord.textContent = getCoordinatesText(state, hoverCell);
 
         const water = document.createElement('div');
         water.className = 'garden-dim';
@@ -372,8 +382,8 @@ export function initGarden(root: HTMLElement): void {
         author.textContent = `by ${hoverCell.author}`;
         refs.cellTip.append(head, coord, water, author);
 
-        const tipLeft = Math.min(config.hover.px + 14, config.viewport.width - 180);
-        const tipTop = Math.min(config.hover.py + 14, config.viewport.height - 80);
+        const tipLeft = Math.min(state.hover.px + 14, state.viewport.width - 180);
+        const tipTop = Math.min(state.hover.py + 14, state.viewport.height - 80);
         refs.cellTip.style.left = `${tipLeft}px`;
         refs.cellTip.style.top = `${tipTop}px`;
     };
@@ -383,11 +393,11 @@ export function initGarden(root: HTMLElement): void {
             return;
 
         const center =
-            config.viewport.width ? screenToCell(config.viewport.width / 2, config.viewport.height / 2) :
+            state.viewport.width ? screenToCell(state.viewport.width / 2, state.viewport.height / 2) :
                 { x: 0, y: 0 };
 
-        const cx = config.hover ? config.hover.x : center.x;
-        const cy = config.hover ? config.hover.y : center.y;
+        const cx = state.hover ? state.hover.x : center.x;
+        const cy = state.hover ? state.hover.y : center.y;
         refs.coordReadout.replaceChildren();
 
         const cursorLabel = document.createElement('span');
@@ -405,14 +415,14 @@ export function initGarden(root: HTMLElement): void {
     };
 
     const renderSpecies = (): void => {
-        refs.speciesGroup.hidden = (config.tool) !== ('plant' as T.Tool);
+        refs.speciesGroup.hidden = (state.tool) !== ('plant' as T.Tool);
         refs.speciesButtons.replaceChildren();
 
         for (const species of C.SPECIES_LIST) {
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = `garden-btn garden-species-btn${species === config.species ? ' is-active' : ''}`;
-            btn.setAttribute('aria-pressed', String(species === config.species));
+            btn.className = `garden-btn garden-species-btn${species === state.species ? ' is-active' : ''}`;
+            btn.setAttribute('aria-pressed', String(species === state.species));
             btn.dataset.species = species;
 
             const icon = document.createElement('span');
@@ -421,10 +431,10 @@ export function initGarden(root: HTMLElement): void {
             btn.append(icon, document.createTextNode(species));
 
             btn.addEventListener('click', () => {
-                if (config.isBooting) 
+                if (state.isBooting) 
                     return;
 
-                config.species = species;
+                state.species = species;
                 renderSpecies();
                 renderHover();
             });
@@ -436,15 +446,12 @@ export function initGarden(root: HTMLElement): void {
     const updateCursor = (): void => {
         if (isPanning()) 
             refs.surface.dataset.cursor = 'panning';
-        else if (config.isSpacePressed) 
-            refs.surface.dataset.cursor = 'pan';
-        else 
-            refs.surface.dataset.cursor = config.tool;
+        else refs.surface.dataset.cursor = state.tool;
     };
 
     const renderTools = (): void => {
         for (const btn of Array.from(refs.toolButtons)) {
-            const active = btn.dataset.tool === config.tool;
+            const active = btn.dataset.tool === state.tool;
             btn.classList.toggle('is-active', active);
             btn.setAttribute('aria-pressed', String(active));
         }
@@ -459,18 +466,22 @@ export function initGarden(root: HTMLElement): void {
         renderCoord();
     };
 
-    const setTool = (next: T.Tool): void => {
-        if (config.isBooting) 
+    const setTool = (next: T.Tool, isTransient: boolean = false): void => {
+        if (state.isBooting)
             return;
 
-        config.prevTool = config.tool;
-        config.tool = next;
+        if (state.tool === next)
+            return;
+
+        state.prevTool = state.tool;
+        state.tool = next;
+        state.toolIsTransient = isTransient;
         renderTools();
         renderSpecies();
         renderHover();
     };
 
-    const isWorldStale = (config: T.Config, nextSnapshot: T.GardenWorldState): boolean => {
+    const isWorldStale = (config: T.State, nextSnapshot: T.GardenWorldState): boolean => {
         return (
             config.world !== null &&
             (nextSnapshot.version < config.world.version ||
@@ -481,14 +492,14 @@ export function initGarden(root: HTMLElement): void {
     const applySnapshot = (snapshot: T.SnapshotResponse): void => {
         const nextSnapshot = normalizeSnapshot(snapshot);
 
-        if (isWorldStale(config, nextSnapshot)) 
+        if (isWorldStale(state, nextSnapshot)) 
             return;
     
-        config.world = nextSnapshot;
-        config.isBooting = false;
-        config.isLoaded = true;
-        config.loadError = '';
-        config.serverTimeOffsetMs = nextSnapshot.serverNow - Date.now();
+        state.world = nextSnapshot;
+        state.isBooting = false;
+        state.isLoaded = true;
+        state.loadError = '';
+        state.serverTimeOffsetMs = nextSnapshot.serverNow - Date.now();
 
         renderBootState();
         renderActivityStatus();
@@ -521,13 +532,13 @@ export function initGarden(root: HTMLElement): void {
     };
 
     const submitAction = async (x: number, y: number): Promise<void> => {
-        if (!config.isLoaded || config.isBooting) 
+        if (!state.isLoaded || state.isBooting) 
             return;
 
-        const payload: Record<string, string | number> = { tool: config.tool, x, y };
+        const payload: Record<string, string | number> = { tool: state.tool, x, y };
 
-        if (config.tool === 'plant')
-            payload.species = config.species;
+        if (state.tool === 'plant')
+            payload.species = state.species;
 
         const response = await fetch(actionsEndpoint, {
             method: 'POST',
@@ -551,7 +562,7 @@ export function initGarden(root: HTMLElement): void {
 
     refs.toolButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
-            if (config.isBooting) 
+            if (state.isBooting) 
                 return;
 
             setTool(btn.dataset.tool as T.Tool);
@@ -559,7 +570,7 @@ export function initGarden(root: HTMLElement): void {
     });
 
     refs.originBtn.addEventListener('click', () => {
-        if (config.isBooting) 
+        if (state.isBooting) 
             return;
 
         resetView();
@@ -567,14 +578,14 @@ export function initGarden(root: HTMLElement): void {
     });
 
     const beginPointerPan = (event: PointerEvent, px: number, py: number): void => {
-        config.panInteraction = { pointerId: event.pointerId, lastX: px, lastY: py };
+        state.panInteraction = { pointerId: event.pointerId, lastX: px, lastY: py };
         refs.surface.setPointerCapture(event.pointerId);
         updateCursor();
         renderHover();
     };
 
     const getGestureCentroid = (): { x: number; y: number } | null => {
-        const pointers = Array.from(config.activePointers.values()).slice(0, 2);
+        const pointers = Array.from(state.activePointers.values()).slice(0, 2);
 
         if (pointers.length < 2) 
             return null;
@@ -588,7 +599,7 @@ export function initGarden(root: HTMLElement): void {
     };
 
     const getGestureDistance = (): number | null => {
-        const pointers = Array.from(config.activePointers.values()).slice(0, 2);
+        const pointers = Array.from(state.activePointers.values()).slice(0, 2);
 
         if (pointers.length < 2) 
             return null;
@@ -609,22 +620,22 @@ export function initGarden(root: HTMLElement): void {
         if (!centroid || distance === null) 
             return;
 
-        config.panInteraction = { mode: 'gesture', centroid, distance };
+        state.panInteraction = { mode: 'gesture', centroid, distance };
         updateCursor();
         renderHover();
     };
 
     const endPan = (): void => {
-        config.panInteraction = null;
+        state.panInteraction = null;
         updateCursor();
     };
 
     const clearPendingTouchAction = (): void => {
-        config.pendingTouchAction = null;
+        state.pendingTouchAction = null;
     };
 
     refs.surface.addEventListener('pointerdown', (event: PointerEvent) => {
-        if (config.isBooting) 
+        if (state.isBooting) 
             return;
 
         if (event.pointerType === 'mouse' && event.button === 2) 
@@ -634,14 +645,19 @@ export function initGarden(root: HTMLElement): void {
         const px = event.clientX - rect.left;
         const py = event.clientY - rect.top;
 
-        config.activePointers.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
+        state.activePointers.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
 
         if (event.pointerType === 'touch') {
             event.preventDefault();
             refs.surface.setPointerCapture(event.pointerId);
 
-            if (config.activePointers.size === 1) {
-                config.pendingTouchAction = {
+            if (state.activePointers.size === 1) {
+                if (state.tool === 'pan') {
+                    beginPointerPan(event, px, py);
+                    return;
+                }
+
+                state.pendingTouchAction = {
                     pointerId: event.pointerId,
                     startX: px,
                     startY: py,
@@ -649,10 +665,11 @@ export function initGarden(root: HTMLElement): void {
                     lastY: py,
                     moved: false,
                 };
+
                 return;
             }
 
-            if (config.activePointers.size === 2) {
+            if (state.activePointers.size === 2) {
                 clearPendingTouchAction();
                 endPan();
                 beginGesture();
@@ -661,7 +678,17 @@ export function initGarden(root: HTMLElement): void {
             return;
         }
 
-        if (event.button === 1 || (event.button === 0 && config.isSpacePressed)) {
+        if (event.button === 1) {
+            event.preventDefault();
+
+            if (state.tool !== 'pan')
+                setTool('pan' as T.Tool, true);
+
+            beginPointerPan(event, px, py);
+            return;
+        }
+
+        if (event.button === 0 && state.tool === 'pan') {
             event.preventDefault();
             beginPointerPan(event, px, py);
             return;
@@ -675,99 +702,102 @@ export function initGarden(root: HTMLElement): void {
         const { x, y } = screenToCell(px, py);
 
         void submitAction(x, y).catch((error: unknown) => {
-            config.loadError = error instanceof Error ? error.message : 'failed to update garden';
+            state.loadError = error instanceof Error ? error.message : 'failed to update garden';
             renderActivityStatus();
         });
     });
 
     refs.surface.addEventListener('pointermove', (event: PointerEvent) => {
-        if (config.isBooting) 
+        if (state.isBooting) 
             return;
 
-        if (config.activePointers.has(event.pointerId)) 
-            config.activePointers.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
+        if (state.activePointers.has(event.pointerId)) 
+            state.activePointers.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
     
         const rect = refs.surface.getBoundingClientRect();
         const px = event.clientX - rect.left;
         const py = event.clientY - rect.top;
 
         if (
-            config.panInteraction &&
-            'pointerId' in config.panInteraction &&
-            config.panInteraction.pointerId === event.pointerId
+            state.panInteraction &&
+            'pointerId' in state.panInteraction &&
+            state.panInteraction.pointerId === event.pointerId
         ) {
             event.preventDefault();
 
-            config.pan = {
-                x: config.pan.x + (px - config.panInteraction.lastX),
-                y: config.pan.y + (py - config.panInteraction.lastY),
+            state.pan = {
+                x: state.pan.x + (px - state.panInteraction.lastX),
+                y: state.pan.y + (py - state.panInteraction.lastY),
             };
 
-            config.panInteraction.lastX = px;
-            config.panInteraction.lastY = py;
+            state.panInteraction.lastX = px;
+            state.panInteraction.lastY = py;
             renderViewportDependent();
             return;
         }
 
         if (
-            config.panInteraction &&
-            'mode' in config.panInteraction &&
-            config.panInteraction.mode === 'gesture'
+            state.panInteraction &&
+            'mode' in state.panInteraction &&
+            state.panInteraction.mode === 'gesture'
         ) {
             event.preventDefault();
             const next = getGestureCentroid();
             const nextDistance = getGestureDistance();
 
             if (next && nextDistance !== null) {
-                config.pan = {
-                    x: config.pan.x + (next.x - config.panInteraction.centroid.x),
-                    y: config.pan.y + (next.y - config.panInteraction.centroid.y),
+                state.pan = {
+                    x: state.pan.x + (next.x - state.panInteraction.centroid.x),
+                    y: state.pan.y + (next.y - state.panInteraction.centroid.y),
                 };
 
-                zoomAt(next.x, next.y, config.zoom * (nextDistance / config.panInteraction.distance));
-                config.panInteraction.centroid = next;
-                config.panInteraction.distance = nextDistance;
+                zoomAt(next.x, next.y, state.zoom * (nextDistance / state.panInteraction.distance));
+                state.panInteraction.centroid = next;
+                state.panInteraction.distance = nextDistance;
                 renderViewportDependent();
             }
 
             return;
         }
 
-        if (event.pointerType === 'touch' && config.pendingTouchAction?.pointerId === event.pointerId) {
-            const action = config.pendingTouchAction;
+        if (event.pointerType === 'touch' && state.pendingTouchAction?.pointerId === event.pointerId) {
+            const action = state.pendingTouchAction;
             const moved = Math.hypot(px - action.startX, py - action.startY) > C.TOUCH_TAP_SLOP_PX;
-            config.pendingTouchAction.lastX = px;
-            config.pendingTouchAction.lastY = py;
-            config.pendingTouchAction.moved = config.pendingTouchAction.moved || moved;
+            state.pendingTouchAction.lastX = px;
+            state.pendingTouchAction.lastY = py;
+            state.pendingTouchAction.moved = state.pendingTouchAction.moved || moved;
             return;
         }
 
         const cell = screenToCell(px, py);
-        config.hover = { ...cell, px, py };
+        state.hover = { ...cell, px, py };
         renderHover();
         renderCoord();
     });
 
     const pointerInteractionEnded = (event: PointerEvent): boolean => {
         return (
-            config.panInteraction !== null &&
-            'pointerId' in config.panInteraction &&
-            config.panInteraction.pointerId === event.pointerId
+            state.panInteraction !== null &&
+            'pointerId' in state.panInteraction &&
+            state.panInteraction.pointerId === event.pointerId
         );
     };
 
     const gestureInteractionEnded = (): boolean => {
         return (
-            config.panInteraction !== null &&
-            'mode' in config.panInteraction &&
-            config.panInteraction.mode === 'gesture' &&
-            config.activePointers.size < 2
+            state.panInteraction !== null &&
+            'mode' in state.panInteraction &&
+            state.panInteraction.mode === 'gesture' &&
+            state.activePointers.size < 2
         );
     };
 
     const handlePointerRelease = (event: PointerEvent): void => {
-        if (config.isBooting) 
+        if (state.isBooting) 
             return;
+
+        if (event.button === 1 && state.tool === 'pan' && state.toolIsTransient) 
+            setTool(state.prevTool);
 
         const rect = refs.surface.getBoundingClientRect();
         const px = event.clientX - rect.left;
@@ -775,11 +805,11 @@ export function initGarden(root: HTMLElement): void {
 
         const shouldApplyTouchAction =
             event.pointerType === 'touch' &&
-            config.pendingTouchAction?.pointerId === event.pointerId &&
-            !config.pendingTouchAction.moved &&
-            (!config.panInteraction || !('mode' in config.panInteraction));
+            state.pendingTouchAction?.pointerId === event.pointerId &&
+            !state.pendingTouchAction.moved &&
+            (!state.panInteraction || !('mode' in state.panInteraction));
 
-        config.activePointers.delete(event.pointerId);
+        state.activePointers.delete(event.pointerId);
 
         if (pointerInteractionEnded(event) || gestureInteractionEnded())
             endPan();
@@ -788,43 +818,43 @@ export function initGarden(root: HTMLElement): void {
             const { x, y } = screenToCell(px, py);
 
             void submitAction(x, y).catch((error: unknown) => {
-                config.loadError = error instanceof Error ? error.message : 'failed to update garden';
+                state.loadError = error instanceof Error ? error.message : 'failed to update garden';
                 renderActivityStatus();
             });
         }
 
-        if (config.pendingTouchAction?.pointerId === event.pointerId) 
+        if (state.pendingTouchAction?.pointerId === event.pointerId) 
             clearPendingTouchAction();
     };
 
     refs.surface.addEventListener('pointerup', handlePointerRelease);
 
     refs.surface.addEventListener('pointercancel', (event: PointerEvent) => {
-        if (config.isBooting) 
+        if (state.isBooting) 
             return;
 
-        config.activePointers.delete(event.pointerId);
+        state.activePointers.delete(event.pointerId);
 
-        if (config.pendingTouchAction?.pointerId === event.pointerId) 
+        if (state.pendingTouchAction?.pointerId === event.pointerId) 
             clearPendingTouchAction();
     
-        if (config.panInteraction && 'pointerId' in config.panInteraction &&
-            config.panInteraction.pointerId === event.pointerId) 
+        if (state.panInteraction && 'pointerId' in state.panInteraction &&
+            state.panInteraction.pointerId === event.pointerId) 
             endPan();
         else if (
-            config.panInteraction &&
-            'mode' in config.panInteraction &&
-            config.panInteraction.mode === 'gesture' &&
-            config.activePointers.size < 2)
+            state.panInteraction &&
+            'mode' in state.panInteraction &&
+            state.panInteraction.mode === 'gesture' &&
+            state.activePointers.size < 2)
             endPan();
     });
 
     refs.surface.addEventListener('pointerleave', (event: PointerEvent) => {
-        if (config.isBooting) 
+        if (state.isBooting) 
             return;
 
         if (event.pointerType === 'mouse') {
-            config.hover = null;
+            state.hover = null;
             renderHover();
             renderCoord();
         }
@@ -837,7 +867,7 @@ export function initGarden(root: HTMLElement): void {
     refs.surface.addEventListener(
         'wheel',
         (event: WheelEvent) => {
-            if (config.isBooting) 
+            if (state.isBooting) 
                 return;
 
             event.preventDefault();
@@ -846,76 +876,56 @@ export function initGarden(root: HTMLElement): void {
             const px = event.clientX - rect.left;
             const py = event.clientY - rect.top;
             const scale = Math.exp(-event.deltaY * 0.0015);
-            zoomAt(px, py, config.zoom * scale);
+            zoomAt(px, py, state.zoom * scale);
             renderViewportDependent();
         }, { passive: false }
     );
 
     window.addEventListener('keydown', (event: KeyboardEvent) => {
-        if (config.isBooting) 
+        if (state.isBooting)
             return;
 
-        const target = event.target as HTMLElement | null;
+        const target = event.target;
 
-        const isFormField =
+        if (
             target instanceof HTMLInputElement ||
             target instanceof HTMLSelectElement ||
-            target instanceof HTMLTextAreaElement;
-
-        if (event.code === 'Space' && !isFormField) {
-            if (!config.isSpacePressed) {
-                config.isSpacePressed = true;
-                updateCursor();
-            }
-
-            event.preventDefault();
-            return;
-        }
-
-        if (isFormField) 
+            target instanceof HTMLTextAreaElement ||
+            (target instanceof HTMLElement && target.isContentEditable)
+        )
             return;
 
         let handled = true;
         const step = getCellSize() * (event.shiftKey ? 5 : 1);
 
-        if (event.key === 'ArrowLeft') 
-            config.pan = { ...config.pan, x: config.pan.x + step };
-        else if (event.key === 'ArrowRight') config.pan = { ...config.pan, x: config.pan.x - step };
-        else if (event.key === 'ArrowUp') config.pan = { ...config.pan, y: config.pan.y + step };
-        else if (event.key === 'ArrowDown') config.pan = { ...config.pan, y: config.pan.y - step };
+        if (event.key === 'ArrowLeft')
+            state.pan = { ...state.pan, x: state.pan.x + step };
+        else if (event.key === 'ArrowRight') state.pan = { ...state.pan, x: state.pan.x - step };
+        else if (event.key === 'ArrowUp') state.pan = { ...state.pan, y: state.pan.y + step };
+        else if (event.key === 'ArrowDown') state.pan = { ...state.pan, y: state.pan.y - step };
         else if (event.key.toLowerCase() === 'o') resetView();
         else if (event.key.toLowerCase() === 'p') setTool('plant' as T.Tool);
         else if (event.key.toLowerCase() === 'w') setTool('water' as T.Tool);
         else if (event.key.toLowerCase() === 'x') setTool('prune' as T.Tool);
+        else if (event.code === 'Space') setTool('pan' as T.Tool);
         else if (event.key === '1') {
-            config.species = 'daisy';
+            state.species = 'daisy';
             renderSpecies();
         } else if (event.key === '2') {
-            config.species = 'tulip';
+            state.species = 'tulip';
             renderSpecies();
         } else if (event.key === '3') {
-            config.species = 'poppy';
+            state.species = 'poppy';
             renderSpecies();
         } else if (event.key === '4') {
-            config.species = 'fern';
+            state.species = 'fern';
             renderSpecies();
-        } else 
+        } else
             handled = false;
-    
-        if (handled && event.key.startsWith('Arrow')) 
+
+        if (handled) {
             event.preventDefault();
-
-        if (handled) 
             renderViewportDependent();
-    });
-
-    window.addEventListener('keyup', (event: KeyboardEvent) => {
-        if (config.isBooting) 
-            return;
-
-        if (event.code === 'Space' && config.isSpacePressed) {
-            config.isSpacePressed = false;
-            updateCursor();
         }
     });
 
@@ -930,7 +940,7 @@ export function initGarden(root: HTMLElement): void {
 
     setInterval(() => {
         void fetchSnapshot().catch((error: unknown) => {
-            config.loadError = error instanceof Error ? error.message : 'failed to load garden';
+            state.loadError = error instanceof Error ? error.message : 'failed to load garden';
             renderActivityStatus();
         });
     }, C.SNAPSHOT_FETCH_INTERVAL_MS);
@@ -949,7 +959,7 @@ export function initGarden(root: HTMLElement): void {
     renderActivity();
 
     void fetchSnapshot().catch((error: unknown) => {
-        config.loadError = error instanceof Error ? error.message : 'failed to load garden';
+        state.loadError = error instanceof Error ? error.message : 'failed to load garden';
         renderActivityStatus();
     });
 }
