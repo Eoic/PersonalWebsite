@@ -652,11 +652,6 @@ export function initGarden(root: HTMLElement): void {
             refs.surface.setPointerCapture(event.pointerId);
 
             if (state.activePointers.size === 1) {
-                if (state.tool === 'pan') {
-                    beginPointerPan(event, px, py);
-                    return;
-                }
-
                 state.pendingTouchAction = {
                     pointerId: event.pointerId,
                     startX: px,
@@ -665,6 +660,9 @@ export function initGarden(root: HTMLElement): void {
                     lastY: py,
                     moved: false,
                 };
+
+                if (state.tool === 'pan')
+                    beginPointerPan(event, px, py);
 
                 return;
             }
@@ -732,6 +730,15 @@ export function initGarden(root: HTMLElement): void {
 
             state.panInteraction.lastX = px;
             state.panInteraction.lastY = py;
+
+            if (event.pointerType === 'touch' && state.pendingTouchAction?.pointerId === event.pointerId) {
+                const action = state.pendingTouchAction;
+                const moved = Math.hypot(px - action.startX, py - action.startY) > C.TOUCH_TAP_SLOP_PX;
+                action.moved = action.moved || moved;
+                action.lastX = px;
+                action.lastY = py;
+            }
+
             renderViewportDependent();
             return;
         }
@@ -769,6 +776,9 @@ export function initGarden(root: HTMLElement): void {
             return;
         }
 
+        if (event.pointerType === 'touch')
+            return;
+
         const cell = screenToCell(px, py);
         state.hover = { ...cell, px, py };
         renderHover();
@@ -803,7 +813,7 @@ export function initGarden(root: HTMLElement): void {
         const px = event.clientX - rect.left;
         const py = event.clientY - rect.top;
 
-        const shouldApplyTouchAction =
+        const isTouchTap =
             event.pointerType === 'touch' &&
             state.pendingTouchAction?.pointerId === event.pointerId &&
             !state.pendingTouchAction.moved &&
@@ -813,17 +823,23 @@ export function initGarden(root: HTMLElement): void {
 
         if (pointerInteractionEnded(event) || gestureInteractionEnded())
             endPan();
-    
-        if (shouldApplyTouchAction) {
+
+        if (isTouchTap) {
             const { x, y } = screenToCell(px, py);
 
-            void submitAction(x, y).catch((error: unknown) => {
-                state.loadError = error instanceof Error ? error.message : 'failed to update garden';
-                renderActivityStatus();
-            });
+            if (state.tool === 'pan') {
+                state.hover = { x, y, px, py };
+                renderHover();
+                renderCoord();
+            } else {
+                void submitAction(x, y).catch((error: unknown) => {
+                    state.loadError = error instanceof Error ? error.message : 'failed to update garden';
+                    renderActivityStatus();
+                });
+            }
         }
 
-        if (state.pendingTouchAction?.pointerId === event.pointerId) 
+        if (state.pendingTouchAction?.pointerId === event.pointerId)
             clearPendingTouchAction();
     };
 
