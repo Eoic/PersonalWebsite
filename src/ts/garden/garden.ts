@@ -402,13 +402,13 @@ export function initGarden(root: HTMLElement): void {
 
         const cursorLabel = document.createElement('span');
         cursorLabel.className = 'garden-dim';
-        cursorLabel.textContent = 'cursor:';
+        cursorLabel.textContent = 'pointer';
 
         const cursorValue = document.createTextNode(` (${cx},${cy}) `);
         const centerLabel = document.createElement('span');
 
         centerLabel.className = 'garden-dim';
-        centerLabel.textContent = '\u00b7 center:';
+        centerLabel.textContent = '\u00b7 center';
 
         const centerValue = document.createTextNode(` (${center.x},${center.y})`);
         refs.coordReadout.append(cursorLabel, cursorValue, centerLabel, centerValue);
