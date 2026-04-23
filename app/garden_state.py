@@ -357,8 +357,8 @@ def _simulate(
     changed = False
     current = _coerce_utc(meta.last_simulated_at)
 
-    while current < now_utc:
-        step_end = min(current + SIMULATION_SLICE, now_utc)
+    while current + SIMULATION_SLICE <= now_utc:
+        step_end = current + SIMULATION_SLICE
         weather = _get_weather(step_end)
         wind = _get_wind(step_end)
 
@@ -474,7 +474,7 @@ def _simulate(
 
         current = step_end
 
-    meta.last_simulated_at = now_utc
+    meta.last_simulated_at = current
 
     if changed:
         meta.version += 1
