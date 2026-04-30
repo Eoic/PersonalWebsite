@@ -1,6 +1,8 @@
 import { Species } from './types';
 
 export const CELL_PX = 28;
+export const GARDEN_MIN_COORDINATE = -15;
+export const GARDEN_MAX_COORDINATE = 15;
 export const MIN_ZOOM = 0.5;
 export const MAX_ZOOM = 3;
 export const LS_KEY = 'ks.garden.v1';

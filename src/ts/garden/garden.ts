@@ -68,6 +68,14 @@ export function initGarden(root: HTMLElement): void {
     const isPanning = (): boolean => state.panInteraction !== null;
     const getCellSize = (): number => C.CELL_PX * state.zoom;
     const shouldPreserveServerRender = (): boolean => state.isBooting && state.world === null;
+    const isCellInBounds = (x: number, y: number): boolean => {
+        return (
+            x >= C.GARDEN_MIN_COORDINATE &&
+            x <= C.GARDEN_MAX_COORDINATE &&
+            y >= C.GARDEN_MIN_COORDINATE &&
+            y <= C.GARDEN_MAX_COORDINATE
+        );
+    };
 
     const getTransform = () => ({
         originX: state.pan.x,
@@ -332,7 +340,7 @@ export function initGarden(root: HTMLElement): void {
             return;
         }
 
-        if (!state.hover || isPanning()) {
+        if (!state.hover || isPanning() || !isCellInBounds(state.hover.x, state.hover.y)) {
             refs.cellHover.hidden = true;
             refs.cellTip.hidden = true;
             return;
@@ -533,6 +541,9 @@ export function initGarden(root: HTMLElement): void {
 
     const submitAction = async (x: number, y: number): Promise<void> => {
         if (!state.isLoaded || state.isBooting) 
+            return;
+
+        if (!isCellInBounds(x, y))
             return;
 
         const payload: Record<string, string | number> = { tool: state.tool, x, y };

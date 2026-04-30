@@ -4,7 +4,6 @@ import unittest
 from unittest.mock import patch
 
 from app import create_app
-from app import limiter
 from app.db import db_proxy
 from app.models import Page, User, WhiteboardStroke
 
@@ -95,7 +94,10 @@ class WhiteboardRoutesTestCase(unittest.TestCase):
         data = response.get_json()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual([item["id"] for item in data["strokes"]], [first_stroke.id, second_stroke.id])
+        self.assertEqual(
+            [item["id"] for item in data["strokes"]],
+            [first_stroke.id, second_stroke.id],
+        )
         self.assertEqual(data["strokes"][0]["brushSize"], 4)
         self.assertEqual(data["strokes"][1]["points"], [{"x": 20, "y": 10}])
 
@@ -120,7 +122,10 @@ class WhiteboardRoutesTestCase(unittest.TestCase):
 
         self.assertEqual(stored_stroke.board_slug, "main")
         self.assertEqual(stored_stroke.client_session_id, "session-abcdef12")
-        self.assertEqual(json.loads(stored_stroke.points_json), [{"x": 1.0, "y": 2.0}, {"x": 5.0, "y": 6.0}])
+        self.assertEqual(
+            json.loads(stored_stroke.points_json),
+            [{"x": 1.0, "y": 2.0}, {"x": 5.0, "y": 6.0}],
+        )
 
     def test_post_whiteboard_stroke_rejects_invalid_payload(self):
         response = self.client.post(

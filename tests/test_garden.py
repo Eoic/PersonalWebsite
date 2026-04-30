@@ -5,7 +5,12 @@ from unittest.mock import patch
 
 from app import create_app
 from app.db import db_proxy
-from app.garden_state import GardenConflictError, apply_garden_action, get_garden_snapshot
+from app.garden_state import (
+    GARDEN_COORDINATE_LIMIT,
+    GardenConflictError,
+    apply_garden_action,
+    get_garden_snapshot,
+)
 from app.models import Page
 
 
@@ -75,22 +80,23 @@ class GardenRoutesTestCase(unittest.TestCase):
             "/garden/actions",
             json={
                 "tool": "plant",
-                "x": 40,
-                "y": 40,
+                "x": 14,
+                "y": 14,
                 "species": "daisy",
             },
         )
+
         state_response = self.client.get("/garden/state")
 
         self.assertEqual(create_response.status_code, 200)
         self.assertEqual(state_response.status_code, 200)
-
         state_data = state_response.get_json()
+
         planted_cell = next(
             (
                 cell
                 for cell in state_data["cells"]
-                if cell["x"] == 40 and cell["y"] == 40
+                if cell["x"] == 14 and cell["y"] == 14
             ),
             None,
         )
@@ -100,10 +106,10 @@ class GardenRoutesTestCase(unittest.TestCase):
 
     def test_snapshot_catches_up_once_for_large_idle_gap(self):
         db_proxy.connect(reuse_if_open=True)
+
         try:
             start = datetime(2026, 4, 19, 12, 0, tzinfo=UTC)
             end = start + timedelta(days=2)
-
             initial = get_garden_snapshot(now_utc=start)
             caught_up = get_garden_snapshot(now_utc=end)
             repeated = get_garden_snapshot(now_utc=end)
@@ -115,8 +121,29 @@ class GardenRoutesTestCase(unittest.TestCase):
         self.assertEqual(repeated["version"], caught_up["version"])
         self.assertGreaterEqual(caught_up["version"], initial["version"])
 
+    def test_frequent_polls_do_not_advance_simulation(self):
+        db_proxy.connect(reuse_if_open=True)
+
+        try:
+            start = datetime(2026, 4, 19, 12, 0, tzinfo=UTC)
+            first = get_garden_snapshot(now_utc=start)
+
+            for i in range(1, 120):
+                get_garden_snapshot(now_utc=start + timedelta(seconds=15 * i))
+
+            final = get_garden_snapshot(now_utc=start + timedelta(minutes=30))
+        finally:
+            db_proxy.close()
+
+        self.assertEqual(final["version"], first["version"])
+        self.assertEqual(
+            [cell for cell in final["cells"] if cell["author"] == "pollen"],
+            [cell for cell in first["cells"] if cell["author"] == "pollen"],
+        )
+
     def test_snapshot_environment_is_derived_from_utc_time(self):
         db_proxy.connect(reuse_if_open=True)
+
         try:
             winter_night = get_garden_snapshot(
                 now_utc=datetime(2026, 1, 15, 2, 0, tzinfo=UTC)
@@ -136,10 +163,11 @@ class GardenRoutesTestCase(unittest.TestCase):
 
     def test_direct_action_returns_shared_author_label(self):
         db_proxy.connect(reuse_if_open=True)
+
         try:
             snapshot = apply_garden_action(
                 tool="plant",
-                x=55,
+                x=12,
                 y=-13,
                 species="fern",
                 now_utc=datetime(2026, 4, 19, 12, 0, tzinfo=UTC),
@@ -151,13 +179,80 @@ class GardenRoutesTestCase(unittest.TestCase):
             (
                 cell
                 for cell in snapshot["cells"]
-                if cell["x"] == 55 and cell["y"] == -13
+                if cell["x"] == 12 and cell["y"] == -13
             ),
             None,
         )
 
         self.assertIsNotNone(planted_cell)
         self.assertEqual(planted_cell["author"], "visitor")
+
+    def test_garden_action_rejects_out_of_bounds_coordinates(self):
+        response = self.client.post(
+            "/garden/actions",
+            json={
+                "tool": "plant",
+                "x": GARDEN_COORDINATE_LIMIT + 1,
+                "y": 0,
+                "species": "daisy",
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("between -15 and 15", response.get_json()["error"])
+
+    def test_direct_action_ignores_out_of_bounds_planting(self):
+        db_proxy.connect(reuse_if_open=True)
+
+        try:
+            snapshot = apply_garden_action(
+                tool="plant",
+                x=GARDEN_COORDINATE_LIMIT + 1,
+                y=0,
+                species="fern",
+                now_utc=datetime(2026, 4, 19, 12, 0, tzinfo=UTC),
+            )
+        finally:
+            db_proxy.close()
+
+        self.assertFalse(
+            any(
+                cell["x"] == GARDEN_COORDINATE_LIMIT + 1 and cell["y"] == 0
+                for cell in snapshot["cells"]
+            )
+        )
+
+    def test_pollination_stays_inside_garden_bounds(self):
+        db_proxy.connect(reuse_if_open=True)
+
+        try:
+            start = datetime(2026, 4, 19, 12, 0, tzinfo=UTC)
+            apply_garden_action(
+                tool="plant",
+                x=GARDEN_COORDINATE_LIMIT,
+                y=GARDEN_COORDINATE_LIMIT,
+                species="daisy",
+                now_utc=start,
+            )
+
+            with patch("app.garden_state.random.random", return_value=0):
+                snapshot = get_garden_snapshot(now_utc=start + timedelta(hours=25))
+        finally:
+            db_proxy.close()
+
+        for cell in snapshot["cells"]:
+            self.assertGreaterEqual(cell["x"], -GARDEN_COORDINATE_LIMIT)
+            self.assertLessEqual(cell["x"], GARDEN_COORDINATE_LIMIT)
+            self.assertGreaterEqual(cell["y"], -GARDEN_COORDINATE_LIMIT)
+            self.assertLessEqual(cell["y"], GARDEN_COORDINATE_LIMIT)
+
+        self.assertFalse(
+            any(
+                cell["x"] == GARDEN_COORDINATE_LIMIT + 1
+                or cell["y"] == GARDEN_COORDINATE_LIMIT + 1
+                for cell in snapshot["cells"]
+            )
+        )
 
     def test_garden_state_returns_503_on_conflict(self):
         with patch(

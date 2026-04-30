@@ -14,6 +14,7 @@ from flask_login import current_user
 
 from app.forms import BookForm, LoginForm, PostForm
 from app.garden_state import (
+    GARDEN_COORDINATE_LIMIT,
     GardenConflictError,
     apply_garden_action,
     get_garden_snapshot,
@@ -54,7 +55,6 @@ _WHITEBOARD_MAX_POINTS = 4096
 _WHITEBOARD_MAX_COORDINATE = 1_000_000
 _GARDEN_ALLOWED_TOOLS = {"plant", "water", "prune"}
 _GARDEN_ALLOWED_SPECIES = {"daisy", "tulip", "poppy", "fern"}
-_GARDEN_MAX_COORDINATE = 1_000_000
 
 _PAGE_INTROS = {
     "index": "I'm a software engineer passionate about building useful and/or interesting things for the web. You can explore my projects and work experience here.",
@@ -63,7 +63,7 @@ _PAGE_INTROS = {
     "projects": "Selected side projects, experiments, and longer-running ideas.",
     "whiteboard": "Shared freehand drawing space.",
     "posts": "Short notes and other ramblings. Nothing intelligent or insightful here.",
-    "bookshelf": "Some of the books I've read. Not in any particular order, chronological or otherwise.",
+    "bookshelf": "Some of the books I've read. Not in any meaningful order, chronological or otherwise.",
     "garden": "A shared, persistent garden. Plant flowers, water them, and prune what has wilted. Growth follows a simple cycle: seeds become sprouts after 8 hours, buds after 16 hours, and blooms after 24 hours. Flowers wilt after 14 days without water or 30 days total, and wilted plants return to soil after 45 days. Blooms can also spread pollen to nearby cells over time, with weather and season shaping the whole patch.",
 }
 
@@ -238,8 +238,11 @@ def _validate_garden_coordinate(raw_value, label):
 
     coordinate = int(raw_value)
 
-    if abs(coordinate) > _GARDEN_MAX_COORDINATE:
-        raise ValueError(f"{label} is out of bounds.")
+    if abs(coordinate) > GARDEN_COORDINATE_LIMIT:
+        raise ValueError(
+            f"{label} must be between -{GARDEN_COORDINATE_LIMIT} "
+            f"and {GARDEN_COORDINATE_LIMIT}."
+        )
 
     return coordinate
 

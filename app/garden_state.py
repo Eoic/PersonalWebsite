@@ -10,7 +10,8 @@ from .db import db_proxy
 from .models import GardenActivity, GardenCell, GardenMeta
 
 BOARD_SLUG = "main"
-MAX_CELLS = 1500
+GARDEN_COORDINATE_LIMIT = 15
+MAX_CELLS = (GARDEN_COORDINATE_LIMIT * 2 + 1) ** 2
 ACTIVITY_LIMIT = 20
 SIMULATION_SLICE = timedelta(hours=1)
 WATER_WARN_MS = 1000 * 60 * 60 * 24 * 3
@@ -47,6 +48,13 @@ STAGE_ORDER = ["seed", "sprout", "bud", "bloom", "wilt"]
 
 class GardenConflictError(RuntimeError):
     """Raised when a garden read/write cannot be completed safely after retries."""
+
+
+def is_garden_coordinate_in_bounds(x: int, y: int) -> bool:
+    return (
+        -GARDEN_COORDINATE_LIMIT <= x <= GARDEN_COORDINATE_LIMIT
+        and -GARDEN_COORDINATE_LIMIT <= y <= GARDEN_COORDINATE_LIMIT
+    )
 
 
 def _coerce_utc(timestamp: datetime) -> datetime:
@@ -246,6 +254,9 @@ def _load_cells(board_slug: str) -> dict[tuple[int, int], dict]:
     cells: dict[tuple[int, int], dict] = {}
 
     for cell in GardenCell.select().where(GardenCell.board_slug == board_slug):
+        if not is_garden_coordinate_in_bounds(cell.x, cell.y):
+            continue
+
         cells[(cell.x, cell.y)] = {
             "species": cell.species,
             "stage": cell.stage,
@@ -445,7 +456,11 @@ def _simulate(
                 (x - 1, y + 1),
             ]
 
-            free = [(nx, ny) for nx, ny in neighbors if (nx, ny) not in cells]
+            free = [
+                (nx, ny)
+                for nx, ny in neighbors
+                if (nx, ny) not in cells and is_garden_coordinate_in_bounds(nx, ny)
+            ]
 
             if not free:
                 continue
@@ -494,6 +509,10 @@ def _apply_action(
     now_utc: datetime,
 ) -> bool:
     position = (x, y)
+
+    if not is_garden_coordinate_in_bounds(x, y):
+        return False
+
     cell = cells.get(position)
 
     if tool == "plant":
