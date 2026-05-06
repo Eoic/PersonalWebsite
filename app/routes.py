@@ -62,10 +62,17 @@ _PAGE_INTROS = {
     "education": "Formal education and the technical foundation behind the way I approach software work.",
     "projects": "Selected side projects, experiments, and longer-running ideas.",
     "whiteboard": "Shared freehand drawing space.",
-    "posts": "Short notes and other ramblings. Nothing intelligent or insightful here.",
+    "posts": "Short notes, engineering updates, and occasional writing about software and side projects.",
     "bookshelf": "Some of the books I've read. Not in any meaningful order, chronological or otherwise.",
-    "garden": "A shared, persistent garden. Plant flowers, water them, and prune what has wilted. Growth follows a simple cycle: seeds become sprouts after 8 hours, buds after 16 hours, and blooms after 24 hours. Flowers wilt after 14 days without water or 30 days total, and wilted plants return to soil after 45 days. Blooms can also spread pollen to nearby cells over time, with weather and season shaping the whole patch.",
+    "garden": "A shared, persistent garden where visitors can plant flowers, water them, and prune what has wilted.",
 }
+
+_GARDEN_HOW_IT_WORKS = [
+    "Choose a tool: plant places a flower, water refreshes a living plant, and prune clears a wilted one.",
+    "Seeds become sprouts after 8 hours, buds after 16 hours, and blooms after 24 hours.",
+    "Flowers wilt after 14 days without water or 30 days total, then return to soil after 45 days.",
+    "Blooms can spread pollen to nearby cells, with weather and season shaping how the patch changes over time.",
+]
 
 
 def _get_tags_for_positions(positions):
@@ -667,6 +674,7 @@ def new_book():
                     )
                 except subprocess.CalledProcessError as exc:
                     os.remove(cover_path)
+
                     ctx.update(
                         form=form,
                         errors=[
@@ -674,6 +682,7 @@ def new_book():
                             f"{exc.stderr.strip() or exc.stdout.strip() or exc}"
                         ],
                     )
+
                     return render_mako("pages/book_form.html", **ctx), 500
 
             if cover_filename:
@@ -891,6 +900,7 @@ def garden():
 
     ctx.update(
         garden_boot_error=garden_boot_error,
+        garden_how_it_works=_GARDEN_HOW_IT_WORKS,
         garden_species_list=GARDEN_SPECIES_LIST,
         garden_view=garden_view,
         page_intro=_PAGE_INTROS["garden"],

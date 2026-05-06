@@ -40,6 +40,7 @@ def get_common_context(page_slug):
         "page": page_slug,
         "title": page_obj.title,
         "description": page_obj.description,
+        "page_intro": "",
         "personal": {
             "name": "Karolis Strazdas",
             "location": "Kaunas, Lithuania",

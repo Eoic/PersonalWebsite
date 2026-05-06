@@ -22,6 +22,7 @@ def build():
 
     for script_name in _scripts:
         print(f"Running npm script: {script_name}", flush=True)
+
         subprocess.run(
             [npm_bin, "run", script_name],
             check=True,

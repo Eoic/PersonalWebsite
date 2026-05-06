@@ -7,6 +7,15 @@
     data-actions-endpoint="/garden/actions"
     data-booting="true"
 >
+    <section class="garden-how-it-works" aria-labelledby="garden-how-it-works-title">
+        <h2 id="garden-how-it-works-title">How it works?</h2>
+        <ul>
+            % for item in garden_how_it_works:
+                <li>${item}</li>
+            % endfor
+        </ul>
+    </section>
+
     <div class="garden-toolbar" role="toolbar" aria-label="Garden tools">
         <div class="garden-tool-group">
             <span class="garden-tool-label">/tool</span>
