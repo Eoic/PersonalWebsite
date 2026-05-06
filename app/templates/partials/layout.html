@@ -13,7 +13,7 @@
         content="software engineer, web development, Python, JavaScript, TypeScript, React, Django, full-stack developer, Kaunas, Lithuania">
     <meta name="theme-color" content="#f3f3ef" id="theme-color-meta">
     <meta name="view-mode" content="narrow" id="view-mode-meta">
-    <link rel="canonical" href="https://karolis-strazdas.lt">
+    <link rel="canonical" href="${canonical_url}">
     <%
         page_path = "~/about" if page == "index" else f"~/{page}"
         vite_url = vite_dev_server_url.rstrip("/") if vite_dev_server_url else None
@@ -86,7 +86,7 @@
     <meta property="og:image:width" content="400">
     <meta property="og:image:height" content="400">
     <meta property="og:description" content="${meta_description}">
-    <meta property="og:url" content="https://karolis-strazdas.lt${'' if page == 'index' else '/' + page}">
+    <meta property="og:url" content="${canonical_url}">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="en_US">
     <meta property="og:site_name" content="Karolis Strazdas | Software Engineer">
@@ -142,7 +142,7 @@
             },
             "mainEntityOfPage": {
                 "@type": "WebPage",
-                "@id": "https://karolis-strazdas.lt${'' if page == 'index' else '/' + page}"
+                "@id": "${canonical_url}"
             }
         }
     </script>

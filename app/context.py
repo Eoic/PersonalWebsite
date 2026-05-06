@@ -10,6 +10,7 @@ from flask_login import current_user
 
 _app_dir = os.path.dirname(os.path.abspath(__file__))
 _project_root = os.path.dirname(_app_dir)
+_site_origin = "https://karolis-strazdas.lt"
 
 
 @functools.lru_cache(maxsize=1)
@@ -21,6 +22,14 @@ def _get_version():
         data = tomllib.load(file)
 
     return data["project"]["version"]
+
+
+def _get_canonical_url(page_url):
+    """Return the production canonical URL for a page path."""
+    if page_url == "/":
+        return f"{_site_origin}/"
+
+    return f"{_site_origin}{page_url}"
 
 
 def get_common_context(page_slug):
@@ -40,6 +49,7 @@ def get_common_context(page_slug):
         "page": page_slug,
         "title": page_obj.title,
         "description": page_obj.description,
+        "canonical_url": _get_canonical_url(page_obj.url),
         "page_intro": "",
         "personal": {
             "name": "Karolis Strazdas",
