@@ -146,6 +146,34 @@
             }
         }
     </script>
+    % if page == "index":
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "${site['name']}",
+                "url": "${site['url']}"
+            }
+        </script>
+    % endif
+    % if len(breadcrumb_items) > 1:
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    % for index, item in enumerate(breadcrumb_items):
+                        {
+                            "@type": "ListItem",
+                            "position": ${item["position"]},
+                            "name": "${item["name"]}",
+                            "item": "${item["url"]}"
+                        }${"," if index < len(breadcrumb_items) - 1 else ""}
+                    % endfor
+                ]
+            }
+        </script>
+    % endif
 
     % for script in page_head_scripts:
         <script src="${script['src']}" crossorigin="${script.get('crossorigin', 'anonymous')}"></script>

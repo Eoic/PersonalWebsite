@@ -10,6 +10,7 @@ from flask_login import current_user
 
 _app_dir = os.path.dirname(os.path.abspath(__file__))
 _project_root = os.path.dirname(_app_dir)
+_site_name = "Karolis Strazdas"
 _site_origin = "https://karolis-strazdas.lt"
 
 
@@ -32,6 +33,28 @@ def _get_canonical_url(page_url):
     return f"{_site_origin}{page_url}"
 
 
+def _get_breadcrumb_items(page_obj):
+    """Return JSON-LD breadcrumb items for a page."""
+    items = [
+        {
+            "position": 1,
+            "name": "Home",
+            "url": f"{_site_origin}/",
+        }
+    ]
+
+    if page_obj.url != "/":
+        items.append(
+            {
+                "position": 2,
+                "name": page_obj.title,
+                "url": _get_canonical_url(page_obj.url),
+            }
+        )
+
+    return items
+
+
 def get_common_context(page_slug):
     """Build context shared across all pages.
 
@@ -50,9 +73,14 @@ def get_common_context(page_slug):
         "title": page_obj.title,
         "description": page_obj.description,
         "canonical_url": _get_canonical_url(page_obj.url),
+        "breadcrumb_items": _get_breadcrumb_items(page_obj),
+        "site": {
+            "name": _site_name,
+            "url": f"{_site_origin}/",
+        },
         "page_intro": "",
         "personal": {
-            "name": "Karolis Strazdas",
+            "name": _site_name,
             "location": "Kaunas, Lithuania",
         },
         "position": {
