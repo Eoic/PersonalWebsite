@@ -131,7 +131,7 @@ h3 {
 .site-rail {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
   align-self: start;
   position: sticky;
   top: 2rem;
@@ -148,15 +148,15 @@ h3 {
   text-transform: uppercase;
 }
 
-.rail-header {
-  padding-bottom: 2rem;
+.rail-section-title {
   border-bottom: 1px solid var(--color-rule);
+  padding-bottom: 0.5rem;
 }
 
 .identity-block {
   display: grid;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.85rem;
 }
 
 .identity-block h2 {
@@ -175,10 +175,9 @@ h3 {
 
 .rail-actions {
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
 }
 
 a:focus-visible {
@@ -198,6 +197,8 @@ a:focus-visible {
 .contact-list {
   display: grid;
   gap: 0.45rem;
+  // padding-block: 1.5rem;
+  // border-top: 1px solid var(--color-rule);
 }
 
 .site-nav ul {
@@ -448,22 +449,47 @@ a:focus-visible {
   &:hover {
     background-color: var(--color-surface-muted);
   }
+
+  &--ghost {
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    padding-bottom: 0.2em;
+    margin-bottom: -0.2em;
+    border-bottom: 1px solid transparent;
+
+    &:hover {
+      background-color: transparent;
+      border-color: var(--color-text);
+    }
+  }
+}
+
+#theme-switcher::after,
+#view-switcher::after {
+  vertical-align: middle;
+}
+
+#theme-switcher, #view-switcher {
+  & > span {
+    vertical-align: middle;
+  }
 }
 
 #theme-switcher::after {
-  content: "theme: light";
+  content: "Light";
 }
 
 .theme.dark #theme-switcher::after {
-  content: "theme: dark";
+  content: "Dark";
 }
 
 #view-switcher::after {
-  content: "view: narrow";
+  content: "Narrow";
 }
 
 .view.wide #view-switcher::after {
-  content: "view: wide";
+  content: "Wide";
 }
 
 form {
