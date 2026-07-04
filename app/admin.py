@@ -1,5 +1,5 @@
 from flask import redirect, request, url_for
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.peewee import ModelView
 from flask_login import current_user
 
@@ -40,12 +40,18 @@ class WhiteboardStrokeModelView(SecuredModelView):
     form_widget_args = {"points_json": {"readonly": True}}
 
 
+class CustomAdminIndexView(AdminIndexView):
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+
 def init_admin(app):
     admin = Admin(
         app,
         name="Site Admin",
         url="/admin",
         endpoint="admin",
+        index_view=CustomAdminIndexView(),
     )
 
     admin.add_view(SecuredModelView(Page, name="Pages"))
